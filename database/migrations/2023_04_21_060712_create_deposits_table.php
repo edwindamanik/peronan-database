@@ -1,0 +1,38 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('deposits', function (Blueprint $table) {
+            $table->id();
+            $table->bigInteger('jumlah_setoran');
+            $table->enum('penyetoran_melalui', ['transfer_bank', 'langsung'])->nullable();
+            $table->date('tanggal_penyetoran');
+            $table->date('tanggal_disetor')->nullable();
+            $table->string('bukti_setoran')->nullable();
+            $table->enum('status', ['sudah_setor', 'pending']);
+            $table->unsignedBigInteger('users_id');
+            $table->unsignedBigInteger('pasar_id');
+            $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('pasar_id')->references('id')->on('markets')->onDelete('cascade');
+            $table->timestamps();
+            $table->softDeletes();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('deposits');
+    }
+};
