@@ -64,7 +64,7 @@ class ContractController extends Controller
             }
         
             $contract->no_surat = $request->input('no_surat');
-            $contract->tanggal_mulai = $request->input('tanggal_kontrak');
+            $contract->tanggal_kontrak = $request->input('tanggal_kontrak');
             $contract->tanggal_mulai = $request->input('tanggal_mulai');
             $contract->tanggal_selesai = $request->input('tanggal_selesai');
             $contract->status = $request->input('status');

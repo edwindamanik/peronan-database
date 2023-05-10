@@ -40,7 +40,7 @@ class UserController extends Controller
             'kabupaten_id' => 'required',
         ]);
         
-        $validateUser['password'] = bcrypt($request->password);
+        $validateUser['password'] = Hash::make($validateUser['password']);
         $user = User::create($validateUser);
         $accessToken = $user->createToken('authToken')->accessToken;
 
@@ -75,6 +75,8 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $user = User::findOrFail($id);
+
         $validateUser = $request->validate([
             'nama' => 'required',
             'email' => 'required|email',
@@ -84,7 +86,12 @@ class UserController extends Controller
             'kabupaten_id' => 'required',
         ]);
 
-        $user = User::findOrFail($id);
+        if(isset($validateUser['password'])) {
+            $validateUser['password'] = Hash::make($validateUser['password']);
+        } else {
+            unset($validateUser['password']);
+        }
+
         $user->update($validateUser);
 
         return response()->json(['data' => $user]);

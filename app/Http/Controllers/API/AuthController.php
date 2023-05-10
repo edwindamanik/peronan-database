@@ -61,12 +61,13 @@ class AuthController extends Controller
             'kabupaten_id' => 'required',
         ]);
 
-        $validateUser['password'] = bcrypt($request->password);
+        // $validateUser['password'] = bcrypt($request->password);
 
         $user = User::findOrFail($id);
         $user->update($validateUser);
 
         return response()->json(['data' => $user]);
+        
     }
 
     public function userDetail($id) {

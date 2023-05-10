@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('obligation_retributions', function (Blueprint $table) {
             $table->id();
-            $table->string('no_telepon', 20);
             $table->string('ktp');
             $table->string('alamat', 100);
             $table->string('pekerjaan', 25);
