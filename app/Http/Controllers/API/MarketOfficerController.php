@@ -18,12 +18,16 @@ class MarketOfficerController extends Controller
 
     public function store(Request $request)
     {
-        $market_officer = MarketOfficer::create([
-            'users_id' => $request->input('users_id'),
-            'pasar_id' => $request->input('pasar_id'),
-        ]);
-
-        return response()->json(['data' => $market_officer], Response::HTTP_CREATED);
+        try {
+            $market_officer = MarketOfficer::create([
+                'users_id' => $request->input('users_id'),
+                'pasar_id' => $request->input('pasar_id'),
+            ]);
+    
+            return response()->json(['data' => $market_officer], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json(['errorMessage' => $e->getMessage()]);
+        }
     }
 
     public function show($id)

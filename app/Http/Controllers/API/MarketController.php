@@ -34,23 +34,27 @@ class MarketController extends Controller
      */
     public function store(Request $request)
     {
-        $market = Market::create([
-            'kode_pasar' => $request->input('kode_pasar'),
-            'nama_pasar' => $request->input('nama_pasar'),
-            'alamat' => $request->input('alamat'),
-            'tahun_berdiri' => $request->input('tahun_berdiri'),
-            'tahun_pembangunan' => $request->input('tahun_pembangunan'),
-            'koordinat' => $request->input('koordinat'),
-            'kondisi_pasar' => $request->input('kondisi_pasar'),
-            'luas_lahan' => $request->input('luas_lahan'),
-            'pengelola' => $request->input('pengelola'),
-            'operasional_pasar' => $request->input('operasional_pasar'),
-            'jumlah_pedagang' => $request->input('jumlah_pedagang'),
-            'omzet_perbulan' => $request->input('omzet_perbulan'),
-            'kelompok_pasar_id' => $request->input('kelompok_pasar_id')
-        ]);
-
-        return response()->json(['data' => $market], Response::HTTP_CREATED);
+        try{
+            $market = Market::create([
+                'kode_pasar' => $request->input('kode_pasar'),
+                'nama_pasar' => $request->input('nama_pasar'),
+                'alamat' => $request->input('alamat'),
+                'tahun_berdiri' => $request->input('tahun_berdiri'),
+                'tahun_pembangunan' => $request->input('tahun_pembangunan'),
+                'koordinat' => $request->input('koordinat'),
+                'kondisi_pasar' => $request->input('kondisi_pasar'),
+                'luas_lahan' => $request->input('luas_lahan'),
+                'pengelola' => $request->input('pengelola'),
+                'operasional_pasar' => $request->input('operasional_pasar'),
+                'jumlah_pedagang' => $request->input('jumlah_pedagang'),
+                'omzet_perbulan' => $request->input('omzet_perbulan'),
+                'kelompok_pasar_id' => $request->input('kelompok_pasar_id')
+            ]);
+    
+            return response()->json(['data' => $market], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json(['errorMessage' => $e->getMessage()]);
+        }
     }
 
     /**

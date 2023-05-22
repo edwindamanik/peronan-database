@@ -68,7 +68,7 @@ class ObligationRetributionController extends Controller
                 'ktp_url' => $ktpUrl,
             ]);
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return response()->json(['errorMessage' => $e->getMessage()]);
         }     
     }
 

@@ -22,9 +22,6 @@ Route::get('markets/{kabupaten_id}/{petugas_id}', [App\Http\Controllers\API\Mark
 
 
 
-// User Detail
-
-Route::put('user/edit/{id}', [App\Http\Controllers\API\AuthController::class, 'updateUser']);
 
 Route::get('market/retribution/{id}', [App\Http\Controllers\API\ObligationRetributionController::class, 'getNamaPasar']);
 
@@ -45,14 +42,17 @@ Route::get('units/retribution/{pasar_id}/{unit_id}', [App\Http\Controllers\API\U
 // -----
 
 
+// API UNTUK EDIT PROFILE
+Route::put('user/edit/{id}', [App\Http\Controllers\API\AuthController::class, 'updateUser']);
+
 // API UNTUK LOGIN 
 Route::post('/login', [App\Http\Controllers\API\AuthController::class, 'login']);
 
 // API UNTUK MENDAFTARKAN KABUPATEN
-Route::post('/add-regency', [App\Http\Controllers\API\RegencyController::class, 'store']);
+// Route::post('/add-regency', [App\Http\Controllers\API\RegencyController::class, 'store']);
 
 // API RESOURCE KABUPATEN
-Route::resource('regencies', App\Http\Controllers\API\RegencyController::class)->only(['index', 'show', 'update', 'destroy']);
+Route::resource('regencies', App\Http\Controllers\API\RegencyController::class);
 
 // API RESOURCE PENGATURAN MENU
 Route::resource('menu-settings', App\Http\Controllers\API\MenuSettingController::class);
@@ -126,10 +126,13 @@ Route::get('/retribution-wr/{user_id}', [App\Http\Controllers\API\MandatoryRetri
 // API UNTUK CALLBACK HTTP NOTIFICATIONS
 Route::post('/after-payments', [App\Http\Controllers\API\MandatoryRetributionController::class, 'notifications']);
 
+// API UNTUK HALAMAN PILIH PASAR MENDAPATKAN DAFTAR PASAR YANG DI ASSIGN KE PETUGAS
+Route::get('choose-markets/{officer_id}', [App\Http\Controllers\API\MarketController::class, 'choose_market']);
+
+Route::resource('/daily-retributions', App\Http\Controllers\API\DailyRetributionController::class);
+
 Route::middleware('auth:sanctum')->group(function () {
 
-    // API UNTUK HALAMAN PILIH PASAR MENDAPATKAN DAFTAR PASAR YANG DI ASSIGN KE PETUGAS
-    Route::get('choose-markets/{officer_id}', [App\Http\Controllers\API\MarketController::class, 'choose_market']);
 
     // Logout
     Route::get('/logout', [App\Http\Controllers\API\AuthController::class, 'logout']);

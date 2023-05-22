@@ -34,15 +34,19 @@ class UnitController extends Controller
      */
     public function store(Request $request)
     {
-        $unit = Unit::create([
-            'no_unit' => $request->input('no_unit'),
-            'blok' => $request->input('blok'),
-            'deskripsi_lokasi' => $request->input('deskripsi_lokasi'),
-            'pasar_id' => $request->input('pasar_id'),
-            'jenis_unit_id' => $request->input('jenis_unit_id'),
-        ]);
-
-        return response()->json(['data' => $unit], Response::HTTP_CREATED);
+        try {
+            $unit = Unit::create([
+                'no_unit' => $request->input('no_unit'),
+                'blok' => $request->input('blok'),
+                'deskripsi_lokasi' => $request->input('deskripsi_lokasi'),
+                'pasar_id' => $request->input('pasar_id'),
+                'jenis_unit_id' => $request->input('jenis_unit_id'),
+            ]);
+    
+            return response()->json(['data' => $unit], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json(['errorMessage' => $e->getMessage()]);
+        }
     }
 
     /**

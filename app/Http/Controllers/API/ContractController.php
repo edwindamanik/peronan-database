@@ -82,7 +82,7 @@ class ContractController extends Controller
             ]);
 
         } catch (\Exception $e) {
-            return $e->getMessage();
+            return response()->json(['errorMessage' => $e->getMessage()]);
         }       
         
     }
@@ -120,6 +120,7 @@ class ContractController extends Controller
                 'tanggal_selesai' => 'required',
                 'status' => 'required',
                 'file_pdf' => 'required',
+                'feedback' => 'string',
                 'wajib_retribusi_id' => 'required',
                 'unit_id' => 'required',
                 'pengaturan_id' => 'required'
@@ -149,6 +150,7 @@ class ContractController extends Controller
             $contract->wajib_retribusi_id = $request->input('wajib_retribusi_id');
             $contract->unit_id = $request->input('unit_id');
             $contract->pengaturan_id = $request->input('pengaturan_id');
+            $contract->feedback = $request->input('feedback');
 
             $harga = DB::table('units')
                     ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')

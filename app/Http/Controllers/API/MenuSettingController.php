@@ -31,12 +31,16 @@ class MenuSettingController extends Controller
      */
     public function store(Request $request)
     {
-        $menu_setting = MenuSetting::create([
-            'nama_menu' => $request->input('nama_menu'),
-            'kabupaten_id' => $request->input('kabupaten_id'),
-        ]);
-
-        return response()->json(['data' => $menu_setting], Response::HTTP_CREATED);
+        try {
+            $menu_setting = MenuSetting::create([
+                'nama_menu' => $request->input('nama_menu'),
+                'kabupaten_id' => $request->input('kabupaten_id'),
+            ]);
+    
+            return response()->json(['data' => $menu_setting], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json(['errorMessage' => $e->getMessage()]);
+        }
     }
 
     /**

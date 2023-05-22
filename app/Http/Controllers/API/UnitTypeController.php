@@ -32,16 +32,20 @@ class UnitTypeController extends Controller
      */
     public function store(Request $request)
     {
-        $unit_type = UnitType::create([
-            'kode' => $request->input('kode'),
-            'jenis_unit' => $request->input('jenis_unit'),
-            'panjang' => $request->input('panjang'),
-            'lebar' => $request->input('lebar'),
-            'jenis_pembayaran' => $request->input('jenis_pembayaran'),
-            'kabupaten_id' => $request->input('kabupaten_id')
-        ]);
-
-        return response()->json(['data' => $unit_type], Response::HTTP_CREATED);
+        try{
+            $unit_type = UnitType::create([
+                'kode' => $request->input('kode'),
+                'jenis_unit' => $request->input('jenis_unit'),
+                'panjang' => $request->input('panjang'),
+                'lebar' => $request->input('lebar'),
+                'jenis_pembayaran' => $request->input('jenis_pembayaran'),
+                'kabupaten_id' => $request->input('kabupaten_id')
+            ]);
+    
+            return response()->json(['data' => $unit_type], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json(['errorMessage' => $e->getMessage()]);
+        }
     }
 
     /**

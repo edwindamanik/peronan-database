@@ -31,13 +31,17 @@ class MarketGroupController extends Controller
      */
     public function store(Request $request)
     {
-        $validateMarketGroup = $request->validate([
-            'kelompok_pasar' => 'required',
-            'kabupaten_id' => 'required',
-        ]);
-
-        $market_group = MarketGroup::create($validateMarketGroup);
-        return response()->json(['data' => $market_group], Response::HTTP_CREATED);
+        try{
+            $validateMarketGroup = $request->validate([
+                'kelompok_pasar' => 'required',
+                'kabupaten_id' => 'required',
+            ]);
+    
+            $market_group = MarketGroup::create($validateMarketGroup);
+            return response()->json(['data' => $market_group], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     /**

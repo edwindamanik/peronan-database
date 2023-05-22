@@ -15,7 +15,7 @@ class DailyRetributionController extends Controller
 {
     public function index()
     {
-        $daily_retributions = DailyRetribution::all();
+        $daily_retributions = DB::table('daily_retributions')->get();
         return response()->json(['data' => $daily_retributions]);
     }
 
@@ -63,7 +63,7 @@ class DailyRetributionController extends Controller
         ]);
 
         return response()->json(['data' => 'data berhasil diupload'], Response::HTTP_CREATED);
-    } 
+    }
 
     public function show($id)
     {

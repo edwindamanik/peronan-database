@@ -238,48 +238,52 @@ class MandatoryRetributionController extends Controller
 
     public function cashlessPayment(Request $request)
     {
-        $clientId = env("DOKU_CLIENT_ID");
-        $requestId = "fdb69f47-96da-499d-acec-7cdc318ab2fe";
-        $requestDate = gmdate('Y-m-d\TH:i:s\Z');
-        $targetPath = "/checkout/v1/payment"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
-        $secretKey = env("DOKU_SECRET_KEY");
-        $requestBody = $request->json()->all();
+        try {
+            $clientId = env("DOKU_CLIENT_ID");
+            $requestId = "fdb69f47-96da-499d-acec-7cdc318ab2fb";
+            $requestDate = gmdate('Y-m-d\TH:i:s\Z');
+            $targetPath = "/mandiri-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
+            $secretKey = env("DOKU_SECRET_KEY");
+            $requestBody = $request->json()->all();
 
-        // Generate Digest
-        $digestValue = base64_encode(hash('sha256', json_encode($requestBody), true));
+            // Generate Digest
+            $digestValue = base64_encode(hash('sha256', json_encode($requestBody), true));
 
-        // Prepare Signature Component
-        $componentSignature = "Client-Id:" . $clientId . "\n" .
-            "Request-Id:" . $requestId . "\n" .
-            "Request-Timestamp:" . $requestDate . "\n" .
-            "Request-Target:" . $targetPath . "\n" .
-            "Digest:" . $digestValue;
+            // Prepare Signature Component
+            $componentSignature = "Client-Id:" . $clientId . "\n" .
+                "Request-Id:" . $requestId . "\n" .
+                "Request-Timestamp:" . $requestDate . "\n" .
+                "Request-Target:" . $targetPath . "\n" .
+                "Digest:" . $digestValue;
 
-        // Calculate HMAC-SHA256 base64 from all the components above
-        $signature = base64_encode(hash_hmac('sha256', $componentSignature, $secretKey, true));
+            // Calculate HMAC-SHA256 base64 from all the components above
+            $signature = base64_encode(hash_hmac('sha256', $componentSignature, $secretKey, true));
 
-        // Sample of Usage
-        $headerSignature =  "Client-Id:" . $clientId . "\n" .
-            "Request-Id:" . $requestId . "\n" .
-            "Request-Timestamp:" . $requestDate . "\n" .
-            // Prepend encoded result with algorithm info HMACSHA256=
-            "Signature:" . "HMACSHA256=" . $signature;
+            // Sample of Usage
+            $headerSignature =  "Client-Id:" . $clientId . "\n" .
+                "Request-Id:" . $requestId . "\n" .
+                "Request-Timestamp:" . $requestDate . "\n" .
+                // Prepend encoded result with algorithm info HMACSHA256=
+                "Signature:" . "HMACSHA256=" . $signature;
 
-        // Send POST request to API endpoint
-        $response = Http::withHeaders([
-            'Content-Type' => 'application/json',
-            'Client-Id' => $clientId,
-            'Request-Id' => $requestId,
-            'Request-Timestamp' => $requestDate,
-            'Signature' => 'HMACSHA256=' . $signature,
-        ])->post("https://api-sandbox.doku.com/checkout/v1/payment", $requestBody);
+            // Send POST request to API endpoint
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Client-Id' => $clientId,
+                'Request-Id' => $requestId,
+                'Request-Timestamp' => $requestDate,
+                'Signature' => 'HMACSHA256=' . $signature,
+            ])->post("https://api-sandbox.doku.com/mandiri-virtual-account/v2/payment-code", $requestBody);
 
-        $responseJson = json_decode($response->body(), true);
-        $httpCode = $response->status();
+            $responseJson = json_decode($response->body(), true);
+            $httpCode = $response->status();
 
-        return response()->json([
-            'data' => $responseJson,
-        ]);
+            return response()->json([
+                'data' => $responseJson,
+            ]);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
     }
 
     public function getRetribusiWr($user_id) {

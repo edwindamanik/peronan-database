@@ -31,15 +31,19 @@ class RetributionFeeController extends Controller
      */
     public function store(Request $request)
     {
-        $retribution_fee = RetributionFee::create([
-            'harga_satuan' => $request->input('harga_satuan'),
-            'satuan' => $request->input('satuan'),
-            'harga' => $request->input('harga'),
-            'kelompok_pasar' => $request->input('kelompok_pasar'),
-            'jenis_unit_id' => $request->input('jenis_unit_id')
-        ]);
-
-        return response()->json(['data' => $retribution_fee], Response::HTTP_CREATED);
+        try {
+            $retribution_fee = RetributionFee::create([
+                'harga_satuan' => $request->input('harga_satuan'),
+                'satuan' => $request->input('satuan'),
+                'harga' => $request->input('harga'),
+                'kelompok_pasar' => $request->input('kelompok_pasar'),
+                'jenis_unit_id' => $request->input('jenis_unit_id')
+            ]);
+    
+            return response()->json(['data' => $retribution_fee], Response::HTTP_CREATED);
+        } catch (\Exception $e) {
+            return response()->json(['errorMessage' => $e->getMessage()]);
+        }
     }
 
     /**

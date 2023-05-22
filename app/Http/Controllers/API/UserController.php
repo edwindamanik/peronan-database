@@ -40,7 +40,7 @@ class UserController extends Controller
             'kabupaten_id' => 'required',
         ]);
         
-        $validateUser['password'] = Hash::make($validateUser['password']);
+        $validateUser['password'] = bcrypt($request->password);
         $user = User::create($validateUser);
         $accessToken = $user->createToken('authToken')->accessToken;
 
@@ -85,12 +85,6 @@ class UserController extends Controller
             'role' => 'required',
             'kabupaten_id' => 'required',
         ]);
-
-        if(isset($validateUser['password'])) {
-            $validateUser['password'] = Hash::make($validateUser['password']);
-        } else {
-            unset($validateUser['password']);
-        }
 
         $user->update($validateUser);
 
