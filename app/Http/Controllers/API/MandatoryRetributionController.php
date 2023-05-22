@@ -240,7 +240,7 @@ class MandatoryRetributionController extends Controller
     {
         try {
             $clientId = env("DOKU_CLIENT_ID");
-            $requestId = "fdb69f47-96da-499d-acec-7cdc318ab2fb";
+            $requestId = "fdb69f47-96da-499d-acec-7cdc318ab2fl";
             $requestDate = gmdate('Y-m-d\TH:i:s\Z');
             $targetPath = "/mandiri-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
             $secretKey = env("DOKU_SECRET_KEY");
