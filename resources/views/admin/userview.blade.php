@@ -141,6 +141,7 @@
                                 <option value="wajib_retribusi">Wajib Retribusi</option>
                                 <option value="admin">Admin</option>
                                 <option value="petugas">Petugas</option>
+                                <option value="bendahara">Bendahara</option>
                             </select>
                         </div>
                         <input type="hidden" name="kabupaten_id" value="{{ Auth::user()->kabupaten_id }}">
@@ -187,6 +188,7 @@
                                 <option value="wajib_retribusi">Wajib Retribusi</option>
                                 <option value="admin">Admin</option>
                                 <option value="petugas">Petugas</option>
+                                <option value="bendahara">Bendahara</option>
                             </select>
                         </div>
                         <input type="hidden" name="kabupaten_id" value="{{ Auth::user()->kabupaten_id }}">

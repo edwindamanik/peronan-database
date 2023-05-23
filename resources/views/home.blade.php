@@ -90,12 +90,8 @@
                     <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                         <span class="dropdown-header">{{ Auth::user()->nama }}</span>
                         <div class="dropdown-divider"></div>
-                        <a href="{{route('logout')}}" class="dropdown-item dropdown-footer" onclick="event.preventDefault();
-                       document.getElementById('logout-form').submit();" style="color: red">Logout</a>
+                        <a href="/logout" class="dropdown-item dropdown-footer" style="color: red">Logout</a>
                     </div>
-                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                        @csrf
-                    </form>
                 </li>
             </ul>
         </nav>
@@ -184,243 +180,81 @@
                                 <p>Manajemen User</p>
                             </a>
                         </li>
-
-                        @else
-
-                        @if (Auth::user()->role == 'ADMINTOBA')
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-poll"></i>
-                                <p>
-                                    Data Master
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/pasar/indextoba" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Pasar</p>
-                                    </a>
-                                </li>
-                                {{-- <li class="nav-item">
-                                    <a href="/grup-pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Grup Pasar</p>
-                                    </a>
-                                </li> --}}
-                                <li class="nav-item">
-                                    <a href="/pasar/tipe" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Kelompok Pasar</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('jenis-tempat.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Jenis Unit</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('unit-tempat.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Unit Tempat</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('biaya-retribusi.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Biaya Retribusi</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('penyewa.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Penyewa</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/kontrak" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Kontrak</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/user" class="nav-link">
-                                <i class="nav-icon fas fa-user-circle"></i>
-                                <p>Manajemen Pengguna</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/backup" class="nav-link">
-                                <i class="nav-icon far fa-file-archive"></i>
-                                <p>Unduh Pencadangan</p>
-                            </a>
-                        </li>
-
                         @endif
 
-                        @if (Auth::user()->role == 'ADMINTAPUT')
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-poll"></i>
-                                <p>
-                                    Data Master
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Pasar</p>
-                                    </a>
-                                </li>
-                                {{-- <li class="nav-item">
-                                    <a href="/grup-pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Grup Pasar</p>
-                                    </a>
-                                </li> --}}
-                                <li class="nav-item">
-                                    <a href="/pasar/tipe" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Kelompok Pasar</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('jenis-tempat.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Jenis Unit</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('unit-tempat.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Unit Tempat</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('biaya-retribusi.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Biaya Retribusi</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="{{route('penyewa.index')}}" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Penyewa</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/kontrak" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Kontrak</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/user" class="nav-link">
-                                <i class="nav-icon fas fa-user-circle"></i>
-                                <p>Manajemen Pengguna</p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/backup" class="nav-link">
-                                <i class="nav-icon far fa-file-archive"></i>
-                                <p>Unduh Pencadangan</p>
-                            </a>
-                        </li>
+                        @if(Auth::user()->role == 'bendahara')
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <p>
+                                        Penyetoran
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
 
+                                    <li class="nav-item">
+                                        <a href="/konfirmasi-setoran" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Konfirmasi Penyetoran</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/receipt/pembatalan" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Laporan Penyetoran</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/receipt/laporan" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Laporan Tagihan</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/receipt/laporan" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Rekonsiliasi</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <p>
+                                        Bukti Bayar
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+
+                                    <li class="nav-item">
+                                        <a href="/receipt/request/pembatalan" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Konfirmasi Pembatalan</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/receipt/pembatalan" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Laporan Pembatalan</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <p>Tagihan</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/UserManualSiappara.pdf" class="nav-link">
+                                    <p>Unduh User Manual</p>
+                                </a>
+                            </li>
                         @endif
-
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>
-                                    Penyetoran
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                @if(Auth::user()->role == 'BENDAHARA')
-                                <li class="nav-item">
-                                    {{-- <a href="{{route('penyetoran-request.index')}}" class="nav-link">
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <p>Konfirmasi Penyetoran</p>
-                                    </a> --}}
-                                </li>
-                                @endif
-                                <li class="nav-item">
-                                    {{-- <a href="{{route('penyetoran.index')}}" class="nav-link">
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <p>Laporan Penyetoran</p>
-                                    </a> --}}
-                                </li>
-
-                                <li class="nav-item">
-                                    {{-- <a href="{{route('tagihan-header.index')}}" class="nav-link">
-                                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                    <p>Laporan Tagihan</p>
-                                    </a> --}}
-                                </li>
-
-                                <li class="nav-item">
-                                    {{-- <a href="/rekonsiliasi/" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Rekonsiliasi</p>
-                                    </a> --}}
-                                </li>
-                            </ul>
-                        </li>
-
-
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-sticky-note"></i>
-                                <p>
-                                    Bukti Bayar
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                @if(Auth::user()->role == 'BENDAHARA')
-                                <li class="nav-item">
-                                    <a href="/receipt/request/pembatalan" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Konfirmasi Pembatalan</p>
-                                    </a>
-                                </li>
-                                @endif
-                                <li class="nav-item">
-                                    <a href="/receipt/pembatalan" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Laporan Pembatalan</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/receipt/laporan" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Laporan Bukti Bayar</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        @endif
-                        <li class="nav-item">
-                            <a href="/UserManualSiappara.pdf" class="nav-link">
-                                <i class="nav-icon fas fa-book"></i>
-                                <p>Unduh User Manual</p>
-                            </a>
-                        </li>
                     </ul>
                 </nav>
-                <!-- /.sidebar-menu -->
             </div>
-            <!-- /.sidebar -->
         </aside>
 
         <!-- Content Wrapper. Contains page content -->

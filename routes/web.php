@@ -11,6 +11,7 @@ use App\Http\Controllers\BiayaRetribusiController;
 use App\Http\Controllers\WajibRetribusiController;
 use App\Http\Controllers\KontrakController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\BendaharaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,5 +66,7 @@ Route::get('/users', [UserController::class, 'index']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
+
+Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
