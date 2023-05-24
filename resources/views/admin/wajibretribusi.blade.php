@@ -239,7 +239,7 @@
                 <div class="modal-body">
                     <!-- Image container -->
                     <div class="text-center">
-                        <img src="" alt="Image" id="modalImage">
+                        <img src="" alt="Image" id="modalImage" width="450px" height="400px" style="position: relative;">
                     </div>
                 </div>
             </div>

@@ -79,7 +79,7 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>{{ $item->email }}</td>
-                                <td>{{ $item->role }}</td>
+                                <td>{{ str_replace('_', ' ', $item->role) }}</td>
                                 <td>
                                     <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
                                         data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">

@@ -112,7 +112,7 @@
                 <!-- Sidebar Menu -->
                 <nav>
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
-                        data-accordion="false" class="mt-2" style="style=" color:blue;">
+                        data-accordion="false" class="mt-2" style="style="color:blue;">
                         <li class="nav-header">MENU</li>
                         @if (Auth::user()->role == 'admin')
                         <li class="nav-item">
@@ -125,37 +125,37 @@
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
                                     <a href="/pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                                         <p>Data Pasar</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="/kelompok-pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                                         <p>Data Kelompok Pasar</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="/jenis-unit" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                                         <p>Data Jenis Unit</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="/unit" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                                         <p>Data Unit</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="/biaya-retribusi" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                                         <p>Data Biaya Retribusi</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="/wajib-retribusi" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
                                         <p>Data Wajib Retribusi</p>
                                     </a>
                                 </li>
@@ -194,25 +194,25 @@
 
                                     <li class="nav-item">
                                         <a href="/konfirmasi-setoran" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp;  
                                             <p>Konfirmasi Penyetoran</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/receipt/pembatalan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Laporan Penyetoran</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/receipt/laporan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp;  
                                             <p>Laporan Tagihan</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/receipt/laporan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Rekonsiliasi</p>
                                         </a>
                                     </li>
