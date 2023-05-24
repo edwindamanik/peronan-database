@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->bigInteger('no_tagihan');
             $table->bigInteger('no_tagihan_ref')->nullable();
-            // $table->char('durasi_pembayaran');
             $table->bigInteger('biaya_retribusi');
+            $table->bigInteger('denda')->nullable();
             $table->bigInteger('total_retribusi')->nullable();
             $table->date('tanggal_pembayaran')->nullable();
             $table->date('jatuh_tempo');

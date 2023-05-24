@@ -19,9 +19,12 @@ return new class extends Migration
             $table->date('tanggal_disetor')->nullable();
             $table->string('bukti_setoran')->nullable();
             $table->enum('status', ['sudah_setor', 'pending']);
-            $table->unsignedBigInteger('users_id');
+            $table->string('alasan_tidak_setor');
+            $table->unsignedBigInteger('users_id')->nullable();
+            $table->unsignedBigInteger('wajib_retribusi_id')->nullable();
             $table->unsignedBigInteger('pasar_id');
             $table->foreign('users_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('wajib_retribusi_id')->references('id')->on('obligation_retributions')->onDelete('cascade');
             $table->foreign('pasar_id')->references('id')->on('markets')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();
