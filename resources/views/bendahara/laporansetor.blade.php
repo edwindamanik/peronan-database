@@ -73,8 +73,6 @@
                                 <th>Penyetoran Melalui</th>
                                 <th>Tanggal Penyetoran</th>
                                 <th>Tanggal Disetor</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -88,17 +86,6 @@
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_penyetoran)->format('d M Y') }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
-                                </td>
-                                <td>{{ $item->status }}</td>
-                                <td>
-                                    @if ($item->status !== 'sudah_setor')
-                                        <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn btn-primary">Konfirmasi</button>
-                                        </form>
-                                    @else
-                                        Sudah Disetor
-                                    @endif
                                 </td>
                             </tr>
                             @endforeach
@@ -140,8 +127,6 @@
     </div>
 
 </main>
-
-
 
 <script>
     $(document).ready(function () {

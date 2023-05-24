@@ -53,6 +53,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.5.0/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         trix-toolbar [data-trix-button-group="file-tools"] {
             display: none;
@@ -199,7 +200,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/receipt/pembatalan" class="nav-link">
+                                        <a href="/laporansetor" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Laporan Penyetoran</p>
                                         </a>
