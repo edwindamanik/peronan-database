@@ -239,8 +239,11 @@ class MandatoryRetributionController extends Controller
     public function cashlessPayment(Request $request)
     {
         try {
+            $randomString = Str::uuid()->toString();
+            $formattedString = substr($randomString, 0, 13) . 'l';
+
             $clientId = env("DOKU_CLIENT_ID");
-            $requestId = "fdb69f47-96da-499d-acec-7cdc318ab2fl";
+            $requestId = $formattedString;
             $requestDate = gmdate('Y-m-d\TH:i:s\Z');
             $targetPath = "/mandiri-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
             $secretKey = env("DOKU_SECRET_KEY");
@@ -330,8 +333,8 @@ class MandatoryRetributionController extends Controller
     public function notifications(Request $request) {
         $notificationHeader = getallheaders();
         $notificationBody = file_get_contents('php://input');
-        $notificationPath = '/payments/notifications'; // Adjust according to your notification path
-        $secretKey = 'SK-e8acCt3iB1a1A0Jodfad'; // Adjust according to your secret key
+        $notificationPath = '/api/after-payments'; // Adjust according to your notification path
+        $secretKey = 'SK-3ut5p5VDAKku2Dqd541q'; // Adjust according to your secret key
     
         $digest = base64_encode(hash('sha256', $notificationBody, true));
         $rawSignature = "Client-Id:" . $notificationHeader['Client-Id'] . "\n"
@@ -343,7 +346,7 @@ class MandatoryRetributionController extends Controller
         $signature = base64_encode(hash_hmac('sha256', $rawSignature, $secretKey, true));
         $finalSignature = 'HMACSHA256=' . $signature;
     
-        if ($finalSignature == $headers['Signature']) {
+        if ($finalSignature == $notificationHeader['Signature']) {
             // TODO: Process if Signature is Valid
             return response('OK', 200)->header('Content-Type', 'text/plain');
     
@@ -352,5 +355,7 @@ class MandatoryRetributionController extends Controller
             // TODO: Response with 400 errors for Invalid Signature
             return response('Invalid Signature', 400)->header('Content-Type', 'text/plain');
         }
+
+        return response($finalSignature);
     }
 }
