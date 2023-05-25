@@ -206,7 +206,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/receipt/laporan" class="nav-link">
+                                        <a href="/laptagihan" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp;  
                                             <p>Laporan Tagihan</p>
                                         </a>

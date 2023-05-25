@@ -68,10 +68,15 @@ Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 
 Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
-Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDeposit'])->name('setor-deposit');;
+Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDeposit'])->name('setor-deposit');
+
+
 
 
 Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
+
+
+Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
 
 

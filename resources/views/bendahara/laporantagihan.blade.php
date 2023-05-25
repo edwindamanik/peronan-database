@@ -67,39 +67,30 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>Nomor Tagihan</th>
+                                <th>Wajib Retribusi</th>
                                 <th>Pasar</th>
-                                <th>Petugas</th>
-                                <th>Jumlah Setoran</th>
-                                <th>Penyetoran Melalui</th>
-                                <th>Tanggal Penyetoran</th>
-                                <th>Tanggal Disetor</th>
+                                <th>Total Retribusi</th>
+                                <th>Denda</th>
+                                <th>Total Tagihan</th>
+                                <th>Jatuh tempo</th>
                                 <th>Status</th>
-                                <th>Aksi</th>
+                                <th>Metode Pembayaran</th>
+                                <th>Tanggal Pembayaran</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->nama_pasar }}</td>
+                                {{-- <td>{{ $item->nama_pasar }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
                                 <td>{{ $item->penyetoran_melalui }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_penyetoran)->format('d M Y') }}
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
-                                </td>
-                                <td>{{ $item->status }}</td>
-                                <td>
-                                    @if ($item->status !== 'sudah_setor')
-                                        <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn-setor" style="background-color: rgb(52, 52, 241)">Konfirmasi</button>
-                                        </form>
-                                    @else
-                                        Sudah Disetor
-                                    @endif
-                                </td>
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -140,8 +131,6 @@
     </div>
 
 </main>
-
-
 
 <script>
     $(document).ready(function () {

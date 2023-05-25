@@ -34,13 +34,28 @@ class BendaharaController extends Controller
     if ($deposit) {
         // Perbarui status menjadi "sudah_disetor"
         $deposit->status = 'sudah_setor';
-        $deposit->status = 'sudah_setor';
         $deposit->save();
 
         return redirect()->back()->with('success', 'Status berhasil diubah.');
     } else {
         return redirect()->back()->with('error', 'Deposit tidak ditemukan.');
     }
+}
+
+public function laptagihan(){
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
+
+    $data = DB::table('deposits')
+            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+            ->join('users', 'deposits.users_id', '=', 'users.id')
+            ->where('deposits.status', 'sudah_setor')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->select('deposits.*', 'markets.nama_pasar', 'users.nama')
+            ->get();
+    
+    return view('bendahara.laporantagihan', compact('data'));
 }
 
 //     public function setorDeposit(Request $request)
@@ -77,5 +92,7 @@ class BendaharaController extends Controller
         return view('bendahara.laporansetor', compact('data'));
     }
 
+
+   
 
 }
