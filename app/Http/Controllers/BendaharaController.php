@@ -46,16 +46,34 @@ public function laptagihan(){
     $user = Auth::user();
     $kabupatenId = $user->kabupaten_id;
 
-    $data = DB::table('deposits')
-            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('users', 'deposits.users_id', '=', 'users.id')
-            ->where('deposits.status', 'sudah_setor')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->select('deposits.*', 'markets.nama_pasar', 'users.nama')
+    $data = DB::table('mandatory_retributions')
+            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+            ->join('units', 'units.id', '=', 'contracts.unit_id')
+            ->join('markets', 'markets.id', '=', 'units.pasar_id')
+            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*','units.*','markets.*','users.*')
             ->get();
     
+    
     return view('bendahara.laporantagihan', compact('data'));
+}
+
+public function konfirbatal(){
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
+
+    $data = DB::table('mandatory_retributions')
+            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+            ->join('units', 'units.id', '=', 'contracts.unit_id')
+            ->join('markets', 'markets.id', '=', 'units.pasar_id')
+            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*','units.*','markets.*','users.*')
+            ->get();
+    
+    
+    return view('bendahara.konfirmasipembatalan', compact('data'));
 }
 
 //     public function setorDeposit(Request $request)

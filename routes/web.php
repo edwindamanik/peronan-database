@@ -78,6 +78,8 @@ Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
 
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
+Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal']);
+
 
 
 Route::get('/logout', [AuthController::class, 'logout'])->name('logout');
