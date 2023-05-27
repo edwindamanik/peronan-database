@@ -206,7 +206,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/receipt/laporan" class="nav-link">
+                                        <a href="/tagihan" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp;  
                                             <p>Laporan Tagihan</p>
                                         </a>
@@ -230,13 +230,13 @@
 
                                     <li class="nav-item">
                                         <a href="/receipt/request/pembatalan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Konfirmasi Pembatalan</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/receipt/pembatalan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Laporan Pembatalan</p>
                                         </a>
                                     </li>

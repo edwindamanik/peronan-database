@@ -25,10 +25,10 @@
 <div class="messages"></div>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Daftar Setoran</h2>
+        <h2 class="mt-4">Daftar Konfirmasi Pembatalan</h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Daftar Setoran</li>
+                <li class="breadcrumb-item active" aria-current="page">Daftar Konfirmasi Pembatalan</li>
             </ol>
         </nav>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
@@ -37,7 +37,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Daftar Setoran
+                Daftar Konfirmasi Pembatalan
             </div>
             <div class="card-body">
                 @if (session()->has('deleteMessage'))
@@ -73,13 +73,15 @@
                                 <th>Penyetoran Melalui</th>
                                 <th>Tanggal Penyetoran</th>
                                 <th>Tanggal Disetor</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->nama_pasar }}</td>
+                                {{-- <td>{{ $item->nama_pasar }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
                                 <td>{{ $item->penyetoran_melalui }}</td>
@@ -87,6 +89,17 @@
                                 </td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
                                 </td>
+                                <td>{{ $item->status }}</td>
+                                <td>
+                                    @if ($item->status !== 'sudah_setor')
+                                        <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn-setor" style="background-color: rgb(52, 52, 241)">Konfirmasi</button>
+                                        </form>
+                                    @else
+                                        Sudah Disetor
+                                    @endif
+                                </td> --}}
                             </tr>
                             @endforeach
                         </tbody>
@@ -127,6 +140,8 @@
     </div>
 
 </main>
+
+
 
 <script>
     $(document).ready(function () {
