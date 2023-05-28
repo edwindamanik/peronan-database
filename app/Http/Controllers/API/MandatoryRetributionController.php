@@ -348,6 +348,19 @@ class MandatoryRetributionController extends Controller
     
         if ($finalSignature == $notificationHeader['Signature']) {
             // TODO: Process if Signature is Valid
+
+            if ($transactionStatus = $request->input('transaction.status')) {
+                $invoiceNumber = $request->input('order.invoice_number');
+                $parts = explode('-', $invoiceNumber);
+                $finalNumber = end($parts);
+
+                if ($transactionStatus === 'SUCCESS') {
+                    DB::table('mandatory_retributions')
+                        ->where('no_tagihan', $finalNumber)
+                        ->update(['status_pembayaran' => 'sudah_dibayar']);
+                }
+            }
+
             return response('OK', 200)->header('Content-Type', 'text/plain');
     
             // TODO: Do update the transaction status based on the `transaction.status`
@@ -356,6 +369,5 @@ class MandatoryRetributionController extends Controller
             return response('Invalid Signature', 400)->header('Content-Type', 'text/plain');
         }
 
-        return response($finalSignature);
     }
 }
