@@ -34,13 +34,46 @@ class BendaharaController extends Controller
     if ($deposit) {
         // Perbarui status menjadi "sudah_disetor"
         $deposit->status = 'sudah_setor';
-        $deposit->status = 'sudah_setor';
         $deposit->save();
 
         return redirect()->back()->with('success', 'Status berhasil diubah.');
     } else {
         return redirect()->back()->with('error', 'Deposit tidak ditemukan.');
     }
+}
+
+public function laptagihan(){
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
+
+    $data = DB::table('mandatory_retributions')
+            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+            ->join('units', 'units.id', '=', 'contracts.unit_id')
+            ->join('markets', 'markets.id', '=', 'units.pasar_id')
+            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*','units.*','markets.*','users.*')
+            ->get();
+    
+    
+    return view('bendahara.laporantagihan', compact('data'));
+}
+
+public function konfirbatal(){
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
+
+    $data = DB::table('mandatory_retributions')
+            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+            ->join('units', 'units.id', '=', 'contracts.unit_id')
+            ->join('markets', 'markets.id', '=', 'units.pasar_id')
+            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*','units.*','markets.*','users.*')
+            ->get();
+    
+    
+    return view('bendahara.konfirmasipembatalan', compact('data'));
 }
 
 //     public function setorDeposit(Request $request)
@@ -77,5 +110,7 @@ class BendaharaController extends Controller
         return view('bendahara.laporansetor', compact('data'));
     }
 
+
+   
 
 }

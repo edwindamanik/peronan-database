@@ -94,7 +94,7 @@
                                     @if ($item->status !== 'sudah_setor')
                                         <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-primary">Konfirmasi</button>
+                                            <button type="submit" class="btn-setor" style="background-color: rgb(52, 52, 241)">Konfirmasi</button>
                                         </form>
                                     @else
                                         Sudah Disetor
