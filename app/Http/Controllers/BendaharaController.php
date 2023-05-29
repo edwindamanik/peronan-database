@@ -73,7 +73,7 @@ class BendaharaController extends Controller
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users', 'users.id', '=', 'market_officers.users_id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.bukti_pembatalan', '=', 'asd')
+            ->whereNotNull('daily_retributions.bukti_pembatalan')
             ->where('daily_retributions.status', '=', 0)
             ->select('daily_retributions.*', 'markets.*', 'users.nama')
             ->get();
