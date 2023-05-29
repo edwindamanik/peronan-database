@@ -59,6 +59,7 @@ Route::get('/wajib-retribusi/delete/{id}', [WajibRetribusiController::class, 'de
 
 Route::get('/kontrak', [KontrakController::class, 'index']);
 Route::post('/kontrak/store', [KontrakController::class, 'store']);
+Route::post('/{id}/kontrakpreview', [KontrakController::class, 'preview']);
 Route::post('/kontrak/update/{id}', [KontrakController::class, 'update']);
 Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
@@ -74,12 +75,17 @@ Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDep
 
 
 Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
+Route::get('/setor/export_excel', [BendaharaController::class, 'export']);
+
 
 
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
 Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal']);
 Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
+Route::get('/batal/export_batal', [BendaharaController::class, 'exportbatal']);
+
+
 Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');
 
 

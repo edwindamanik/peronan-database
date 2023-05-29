@@ -24,15 +24,13 @@
     <div class="messages"></div>
     <main>
         <div class="container-fluid">
-            <h2 class="mt-4">Daftar Konfirmasi Pembatalan</h2>
+            <h2 class="mt-4">Laporan Pembatalan Bukti Bayar</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
                     <li class="breadcrumb-item active" aria-current="page">Daftar Konfirmasi Pembatalan</li>
                 </ol>
             </nav>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
-                Export Laporan
-            </button><br>
+            <a href="/batal/export_batal" class="btn btn-primary">Export Laporan</a><br>
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
@@ -72,7 +70,6 @@
                                     <th>jumlah unit</th>
                                     <th>Tanggal </th>
                                     <th>Biaya retribusi</th>
-                                    <th>Aksi</th>
                                 </tr>
                             </thead>
                             <tbody>

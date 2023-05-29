@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\LetterSetting;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -20,29 +21,29 @@ class KontrakController extends Controller
         $kabupatenId = $user->kabupaten_id;
 
         $data = DB::table('contracts')
-                ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
-                ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
-                ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
-                ->where('letter_settings.kabupaten_id', $kabupatenId)
-                ->select('contracts.*', 'users.nama')
-                ->paginate();
+            ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
+            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
+            ->where('letter_settings.kabupaten_id', $kabupatenId)
+            ->select('contracts.*', 'users.nama')
+            ->paginate();
 
         $wajib_retribusi = DB::table('obligation_retributions')
-                           ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
-                           ->where('kabupaten_id', $kabupatenId)
-                           ->where('users.role', 'wajib_retribusi')
-                           ->select('obligation_retributions.*', 'users.nama')
-                           ->get();
+            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->where('kabupaten_id', $kabupatenId)
+            ->where('users.role', 'wajib_retribusi')
+            ->select('obligation_retributions.*', 'users.nama')
+            ->get();
 
         $unit = DB::table('units')
-                ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
-                ->where('kabupaten_id', $kabupatenId)
-                ->select('units.*')
-                ->get();
+            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+            ->where('kabupaten_id', $kabupatenId)
+            ->select('units.*')
+            ->get();
 
         $pengaturan = DB::table('letter_settings')
-                      ->where('kabupaten_id', $kabupatenId)
-                      ->get();
+            ->where('kabupaten_id', $kabupatenId)
+            ->get();
 
         // dd($data);
 
@@ -65,18 +66,18 @@ class KontrakController extends Controller
         try {
 
             $contract = new Contract;
-        
+
             if ($request->hasFile('file_pdf')) {
-        
+
                 // save the new file
                 $pdf = $request->file('file_pdf');
-                $pdfName = time().'.'.$pdf->extension();
+                $pdfName = time() . '.' . $pdf->extension();
                 $pdf->move(public_path('contract'), $pdfName);
-        
+
                 // update the deposit data with the new file name
                 $contract->file_pdf = $pdfName;
             }
-        
+
             $contract->no_surat = $request->input('noSurat');
             $contract->tanggal_kontrak = null;
             $contract->tanggal_mulai = $request->input('tanggalMulai');
@@ -114,24 +115,24 @@ class KontrakController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $contract = Contract::findOrFail($id);
-        
+
             if ($request->hasFile('file_pdf')) {
                 // delete the old file
                 if (\File::exists(public_path('contract/' . $contract->file_pdf))) {
                     \File::delete(public_path('contract/' . $contract->file_pdf));
                 }
-        
+
                 // save the new file
                 $file = $request->file('file_pdf');
-                $fileName = time().'.'.$file->extension();
+                $fileName = time() . '.' . $file->extension();
                 $file->move(public_path('contract'), $fileName);
-        
+
                 // update the contract data with the new file name
                 $contract->file_pdf = $fileName;
             }
-        
+
             $contract->no_surat = $request->input('noSurat');
             $contract->tanggal_mulai = $request->input('tanggalMulai');
             $contract->tanggal_selesai = $request->input('tanggalSelesai');
@@ -141,19 +142,19 @@ class KontrakController extends Controller
             $contract->pengaturan_id = $request->input('pengaturanSurat');
 
             $harga = DB::table('units')
-                    ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
-                    ->join('retribution_fees', 'unit_types.id', '=', 'retribution_fees.jenis_unit_id')
-                    ->select('retribution_fees.harga')
-                    ->where('units.id', $contract->unit_id)
-                    ->first();
+                ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+                ->join('retribution_fees', 'unit_types.id', '=', 'retribution_fees.jenis_unit_id')
+                ->select('retribution_fees.harga')
+                ->where('units.id', $contract->unit_id)
+                ->first();
 
-            if($contract->status == 'benar') {
+            if ($contract->status == 'benar') {
                 $contract->tanggal_kontrak = now();
             }
 
             $contract->save();
 
-            if($contract->status == 'benar') {
+            if ($contract->status == 'benar') {
                 $jatuhTempo = Carbon::parse($contract->tanggal_mulai)->lastOfMonth();
                 $tanggalSelesai = Carbon::parse($contract->tanggal_selesai);
 
@@ -186,7 +187,44 @@ class KontrakController extends Controller
             return response()->json(['errorMessage' => $e->getMessage()]);
         }
     }
+    public function preview($id)
+    {
+        $surat = LetterSetting::first();
 
+        $user = Auth::user();
+        $kabupatenId = $user->kabupaten_id;
+
+        $data = DB::table('contracts')
+            ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
+            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
+            ->where('letter_settings.kabupaten_id', $kabupatenId)
+            ->select('contracts.*', 'users.nama')
+            ->paginate();
+
+        $wajib_retribusi = DB::table('obligation_retributions')
+            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->where('kabupaten_id', $kabupatenId)
+            ->where('users.role', 'wajib_retribusi')
+            ->select('obligation_retributions.*', 'users.nama')
+            ->get();
+
+        $unit = DB::table('units')
+            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+            ->where('kabupaten_id', $kabupatenId)
+            ->select('units.*')
+            ->get();
+
+        $pengaturan = DB::table('letter_settings')
+            ->where('kabupaten_id', $kabupatenId)
+            ->get();
+
+        // dd($data);
+
+        return view('admin.kontrakview', compact('data', 'wajib_retribusi', 'unit', 'pengaturan'));
+
+        // return $pdf->download('surat-kontrak.pdf');
+    }
     /**
      * Remove the specified resource from storage.
      */
