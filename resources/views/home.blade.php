@@ -229,7 +229,7 @@
                                 <ul class="nav nav-treeview">
 
                                     <li class="nav-item">
-                                        <a href="/receipt/request/pembatalan" class="nav-link">
+                                        <a href="/konfirmasipembatalan" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Konfirmasi Pembatalan</p>
                                         </a>

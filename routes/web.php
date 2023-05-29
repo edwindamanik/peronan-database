@@ -79,6 +79,8 @@ Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
 Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal']);
+Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
+Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');
 
 
 
