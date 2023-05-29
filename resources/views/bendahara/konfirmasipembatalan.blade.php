@@ -67,20 +67,31 @@
                         <thead>
                             <tr>
                                 <th>No</th>
+                                <th>No Bukti Bayar</th>
                                 <th>Pasar</th>
                                 <th>Petugas</th>
-                                <th>Jumlah Setoran</th>
-                                <th>Penyetoran Melalui</th>
-                                <th>Tanggal Penyetoran</th>
-                                <th>Tanggal Disetor</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
+                                <th>Tanggal </th>   
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
+                                <td>{{ $item->no_bukti_pembayaran }}</td>
+                                <td>{{ $item->nama_pasar}}</td>
+                                <td>{{ $item->nama }}</td>
+                                <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
+
+                                <td>
+                                    @if ($item->status !== '0')
+                                        <form action="{{ route('batalkan-tagihan', ['batalId' => $item->id]) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="btn-setor" style="background-color: rgb(52, 52, 241)">Konfirmasi</button>
+                                        </form>
+                                    @else
+                                        Sudah Dibatalkan
+                                    @endif
+                                </td>
                                 {{-- <td>{{ $item->nama_pasar }}</td>
                                 <td>{{ $item->nama }}</td>
                                 <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
