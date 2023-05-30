@@ -31,9 +31,8 @@
                 <li class="breadcrumb-item active" aria-current="page">Daftar Setoran</li>
             </ol>
         </nav>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
-            Export Laporan
-        </button><br>
+        <a href="/setor/export_excel" class="btn btn-primary">Export Laporan</a>
+<br>
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>

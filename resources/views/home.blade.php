@@ -206,12 +206,6 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/tagihan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp;  
-                                            <p>Laporan Tagihan</p>
-                                        </a>
-                                    </li>
-                                    <li class="nav-item">
                                         <a href="/receipt/laporan" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Rekonsiliasi</p>
@@ -235,16 +229,23 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/receipt/pembatalan" class="nav-link">
+                                        <a href="/laporanpembatalan" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Laporan Pembatalan</p>
+                                        </a>
+                                    </li>
+                                    
+                                    <li class="nav-item">
+                                        <a href="/tagihan" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp;  
+                                            <p>Laporan Tagihan</p>
                                         </a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
-                                    <p>Tagihan</p>
+                                    <p>Retribusi Non Harian</p>
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -93,6 +93,10 @@
                                         data-target="#myModalDelete" data-pasar-id="{{ $item->id }}">
                                         Hapus
                                     </button>
+                                    <button type="button" class="btn btn-primary" data-toggle="modal"
+                                     data-pasar-id="{{ $item->id }}">
+                                    Lihat
+                                </button>
                                 </td>
                             </tr>
                             @endforeach
