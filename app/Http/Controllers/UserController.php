@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 
@@ -17,8 +18,11 @@ class UserController extends Controller
         $kabupatenId = $user->kabupaten_id;
 
         $data = DB::table('users')
-                ->where('kabupaten_id', $kabupatenId)
-                ->paginate(5);
+            ->where('kabupaten_id', $kabupatenId)
+            ->orderBy('users.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('users.updated_at', 'desc') 
+            ->whereNull('users.deleted_at')
+            ->paginate(5);
 
         // dd($data);
 

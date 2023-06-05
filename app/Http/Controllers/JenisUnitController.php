@@ -19,6 +19,10 @@ class JenisUnitController extends Controller
 
         $data = DB::table('unit_types')
             ->where('kabupaten_id', $kabupatenId)
+            ->whereNull('unit_types.deleted_at')
+            ->orderBy('unit_types.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('unit_types.updated_at', 'desc') 
+            
             ->paginate(5);
 
         // dd($data);

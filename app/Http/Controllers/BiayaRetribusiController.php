@@ -17,22 +17,25 @@ class BiayaRetribusiController extends Controller
         $kabupatenId = $user->kabupaten_id;
 
         $data = DB::table('retribution_fees')
-                ->join('market_groups', 'retribution_fees.kelompok_pasar', '=', 'market_groups.id')
-                ->join('unit_types', 'retribution_fees.jenis_unit_id', '=', 'unit_types.id')
-                ->where('market_groups.kabupaten_id', $kabupatenId)
-                ->where('unit_types.kabupaten_id', $kabupatenId)
-                ->select('retribution_fees.*', 'market_groups.id AS kelompok_pasar_id', 'market_groups.kelompok_pasar', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
-                ->paginate(5);
+            ->join('market_groups', 'retribution_fees.kelompok_pasar', '=', 'market_groups.id')
+            ->join('unit_types', 'retribution_fees.jenis_unit_id', '=', 'unit_types.id')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->where('unit_types.kabupaten_id', $kabupatenId)
+            ->orderBy('retribution_fees.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('retribution_fees.updated_at', 'desc')
+            ->whereNull('retribution_fees.deleted_at')
+            ->select('retribution_fees.*', 'market_groups.id AS kelompok_pasar_id', 'market_groups.kelompok_pasar', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
+            ->paginate(5);
 
         $kelompok_pasar = DB::table('market_groups')
-                          ->where('kabupaten_id', $kabupatenId)
-                          ->select('market_groups.id', 'market_groups.kelompok_pasar')
-                          ->get();
+            ->where('kabupaten_id', $kabupatenId)
+            ->select('market_groups.id', 'market_groups.kelompok_pasar')
+            ->get();
 
         $jenis_unit = DB::table('unit_types')
-                      ->where('kabupaten_id', $kabupatenId)
-                      ->select('unit_types.id', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
-                      ->get();
+            ->where('kabupaten_id', $kabupatenId)
+            ->select('unit_types.id', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
+            ->get();
 
         // dd($data);
 
@@ -89,8 +92,8 @@ class BiayaRetribusiController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
-           
+        try {
+
             DB::table('retribution_fees')
                 ->where('id', $id)
                 ->update([
