@@ -206,7 +206,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="/receipt/laporan" class="nav-link">
+                                        <a href="/rekon" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; 
                                             <p>Rekonsiliasi</p>
                                         </a>
@@ -244,7 +244,7 @@
                                 </ul>
                             </li>
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="/nonharian" class="nav-link">
                                     <p>Retribusi Non Harian</p>
                                 </a>
                             </li>

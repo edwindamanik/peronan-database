@@ -17,8 +17,11 @@ class KelompokPasarController extends Controller
         $kabupatenId = $user->kabupaten_id;
 
         $data = DB::table('market_groups')
-                ->where('market_groups.kabupaten_id', $kabupatenId)
-                ->paginate(5);
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->whereNull('market_groups.deleted_at')
+            ->orderBy('market_groups.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('market_groups.updated_at', 'desc') 
+            ->paginate(5);
 
         // dd($data);
 
@@ -40,10 +43,13 @@ class KelompokPasarController extends Controller
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
+        $now = now();
 
         DB::table('market_groups')->insert([
             'kelompok_pasar' => $request->input('namaKelompokPasar'),
-            'kabupaten_id' => $kabupatenId
+            'kabupaten_id' => $kabupatenId,
+            'created_at' => $now,
+            'updated_at' => $now
         ]);
 
         return back()->with('storeMessage', 'Kelompok Pasar berhasil ditambahkan');

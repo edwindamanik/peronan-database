@@ -120,8 +120,12 @@
                         @csrf
                         <div class="form-group">
                             <label for="inputText">NIK</label>
-                            <input type="number" class="form-control" name="nik" placeholder="NIK" required>
+                            <input type="text" class="form-control @error('nik') is-invalid @enderror" name="nik" placeholder="NIK" required>
+                            @error('nik')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
                         </div>
+                        
                         <div class="form-group">
                             <label for="inputText">KTP</label>
                             <input type="file" class="form-control" name="ktp" placeholder="KTP" required>

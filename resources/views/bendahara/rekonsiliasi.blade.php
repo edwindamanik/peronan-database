@@ -25,10 +25,10 @@
 <div class="messages"></div>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Daftar Permohonan Persetujuan Setoran</h2>
+        <h2 class="mt-4">Daftar Tagihan</h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Daftar Permohonan Persetujuan Setoran</li>
+                <li class="breadcrumb-item active" aria-current="page">Daftar Tagihan</li>
             </ol>
         </nav>
         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
@@ -37,7 +37,7 @@
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Daftar Permohonan Persetujuan Setoran
+                Daftar Tagihan
             </div>
             <div class="card-body">
                 @if (session()->has('deleteMessage'))
@@ -66,42 +66,37 @@
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th>No</th>
-                                <th>Pasar</th>
-                                <th>Petugas</th>
-                                <th>Jumlah Setoran</th>
-                                <th>Penyetoran Melalui</th>
-                                <th>Tanggal Penyetoran</th>
-                                <th>Tanggal Disetor</th>
-                                <th>Status</th>
-                                <th>Aksi</th>
+                                <th align="center"></th>
+                                <th align="center" >SYSTEM</th>
+                                <th align="center">REAL</th>
+                                <th align="center">SELISIH</th>
+                                <th align="center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @foreach ($data as $item)
                             <tr>
-                                <td>{{ $loop->iteration }}</td>
-                                <td>{{ $item->nama_pasar }}</td>
-                                <td>{{ $item->nama }}</td>
-                                <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
-                                <td>{{ $item->penyetoran_melalui }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->tanggal_penyetoran)->format('d M Y') }}
-                                </td>
-                                <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
-                                </td>
-                                <td>{{ $item->status }}</td>
-                                <td>
-                                    @if ($item->status !== 'sudah_setor')
-                                        <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn-setor btn-primary" >Konfirmasi</button>
-                                        </form>
-                                    @else
-                                        Sudah Disetor
-                                    @endif
-                                </td>
+                                <td align="center"><b>CASH</b></td>
+                                <td>RP. 90.000.000,.</td>
+                                <td>RP. 80.000.000,.</td>
+                                <td>RP. 10.000.000,.</td>
+                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
+                                
                             </tr>
-                            @endforeach
+                            <tr>
+                                <td align="center"><b>QRIS</b></td>
+                                <td>RP. 75.000.000,.</td>
+                                <td>RP. 75.000.000,.</td>
+                                <td>RP. 0,.</td>
+                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
+                            </tr>
+                            <tr>
+                                <td align="center"><b>VA</b></td>
+                                <td>RP. 60.000.000,.</td>
+                                <td>RP. 60.000.000,.</td>
+                                <td>RP. 0,.</td>
+                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
+                            </tr>
+                            
                         </tbody>
                     </table>
                     {{-- <div class="d-flex justify-content-end">
@@ -140,8 +135,6 @@
     </div>
 
 </main>
-
-
 
 <script>
     $(document).ready(function () {

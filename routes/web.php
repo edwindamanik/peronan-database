@@ -81,9 +81,16 @@ Route::get('/setor/export_excel', [BendaharaController::class, 'export']);
 
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
+Route::get('/nonharian', [BendaharaController::class, 'retribusi']);
+
 Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal']);
 Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
-Route::get('/batal/export_batal', [BendaharaController::class, 'exportbatal']);
+
+
+
+Route::get('/rekon', [BendaharaController::class, 'rekon']);
+Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
+
 
 
 Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');

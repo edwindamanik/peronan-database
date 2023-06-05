@@ -20,6 +20,9 @@ class UnitController extends Controller
             ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
             ->join('markets', 'units.pasar_id', '=', 'markets.id')
             ->where('unit_types.kabupaten_id', $kabupatenId)
+            ->whereNull('units.deleted_at')
+            ->orderBy('units.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('units.updated_at', 'desc') 
             ->select('units.*', 'markets.nama_pasar', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
             ->paginate(5);
 

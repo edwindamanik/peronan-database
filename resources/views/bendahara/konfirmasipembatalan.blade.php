@@ -70,7 +70,8 @@
                                 <th>No Bukti Bayar</th>
                                 <th>Pasar</th>
                                 <th>Petugas</th>
-                                <th>Tanggal </th>   
+                                <th>Tanggal </th>  
+                                <th>Aksi </th>   
                             </tr>
                         </thead>
                         <tbody>
@@ -86,31 +87,13 @@
                                     @if ($item->status !== '0')
                                         <form action="{{ route('batalkan-tagihan', ['batalId' => $item->id]) }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn-setor" style="background-color: rgb(52, 52, 241)">Konfirmasi</button>
+                                            <button type="submit" class="btn-setor btn-primary" >Konfirmasi</button>
                                         </form>
                                     @else
                                         Sudah Dibatalkan
                                     @endif
                                 </td>
-                                {{-- <td>{{ $item->nama_pasar }}</td>
-                                <td>{{ $item->nama }}</td>
-                                <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
-                                <td>{{ $item->penyetoran_melalui }}</td>
-                                <td>{{ \Carbon\Carbon::parse($item->tanggal_penyetoran)->format('d M Y') }}
-                                </td>
-                                <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
-                                </td>
-                                <td>{{ $item->status }}</td>
-                                <td>
-                                    @if ($item->status !== 'sudah_setor')
-                                        <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
-                                            @csrf
-                                            <button type="submit" class="btn-setor" style="background-color: rgb(52, 52, 241)">Konfirmasi</button>
-                                        </form>
-                                    @else
-                                        Sudah Disetor
-                                    @endif
-                                </td> --}}
+                               
                             </tr>
                             @endforeach
                         </tbody>
