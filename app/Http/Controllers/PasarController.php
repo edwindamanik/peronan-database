@@ -75,6 +75,38 @@ class PasarController extends Controller
         }
     }
 
+    public function update(Request $request, $id)
+    {
+        $user = Auth::user();
+        $kabupatenId = $user->kabupaten_id;
+
+        DB::table('markets')
+            ->where('id', $id)
+            ->update([
+                'kode_pasar' => $request->input('kodePasar'),
+                'nama_pasar' => $request->input('namaPasar'),
+                'alamat' => $request->input('alamatPasar'),
+                'tahun_berdiri' => $request->input('tahunBerdiri'),
+                'tahun_pembangunan' => $request->input('tahunPembangunan'),
+                'koordinat' => $request->input('koordinatPasar'),
+                'kondisi_pasar' => $request->input('kondisiPasar'),
+                'luas_lahan' => $request->input('luasLahan'),
+                'pengelola' => $request->input('pengelola'),
+                'operasional_pasar' => $request->input('operasionalPasar'),
+                'jumlah_pedagang' => $request->input('jumlahPedagang'),
+                'omzet_perbulan' => $request->input('omzetPerbulan'),
+                'kelompok_pasar_id' => $request->input('kelompokPasar')
+            ]);
+
+        return back()->with('updateMessage', 'Pasar berhasil diperbarui');
+    }
+
+    public function edit($id)
+{
+    $pasar = Market::findOrFail($id);
+    return view('edit-pasar', compact('pasar'));
+}
+
     public function destroy($id)
     {
         DB::table('markets')->where('id', $id)->delete();

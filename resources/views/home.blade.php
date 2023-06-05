@@ -170,8 +170,8 @@
 
                                 <li class="nav-item">
                                     <a href="/kontrak" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
-                                        <p>Data Kontrak</p>
+                                       
+                                        <p>Data Surat Sewa Menyewa</p>
                                     </a>
                                 </li>
                             </ul>

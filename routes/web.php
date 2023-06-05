@@ -30,6 +30,7 @@ Route::post('/login', [AuthController::class, 'loginCheck']);
 Route::get('/', [HomeController::class, 'index']);
 Route::get('/pasar', [PasarController::class, 'index']);
 Route::post('/pasar/create', [PasarController::class, 'store']);
+Route::post('/pasar/update/{id}', [PasarController::class, 'update']);
 Route::get('/pasar/delete/{id}', [PasarController::class, 'destroy']);
 
 Route::get('/kelompok-pasar', [KelompokPasarController::class, 'index']);

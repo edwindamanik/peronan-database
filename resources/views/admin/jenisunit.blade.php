@@ -50,6 +50,11 @@
                     {{ session('storeMessage') }}
                 </div>
                 @endif
+                @if (session()->has('storeMessagee'))
+                <div class="alert alert-danger" role="alert">
+                    {{ session('storeMessagee') }}
+                </div>
+                @endif
                 @if (session()->has('updateMessage'))
                 <div class="alert alert-primary" role="alert">
                     {{ session('updateMessage') }}
