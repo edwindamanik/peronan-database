@@ -16,6 +16,7 @@ class JenisUnitController extends Controller
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
+        $now = now();
 
         $data = DB::table('unit_types')
             ->where('kabupaten_id', $kabupatenId)
@@ -46,6 +47,7 @@ class JenisUnitController extends Controller
         try {
             $user = Auth::user();
             $kabupatenId = $user->kabupaten_id;
+            $now = now();
 
             $exitingjenisunit = DB::table('unit_types')
                 ->where('kode', $request->input('kode'))
@@ -61,7 +63,9 @@ class JenisUnitController extends Controller
                 'panjang' => $request->input('panjang'),
                 'lebar' => $request->input('lebar'),
                 'jenis_pembayaran' => $request->input('jenisPembayaran'),
-                'kabupaten_id' => $kabupatenId
+                'kabupaten_id' => $kabupatenId,
+                'created_at' => $now,
+                'updated_at' => $now
             ]);
 
             return back()->with('storeMessage', 'Jenis Unit berhasil ditambahkan');
