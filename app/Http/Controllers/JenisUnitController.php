@@ -16,13 +16,14 @@ class JenisUnitController extends Controller
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
+        $now = now();
 
         $data = DB::table('unit_types')
             ->where('kabupaten_id', $kabupatenId)
             ->whereNull('unit_types.deleted_at')
             ->orderBy('unit_types.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
-            ->orderBy('unit_types.updated_at', 'desc') 
-            
+            ->orderBy('unit_types.updated_at', 'desc')
+
             ->paginate(5);
 
         // dd($data);
@@ -46,6 +47,15 @@ class JenisUnitController extends Controller
         try {
             $user = Auth::user();
             $kabupatenId = $user->kabupaten_id;
+            $now = now();
+
+            $exitingjenisunit = DB::table('unit_types')
+                ->where('kode', $request->input('kode'))
+                ->first();
+
+            if ($exitingjenisunit) {
+                return back()->with('storeMessagee', 'Jenis Unit Sudah pernah ditambahkan');
+            }
 
             DB::table('unit_types')->insert([
                 'kode' => $request->input('kode'),
@@ -53,7 +63,9 @@ class JenisUnitController extends Controller
                 'panjang' => $request->input('panjang'),
                 'lebar' => $request->input('lebar'),
                 'jenis_pembayaran' => $request->input('jenisPembayaran'),
-                'kabupaten_id' => $kabupatenId
+                'kabupaten_id' => $kabupatenId,
+                'created_at' => $now,
+                'updated_at' => $now
             ]);
 
             return back()->with('storeMessage', 'Jenis Unit berhasil ditambahkan');
@@ -83,7 +95,7 @@ class JenisUnitController extends Controller
      */
     public function update(Request $request, $id)
     {
-        try{
+        try {
             $user = Auth::user();
             $kabupatenId = $user->kabupaten_id;
 

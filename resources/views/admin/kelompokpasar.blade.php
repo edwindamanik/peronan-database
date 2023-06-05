@@ -1,10 +1,14 @@
 @extends('home')
 
 @section('content')
-    
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <style>
+        .error-message {
+            color: red;
+        }
+    </style>
 
     @if (session()->has('success'))
         <div class="alert text-white bg-success" role="alert">
@@ -50,6 +54,11 @@
                             {{ session('storeMessage') }}
                         </div>
                     @endif
+                    @if (session()->has('storeMessagee'))
+                        <div class="alert alert-danger" role="alert">
+                            {{ session('storeMessagee') }}
+                        </div>
+                    @endif
                     @if (session()->has('deleteMessage'))
                         <div class="alert alert-success" role="alert">
                             {{ session('deleteMessage') }}
@@ -76,13 +85,15 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->kelompok_pasar }}</td>
-                                        <td>                                          
-                                            <button type="button" class="btn btn-warning edit-button" data-toggle="modal" data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
+                                        <td>
+                                            <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
+                                                data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
                                                 Edit
                                             </button>
-                                            <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModalDelete" data-pasar-id="{{ $item->id }}">
+                                            <button type="button" class="btn btn-danger" data-toggle="modal"
+                                                data-target="#myModalDelete" data-pasar-id="{{ $item->id }}">
                                                 Hapus
-                                            </button>                                            
+                                            </button>
                                         </td>
                                     </tr>
                                 @endforeach
@@ -96,7 +107,7 @@
             </div>
         </div>
 
-        {{-- MODAL TAMBAH --}}
+        <!-- MODAL TAMBAH -->
         <div class="modal fade" id="myModalTambah">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -105,21 +116,25 @@
                         <h5 class="modal-title">Tambah Kelompok Pasar</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-        
-                    <!-- Modal body -->
-                    <div class="modal-body">
-                        <form action="/kelompok-pasar/store" method="POST" id="tambahForm">
-                            @csrf
-                            <div class="form-group">
-                              <label for="inputText">Kelompok Pasar</label>
-                              <input type="text" class="form-control" name="namaKelompokPasar" placeholder="Kelompok Pasar">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </form>
-                    </div>
+
+
+                    <form action="/kelompok-pasar/store" method="POST" id="tambahForm">
+                        @csrf
+                        <div class="form-group">
+                            <label for="inputText">Kelompok Pasar</label>
+                            <input type="text" class="form-control" name="namaKelompokPasar"
+                                placeholder="Kelompok Pasar">
+                            @error('namaKelompokPasar')
+                                <div class="invalid-feedback">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </form>
                 </div>
             </div>
-        </div> 
+        </div>
+        </div>
+
 
         {{-- MODAL EDIT --}}
         <div class="modal fade" id="myModalEdit">
@@ -130,24 +145,26 @@
                         <h5 class="modal-title">Edit Kelompok Pasar</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-        
+
                     <!-- Modal body -->
                     <div class="modal-body">
                         <form action="" method="POST" id="editForm">
                             @csrf
                             <div class="form-group">
-                              <label for="inputText">Kelompok Pasar</label>
-                              <input type="text" class="form-control" id="namaKelompokPasar" name="namaKelompokPasar" placeholder="Kelompok Pasar">
+                                <label for="inputText">Kelompok Pasar</label>
+                                <input type="text" class="form-control" id="namaKelompokPasar"
+                                    name="namaKelompokPasar" placeholder="Kelompok Pasar">
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
                     </div>
                 </div>
             </div>
-        </div> 
+        </div>
 
         {{-- MODAL HAPUS --}}
-        <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel" aria-hidden="true">
+        <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
+            aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -166,7 +183,8 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
-                        <a href="/kelompok-pasar/delete/{{ $item->id }}" class="btn btn-danger delete-button">Delete</a>
+                        <a href="/kelompok-pasar/delete/{{ $item->id }}"
+                            class="btn btn-danger delete-button">Delete</a>
                     </div>
                 </div>
             </div>
@@ -215,7 +233,5 @@
                 deleteButton.attr('href', '/kelompok-pasar/delete/' + pasarId);
             });
         });
-
     </script>
-    
 @endsection

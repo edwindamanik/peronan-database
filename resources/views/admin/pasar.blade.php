@@ -74,7 +74,7 @@
                                             <button type="button" class="btn btn-primary detail-button" data-toggle="modal" data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">
                                                 Detail
                                             </button>                                            
-                                            <button type="button" class="btn btn-warning edit-button" data-toggle="modal" data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
+                                            <button type="button" class="btn btn-warning edit-button" data-toggle="modal" data-target="#myModaledit" data-jsondata="{{ json_encode($item) }}">
                                                 Edit
                                             </button>
                                             <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#myModalDelete" data-pasar-id="{{ $item->id }}">
@@ -226,7 +226,98 @@
                             </div>
                             <div class="form-group">
                               <label for="inputText">Jumlah Pedagang</label>
-                              <input type="text" class="form-control" name="jumlahPedagang" placeholder="Jumlah Pedagang">
+                              <input type="number" class="form-control" name="jumlahPedagang" placeholder="Jumlah Pedagang">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Omzet Perbulan</label>
+                              <input type="text" class="form-control" name="omzetPerbulan" placeholder="Omzet Perbulan">
+                            </div>
+                            <div class="form-group">
+                                <label for="kelompokPasarSelect">Kelompok Pasar:</label>
+                                <select id="kelompokPasarSelect" name="kelompokPasar" class="form-control">
+                                    <option value="">Pilih Kelompok Pasar</option>
+                                    @foreach($kelompok_pasar as $item)
+                                        <option value="{{ $item->id }}">{{ $item->kelompok_pasar }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="selectedPetugas">Selected Petugas:</label>
+                                <div id="selectedPetugasContainer"></div>
+                            </div>
+                            <div class="form-group">
+                                <label for="petugasSelect">Pilih Petugas:</label>
+                                <select id="petugasSelect" class="form-control">
+                                    <option value="">Pilih Petugas</option>
+                                    @foreach($petugas as $item)
+                                    <option value="{{ $item->id }}">{{ $item->nama }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Submit</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+        {{-- MODAL EDIT --}}
+        <div class="modal fade" id="myModaledit">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Pasar</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+        
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <form action="" method="post" id="editForm">
+                            @csrf
+                            <div class="form-group">
+                              <label for="inputText">Nama Pasar</label>
+                              <input type="text" class="form-control" name="namaPasar" placeholder="Nama Pasar">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Kode Pasar</label>
+                              <input type="text" class="form-control" name="kodePasar" placeholder="Kode Pasar">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Alamat Pasar</label>
+                              <input type="text" class="form-control" name="alamatPasar" placeholder="Alamat Pasar">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Koordinat Pasar</label>
+                              <input type="text" class="form-control" name="koordinatPasar" placeholder="Koordinat Pasar">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Luas Lahan</label>
+                              <input type="text" class="form-control" name="luasLahan" placeholder="Luas Lahan">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Tahun Berdiri</label>
+                              <input type="text" class="form-control" name="tahunBerdiri" placeholder="Tahun Berdiri">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Tahun Pembangunan</label>
+                              <input type="text" class="form-control" name="tahunPembangunan" placeholder="Tahun Pembangunan">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Kondisi Pasar</label>
+                              <input type="text" class="form-control" name="kondisiPasar" placeholder="Kondisi Pasar">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Pengelola</label>
+                              <input type="text" class="form-control" name="pengelola" placeholder="Pengelola">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Operasional Pasar</label>
+                              <input type="text" class="form-control" name="operasionalPasar" placeholder="Operasional Pasar">
+                            </div>
+                            <div class="form-group">
+                              <label for="inputText">Jumlah Pedagang</label>
+                              <input type="number" class="form-control" name="jumlahPedagang" placeholder="Jumlah Pedagang">
                             </div>
                             <div class="form-group">
                               <label for="inputText">Omzet Perbulan</label>
@@ -330,32 +421,7 @@
             });
         });
 
-        $(document).ready(function(){
-            $('.edit-button').click(function(){
-                var jsonData = $(this).data('jsondata');
-                var petugasNames = jsonData.petugas.map(function(petugas) {
-                    return petugas.nama;
-                });
-
-                var petugasString = petugasNames.join(', ');
-                
-                $('#namaPasar').val(jsonData.nama_pasar);
-                $('#kodePasar').val(jsonData.kode_pasar);
-                $('#alamatPasar').val(jsonData.alamat);
-                $('#koordinatPasar').val(jsonData.koordinat);
-                $('#luasLahan').val(jsonData.luas_lahan);
-                $('#tahunBerdiri').val(jsonData.tahun_berdiri);
-                $('#tahunPembangunan').val(jsonData.tahun_pembangunan);
-                $('#kondisiPasar').val(jsonData.kondisi_pasar);
-                $('#pengelola').val(jsonData.pengelola);
-                $('#operasionalPasar').val(jsonData.operasional_pasar);
-                $('#jumlahPedagang').val(jsonData.jumlah_pedagang);
-                $('#omzetPerbulan').val(jsonData.omzet_perbulan);
-                $('#kelompokPasar').val(jsonData.kelompok_pasar);
-                // $('#petugas').val(petugasString);
-               
-            });
-        });
+       
 
         $(document).ready(function() {
             var selectedPetugasIds = []; // Array to store the selected petugas IDs
@@ -388,6 +454,33 @@
                 }
             });
 
+        });
+
+        $(document).ready(function() {
+            $('.edit-button').click(function() {
+                var jsonData = $(this).data('jsondata');
+                var petugasNames = jsonData.petugas.map(function(petugas) {
+                    return petugas.nama;
+                });
+                $('#namaPasar').val(jsonData.nama_pasar);
+                $('#kodePasar').val(jsonData.kode_pasar);
+                $('#alamatPasar').val(jsonData.alamat);
+                $('#koordinatPasar').val(jsonData.koordinat);
+                $('#luasLahan').val(jsonData.luas_lahan);
+                $('#tahunBerdiri').val(jsonData.tahun_berdiri);
+                $('#tahunPembangunan').val(jsonData.tahun_pembangunan);
+                $('#kondisiPasar').val(jsonData.kondisi_pasar);
+                $('#pengelola').val(jsonData.pengelola);
+                $('#operasionalPasar').val(jsonData.operasional_pasar);
+                $('#jumlahPedagang').val(jsonData.jumlah_pedagang);
+                $('#omzetPerbulan').val(jsonData.omzet_perbulan);
+                $('#kelompokPasar').val(jsonData.kelompok_pasar);
+
+                var updateForm = $('#editForm');
+                var actionUrl = '/pasar/update/' + jsonData.id;
+
+                updateForm.attr('action', actionUrl);
+            });
         });
 
         $(document).ready(function() {
