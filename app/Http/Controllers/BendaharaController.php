@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\DailyRetribution;
+use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Exports\laporansetor;
@@ -152,51 +153,86 @@ class BendaharaController extends Controller
 
         return view('bendahara.laporansetor', compact('data'));
     }
-    public function export()
+    public function export(Request $request)
     {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $pasarId = $request->input('pasar_id');
 
-        $data = DB::table('deposits')
+        return Excel::download(new laporansetor($startDate, $endDate, $pasarId), 'laporan_setor.xlsx');
+    }
+
+
+
+    public function exportbatal(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $pasarId = $request->input('pasar_id');
+
+        return Excel::download(new pembatalan($startDate, $endDate, $pasarId), 'data.xlsx');
+    }
+
+    public function exportPdflapor(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $pasarId = $request->input('pasar_id');
+
+        $data = Deposit::query()
             ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
             ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
             ->join('users', 'deposits.users_id', '=', 'users.id')
             ->where('deposits.status', 'sudah_setor')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->where('markets.id', [$pasarId])
+            ->whereBetween('deposits.tanggal_disetor', [$startDate, $endDate])
             ->select('deposits.*', 'markets.nama_pasar', 'users.nama')
             ->get();
 
-        return Excel::download(new laporansetor($data), 'data.xlsx');
+        $pdf = SnappyPdf::loadView('bendahara.pdflapor', compact('data'))
+             ->setOption('orientation', 'landscape');
+
+        return $pdf->download('laporan_setor.pdf');
     }
 
 
-    public function exportbatal()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
 
-        $data = DB::table('daily_retributions')
+    public function exportPdfbatal(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $pasarId = $request->input('pasar_id');
+
+        $data = DailyRetribution::query()
             ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
             ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users', 'users.id', '=', 'market_officers.users_id')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.status', '=', 1)
+            ->where('daily_retributions.status', 1)
+            ->where('markets.id', $pasarId)
+            ->whereBetween('daily_retributions.tanggal', [$startDate, $endDate])
             ->select('daily_retributions.*', 'markets.*', 'users.nama')
             ->get();
 
-        return Excel::download(new pembatalan($data), 'data.xlsx');
+        $pdf = SnappyPdf::loadView('bendahara.pdfbatal', compact('data'))
+             ->setOption('orientation', 'landscape');
+                
+
+        return $pdf->download('laporan_batal.pdf');
     }
+
+
+
     public function rekon()
     {
-        
+
 
         return view('bendahara.rekonsiliasi');
     }
-    
+
     public function rekondetail()
     {
-        
+
 
         return view('bendahara.rekonsiliasidetail');
     }

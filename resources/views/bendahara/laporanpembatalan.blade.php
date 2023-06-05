@@ -30,7 +30,9 @@
                     <li class="breadcrumb-item active" aria-current="page">Daftar Konfirmasi Pembatalan</li>
                 </ol>
             </nav>
-            <a href="/batal/export_batal" class="btn btn-primary">Export Laporan</a><br>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalex">
+                Export Laporan
+            </button>
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
@@ -121,6 +123,45 @@
                 </div>
             </div>
         </div>
+
+         {{-- MODAL Export --}}
+         <div class="modal fade" id="myModalex" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
+         aria-hidden="true">
+         <div class="modal-dialog" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title">Pengaturan Export</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <form action="{{ route('export.batal') }}" method="GET">
+                         <div class="form-group">
+                             <label for="start_date">Tanggal Mulai:</label>
+                             <input type="date" name="start_date" id="start_date" class="form-control">
+                         </div>
+                         <div class="form-group">
+                             <label for="end_date">Tanggal Akhir:</label>
+                             <input type="date" name="end_date" id="end_date" class="form-control">
+                         </div>
+                         <div class="form-group">
+                             <label for="pasar_id">Pasar:</label>
+                             <select id="pasar_id" name="pasar_id" class="form-control">
+                                 <option value="">Pilih Pasar</option>
+                                 @foreach ($data as $item)
+                                     <option value="{{ $item->id }}">{{ $item->nama_pasar }}</option>
+                                 @endforeach
+                             </select>
+                         </div>
+                         <button type="submit" class="btn btn-primary">Export to Excel</button>
+                         <button type="submit" class="btn btn-primary" formaction="{{ route('pdf.batal') }}">Export to PDF</button>
+                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                     </form>
+                 </div>
+             </div>
+         </div>
+     </div>
 
     </main>
 

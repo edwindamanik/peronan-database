@@ -76,7 +76,13 @@ Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDep
 
 
 Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
-Route::get('/setor/export_excel', [BendaharaController::class, 'export']);
+Route::get('/setor/export_excel', [BendaharaController::class, 'export'])->name('export.setor');
+
+Route::get('/setor/export_pdf', [BendaharaController::class, 'exportPdflapor'])->name('pdf.setor');
+
+Route::get('/batal/export_excel', [BendaharaController::class, 'exportbatal'])->name('export.batal');
+Route::get('/batal/export_pdf', [BendaharaController::class, 'exportPdfbatal'])->name('pdf.batal');
+
 
 
 
