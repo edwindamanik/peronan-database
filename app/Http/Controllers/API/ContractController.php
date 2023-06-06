@@ -176,7 +176,6 @@ class ContractController extends Controller
                     $mandatory_retribution->no_tagihan = mt_rand(10000, 99999).$contract->id;
                     $mandatory_retribution->no_tagihan_ref = null;
                     $mandatory_retribution->biaya_retribusi = $harga->harga;
-                    $mandatory_retribution->total_retribusi = $harga->harga;
                     $mandatory_retribution->tanggal_pembayaran = null;
                     $mandatory_retribution->jatuh_tempo = $jatuhTempo;
                     $mandatory_retribution->metode_pembayaran = null;

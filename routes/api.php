@@ -131,6 +131,9 @@ Route::get('choose-markets/{officer_id}', [App\Http\Controllers\API\MarketContro
 
 Route::resource('/daily-retributions', App\Http\Controllers\API\DailyRetributionController::class);
 
+// API UNTUK RIWAYAT PEMBAYARAN
+Route::get('/history-payment/{user_id}', [App\Http\Controllers\API\MandatoryRetributionController::class, 'riwayatPembayaran']);
+
 Route::middleware('auth:sanctum')->group(function () {
 
 
