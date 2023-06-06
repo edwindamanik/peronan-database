@@ -6,9 +6,6 @@ use App\Models\DailyRetribution;
 use Barryvdh\Snappy\Facades\SnappyPdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Exports\laporansetor;
-use App\Exports\pembatalan;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Deposit;
 
@@ -153,6 +150,7 @@ class BendaharaController extends Controller
 
         return view('bendahara.laporansetor', compact('data'));
     }
+
     public function export(Request $request)
     {
         $startDate = $request->input('start_date');

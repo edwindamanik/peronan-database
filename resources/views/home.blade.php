@@ -11,28 +11,28 @@
     <link rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link rel="stylesheet" href="{{ asset('template/template-admin/plugins/fontawesome-free/css/all.min.css') }}">
+    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
     <!-- Tempusdominus Bootstrap 4 -->
     <link rel="stylesheet"
-        href="{{ asset('template/template-admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
+        href="{{ secure_asset('template/template-admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
     <!-- iCheck -->
     <link rel="stylesheet"
-        href="{{ asset('template/template-admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
+        href="{{ secure_asset('template/template-admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
     <!-- JQVMap -->
-    <link rel="stylesheet" href="{{ asset('template/template-admin/plugins/jqvmap/jqvmap.min.css') }}">
+    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/plugins/jqvmap/jqvmap.min.css') }}">
     <!-- Theme style -->
-    <link rel="stylesheet" href="{{ asset('template/template-admin/dist/css/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/dist/css/adminlte.min.css') }}">
     <!-- overlayScrollbars -->
     <link rel="stylesheet"
-        href="{{ asset('template/template-admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
+        href="{{ secure_asset('template/template-admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="{{ asset('template/template-admin/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/plugins/daterangepicker/daterangepicker.css') }}">
     <!-- summernote -->
-    <link rel="stylesheet" href="{{ asset('template/template-admin/plugins/summernote/summernote-bs4.min.css') }}">
+    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/plugins/summernote/summernote-bs4.min.css') }}">
     <!-- Select2 -->
-    <link rel="stylesheet" href="{{asset('css/select2.min.css')}}" />
+    <link rel="stylesheet" href="{{secure_asset('css/select2.min.css')}}" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css"
         id="theme-styles">
@@ -44,8 +44,8 @@
 
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
         crossorigin="anonymous" />
-    <link rel="stylesheet" href="{{asset('text-editor/rte_theme_default.css')}}" />
-    <script type="text/javascript" src="{{asset('text-editor/rte.js')}}"></script>
+    <link rel="stylesheet" href="{{secure_asset('text-editor/rte_theme_default.css')}}" />
+    <script type="text/javascript" src="{{secure_asset('text-editor/rte.js')}}"></script>
     {{-- <script type="text/javascript" src="{{asset('text-editor/plugins/all_plugins.js')}}"></script> --}}
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous">
@@ -102,7 +102,7 @@
         <aside class="main-sidebar elevation-4" style="background-color:#243763;">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
-                <img src="{{asset('/source-image/logo-footer.png')}}" alt="SIAPPARA" class="brand-image "
+                <img src="{{secure_asset('/source-image/logo-footer.png')}}" alt="SIAPPARA" class="brand-image "
                     style="opacity: .8" style="position:absolute; left:5%"><br>
                 <span class="brand-text font-weight-light" style="color: white; font-size: 18px;"></span>
             </a>
@@ -284,43 +284,43 @@
     </script>
 
     <!-- jQuery -->
-    <script src="{{ asset('template/template-admin/plugins/jquery/jquery.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
-    <script src="{{ asset('template/template-admin/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
 
     </script>
     <!-- Bootstrap 4 -->
-    <script src="{{ asset('template/template-admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <!-- ChartJS -->
-    <script src="{{ asset('template/template-admin/plugins/chart.js/Chart.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/chart.js/Chart.min.js') }}"></script>
     <!-- Sparkline -->
-    <script src="{{ asset('template/template-admin/plugins/sparklines/sparkline.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/sparklines/sparkline.js') }}"></script>
     <!-- JQVMap -->
-    <script src="{{ asset('template/template-admin/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
-    <script src="{{ asset('template/template-admin/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/jqvmap/jquery.vmap.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/jqvmap/maps/jquery.vmap.usa.js') }}"></script>
     <!-- jQuery Knob Chart -->
-    <script src="{{ asset('template/template-admin/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/jquery-knob/jquery.knob.min.js') }}"></script>
     <!-- daterangepicker -->
-    <script src="{{ asset('template/template-admin/plugins/moment/moment.min.js') }}"></script>
-    <script src="{{ asset('template/template-admin/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/moment/moment.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/daterangepicker/daterangepicker.js') }}"></script>
     <!-- Tempusdominus Bootstrap 4 -->
     <script
-        src="{{ asset('template/template-admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}">
+        src="{{ secure_asset('template/template-admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}">
     </script>
     <!-- Summernote -->
-    <script src="{{ asset('template/template-admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <!-- overlayScrollbars -->
-    <script src="{{ asset('template/template-admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}">
+    <script src="{{ secure_asset('template/template-admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}">
     </script>
     <!-- AdminLTE App -->
-    <script src="{{ asset('template/template-admin/dist/js/adminlte.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/dist/js/adminlte.js') }}"></script>
     <!-- AdminLTE for demo purposes -->
-    <script src="{{ asset('template/template-admin/dist/js/demo.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/dist/js/demo.js') }}"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-    <script src="{{ asset('template/template-admin/dist/js/pages/dashboard.js') }}"></script>
+    <script src="{{ secure_asset('template/template-admin/dist/js/pages/dashboard.js') }}"></script>
 
     <!-- Latest compiled and minified JavaScript -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap-select@1.13.14/dist/js/bootstrap-select.min.js"></script>
@@ -328,7 +328,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.5.0/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-    <script src="{{ asset('template/assets/demo/datatables-demo.js') }}"></script>
+    <script src="{{ secure_asset('template/assets/demo/datatables-demo.js') }}"></script>
     <!-- Select2  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
         integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
