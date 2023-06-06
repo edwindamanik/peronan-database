@@ -5,9 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\DailyRetribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Exports\laporansetor;
-use App\Exports\pembatalan;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Deposit;
 
@@ -152,73 +149,5 @@ class BendaharaController extends Controller
 
         return view('bendahara.laporansetor', compact('data'));
     }
-    public function export()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
-
-        $data = DB::table('deposits')
-            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('users', 'deposits.users_id', '=', 'users.id')
-            ->where('deposits.status', 'sudah_setor')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->select('deposits.*', 'markets.nama_pasar', 'users.nama')
-            ->get();
-
-        return Excel::download(new laporansetor($data), 'data.xlsx');
-    }
-
-
-    public function exportbatal()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
-
-        $data = DB::table('daily_retributions')
-            ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
-            ->join('users', 'users.id', '=', 'market_officers.users_id')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.status', '=', 1)
-            ->select('daily_retributions.*', 'markets.*', 'users.nama')
-            ->get();
-
-        return Excel::download(new pembatalan($data), 'data.xlsx');
-    }
-    public function rekon()
-    {
-        
-
-        return view('bendahara.rekonsiliasi');
-    }
-    
-    public function rekondetail()
-    {
-        
-
-        return view('bendahara.rekonsiliasidetail');
-    }
-
-
-    public function retribusi()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
-
-        $data = DB::table('mandatory_retributions')
-            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
-            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
-            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
-            ->join('units', 'units.id', '=', 'contracts.unit_id')
-            ->join('markets', 'markets.id', '=', 'units.pasar_id')
-            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
-            ->get();
-
-
-        return view('bendahara.retribusiharian', compact('data'));
-    }
-
 
 }

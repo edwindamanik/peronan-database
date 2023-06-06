@@ -245,6 +245,7 @@ class MandatoryRetributionController extends Controller
             $clientId = env("DOKU_CLIENT_ID");
             $requestId = $formattedString;
             $requestDate = gmdate('Y-m-d\TH:i:s\Z');
+            // $targetPath = "/checkout/v1/payment"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
             $targetPath = "/mandiri-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
             $secretKey = env("DOKU_SECRET_KEY");
             $requestBody = $request->json()->all();
@@ -276,6 +277,7 @@ class MandatoryRetributionController extends Controller
                 'Request-Id' => $requestId,
                 'Request-Timestamp' => $requestDate,
                 'Signature' => 'HMACSHA256=' . $signature,
+            // ])->post("https://api-sandbox.doku.com/checkout/v1/payment", $requestBody);
             ])->post("https://api-sandbox.doku.com/mandiri-virtual-account/v2/payment-code", $requestBody);
 
             $responseJson = json_decode($response->body(), true);
@@ -318,10 +320,19 @@ class MandatoryRetributionController extends Controller
                 ->whereMonth('mandatory_retributions.jatuh_tempo', '=', date('m'))
                 ->get()
                 ->map(function ($item) use ($bulan_sebelumnya) {
-                    $total_biaya = $bulan_sebelumnya->firstWhere('contract_id', $item->contract_id)->total_biaya ?? 0;
+                    $retribusiData = $bulan_sebelumnya->firstWhere('contract_id', $item->contract_id);
+        
+                    if ($retribusiData) {
+                        $total_biaya = $retribusiData->total_biaya;
+                        $jumlah_periode = $retribusiData->jumlah_periode + 1;
+                    } else {
+                        $total_biaya = 0;
+                        $jumlah_periode = 0;
+                    }
+        
                     $item->total_retribusi = $item->biaya_retribusi + $total_biaya;
                     $item->tunggakan = intval($total_biaya);
-                    $item->jumlah_periode = $bulan_sebelumnya->firstWhere('contract_id', $item->contract_id)->jumlah_periode+1 ?? 0;
+                    $item->jumlah_periode = $jumlah_periode;
                     return $item;
                 });
 
@@ -351,14 +362,26 @@ class MandatoryRetributionController extends Controller
 
             if ($transactionStatus = $request->input('transaction.status')) {
                 $invoiceNumber = $request->input('order.invoice_number');
-                $parts = explode('-', $invoiceNumber);
-                $finalNumber = end($parts);
-
+                $finalNumber = substr($invoiceNumber, -2);
+    
                 if ($transactionStatus === 'SUCCESS') {
+                    $currentMonth = Carbon::now()->format('m');
+                
                     DB::table('mandatory_retributions')
-                        ->where('no_tagihan', $finalNumber)
+                        ->where('status_pembayaran', 'belum_dibayar')
+                        ->where('contract_id', $finalNumber)
+                        ->where(function ($query) use ($currentMonth) {
+                            $query->where(function ($query) use ($currentMonth) {
+                                $query->whereMonth('jatuh_tempo', '<', $currentMonth)
+                                    ->orWhere(function ($query) use ($currentMonth) {
+                                        $query->whereMonth('jatuh_tempo', $currentMonth)
+                                            ->where('jatuh_tempo', '<=', Carbon::now()->format('Y-m-d'));
+                                    });
+                            })
+                            ->orWhereMonth('jatuh_tempo', $currentMonth); // Menambahkan kondisi ini
+                        })
                         ->update(['status_pembayaran' => 'sudah_dibayar']);
-                }
+                }                
             }
 
             return response('OK', 200)->header('Content-Type', 'text/plain');
