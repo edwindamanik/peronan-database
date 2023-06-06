@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LetterSetting;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
@@ -187,44 +187,7 @@ class KontrakController extends Controller
             return response()->json(['errorMessage' => $e->getMessage()]);
         }
     }
-    public function preview($id)
-    {
-        $surat = LetterSetting::first();
-
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
-
-        $data = DB::table('contracts')
-            ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
-            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
-            ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
-            ->where('letter_settings.kabupaten_id', $kabupatenId)
-            ->select('contracts.*', 'users.nama')
-            ->paginate();
-
-        $wajib_retribusi = DB::table('obligation_retributions')
-            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
-            ->where('kabupaten_id', $kabupatenId)
-            ->where('users.role', 'wajib_retribusi')
-            ->select('obligation_retributions.*', 'users.nama')
-            ->get();
-
-        $unit = DB::table('units')
-            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
-            ->where('kabupaten_id', $kabupatenId)
-            ->select('units.*')
-            ->get();
-
-        $pengaturan = DB::table('letter_settings')
-            ->where('kabupaten_id', $kabupatenId)
-            ->get();
-
-        // dd($data);
-
-        return view('admin.kontrakview', compact('data', 'wajib_retribusi', 'unit', 'pengaturan'));
-
-        // return $pdf->download('surat-kontrak.pdf');
-    }
+    
     /**
      * Remove the specified resource from storage.
      */

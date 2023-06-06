@@ -20,7 +20,7 @@ return new class extends Migration
             $table->bigInteger('total_retribusi')->nullable();
             $table->date('tanggal_pembayaran')->nullable();
             $table->date('jatuh_tempo');
-            $table->enum('metode_pembayaran', ['cash', 'virtual_account', 'qris'])->nullable();
+            $table->enum('metode_pembayaran', ['CASH', 'VIRTUAL_ACCOUNT', 'QRIS'])->nullable();
             $table->enum('status_pembayaran', ['sudah_dibayar', 'belum_dibayar']);
             $table->char('url_pembayaran_va')->nullable();
             $table->char('url_pembayaran_qris')->nullable();
