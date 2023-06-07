@@ -90,15 +90,12 @@ Route::get('/nonharian', [BendaharaController::class, 'retribusi']);
 
 Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal']);
 Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
-<<<<<<< Updated upstream
 
 
 
 Route::get('/rekon', [BendaharaController::class, 'rekon']);
 Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
 
-=======
->>>>>>> Stashed changes
 
 
 Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');
