@@ -24,6 +24,26 @@ class BendaharaController extends Controller
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users', 'deposits.users_id', '=', 'users.id')
             ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id') // tambahkan join untuk users pada market_officers
+            ->whereIn('deposits.status', ['belum_setor', 'menunggu_konfirmasi'])
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'market_officers.*', 'officer_users.nama AS officer_name') // tambahkan officer_users.nama untuk mendapatkan nama pengguna pada market_officers
+            ->get();
+        // dd($data);
+
+        return view('bendahara.konfirmasipenyetoran', compact('data'));
+    }
+
+    public function updateDeposit()
+    {
+        $user = Auth::user();
+        $kabupatenId = $user->kabupaten_id;
+
+        $data = DB::table('deposits')
+            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
+            ->join('users', 'deposits.users_id', '=', 'users.id')
+            ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id') // tambahkan join untuk users pada market_officers
             ->whereIn('deposits.status', ['belum_setor', 'pending'])
             ->where('market_groups.kabupaten_id', $kabupatenId)
             ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'market_officers.*', 'officer_users.nama AS officer_name') // tambahkan officer_users.nama untuk mendapatkan nama pengguna pada market_officers
@@ -32,6 +52,8 @@ class BendaharaController extends Controller
 
         return view('bendahara.konfirmasipenyetoran', compact('data'));
     }
+
+    
 
     public function setorDeposit($depositId)
     {
@@ -48,13 +70,29 @@ class BendaharaController extends Controller
             return redirect()->back()->with('error', 'Deposit tidak ditemukan.');
         }
     }
+    public function tolakdeposit($depositId)
+    {
+        // Temukan deposit berdasarkan ID
+        $deposit = Deposit::find($depositId);
+
+        if ($deposit) {
+            // Perbarui status menjadi "sudah_disetor"
+            $deposit->status = 'ditolak';
+            $deposit->save();
+
+            return redirect()->back()->with('success', 'Status berhasil diubah.');
+        } else {
+            return redirect()->back()->with('error', 'Deposit tidak ditemukan.');
+        }
+    }
 
     public function laptagihan()
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-        
+
         $ret = DB::table('daily_retributions')
+            ->join('units', 'units.id', '=', 'daily_retributions.unit_id')
             ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
             ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
@@ -62,8 +100,8 @@ class BendaharaController extends Controller
             ->join('users AS officer', 'market_officers.users_id', '=', 'officer.id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
             ->whereNotNull('daily_retributions.bukti_pembatalan')
-            ->where('daily_retributions.status', '=', 0)
-            ->select('daily_retributions.*', 'markets.*', 'users.nama','officer.nama AS officers')
+            ->where('daily_retributions.status', '=', '3')
+            ->select('daily_retributions.*', 'markets.*', 'users.nama', 'officer.nama AS officers', 'units.*')
             ->get();
 
 
@@ -83,8 +121,7 @@ class BendaharaController extends Controller
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users', 'users.id', '=', 'market_officers.users_id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->whereNotNull('daily_retributions.bukti_pembatalan')
-            ->where('daily_retributions.status', '=', 0)
+            ->where('daily_retributions.status', '=',  '1')
             ->select('daily_retributions.*', 'markets.*', 'users.nama')
             ->get();
 
@@ -97,7 +134,23 @@ class BendaharaController extends Controller
 
         if ($batal) {
             // Perbarui status menjadi "sudah_disetor"
-            $batal->status = 1;
+            $batal->status = '2';
+            $batal->save();
+
+            return redirect()->back()->with('success', 'Status berhasil diubah.');
+        } else {
+            return redirect()->back()->with('error', 'Deposit tidak ditemukan.');
+        }
+    }
+
+    public function batalkank($batalId)
+    {
+        // Temukan deposit berdasarkan ID
+        $batal = DailyRetribution::find($batalId);
+
+        if ($batal) {
+            // Perbarui status menjadi "sudah_disetor"
+            $batal->status = '3';
             $batal->save();
 
             return redirect()->back()->with('success', 'Status berhasil diubah.');
@@ -118,7 +171,7 @@ class BendaharaController extends Controller
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users', 'users.id', '=', 'market_officers.users_id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.status', '=', 1)
+            ->where('daily_retributions.status', '=', '2')
             ->select('daily_retributions.*', 'markets.*', 'users.nama')
             ->get();
 
@@ -156,7 +209,7 @@ class BendaharaController extends Controller
             ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
             ->where('deposits.status', 'sudah_setor')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->select('deposits.*', 'markets.nama_pasar', 'users.nama','officer_users.nama AS officer_name')
+            ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
             ->get();
 
         return view('bendahara.laporansetor', compact('data'));
@@ -171,8 +224,6 @@ class BendaharaController extends Controller
         return Excel::download(new laporansetor($startDate, $endDate, $pasarId), 'laporan_setor.xlsx');
     }
 
-
-
     public function exportbatal(Request $request)
     {
         $startDate = $request->input('start_date');
@@ -182,10 +233,10 @@ class BendaharaController extends Controller
         return Excel::download(new pembatalan($startDate, $endDate, $pasarId), 'data.xlsx');
     }
 
-    
 
 
-   
+
+
 
 
 
@@ -215,12 +266,12 @@ class BendaharaController extends Controller
             ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
             ->join('units', 'units.id', '=', 'contracts.unit_id')
             ->join('markets', 'markets.id', '=', 'units.pasar_id')
+            ->where('mandatory_retributions.status_pembayaran','=', 'belum_dibayar')
             ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
             ->get();
 
 
         return view('bendahara.retribusiharian', compact('data'));
     }
-
 
 }

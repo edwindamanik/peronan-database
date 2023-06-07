@@ -82,7 +82,7 @@
                                         <td>{{ $item->no_bukti_pembayaran }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
                                         <td>{{ $item->officers }}</td>
-                                        <td>Unit</td>
+                                        <td>{{ $item->no_unit }}</td>
                                         <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
                                         @if ($item->status == 1)

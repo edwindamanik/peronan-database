@@ -29,30 +29,20 @@ class pengaturancontroller extends Controller
         return view('admin.pengaturan', compact('data'));
     }
 
-    public function store(Request $request)
+    public function update(Request $request, $id)
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-        $now = now();
-    
-        // Validasi apakah nama kelompok pasar sudah pernah diinput sebelumnya
-        $existingKelompokPasar = DB::table('market_groups')
-            ->where('kelompok_pasar', $request->input('namaKelompokPasar'))
-            ->first();
-    
-        if ($existingKelompokPasar) {
-            return back()->with('storeMessagee', 'Kelompok Pasar Sudah pernah ditambahkan');
-        }
-    
-        // Jika validasi berhasil, simpan data kelompok pasar baru
-        DB::table('market_groups')->insert([
-            'kelompok_pasar' => $request->input('namaKelompokPasar'),
-            'kabupaten_id' => $kabupatenId,
-            'created_at' => $now,
-            'updated_at' => $now
-        ]);
-    
-        return back()->with('storeMessage', 'Kelompok Pasar berhasil ditambahkan');
+
+        DB::table('regencies')
+            ->where('id', $id)
+            ->update([
+                'nama_dinas' => $request->input('namadinas'),
+                'kepala_dinas' => $request->input('kepala'),
+                'no_telp_dinas' => $request->input('notelp')
+            ]);
+
+        return back()->with('updateMessage', 'Kelompok Pasar berhasil diperbarui');
     }
 
 

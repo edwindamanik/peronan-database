@@ -35,9 +35,6 @@
                     <li class="breadcrumb-item active" aria-current="page">Pasar</li>
                 </ol>
             </nav>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
-                Tambah Pengaturan
-            </button>
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
@@ -76,7 +73,7 @@
                             <thead>
                                 <tr>
                                     <th>No</th>
-                                    <th>Kelompok Pasar</th>
+                                    <th>Nama Dinas</th>
                                     <th>Nama Kepala Dinas</th>
                                     <th>Nomor Telepon</th>
                                     <th>Aksi</th>
@@ -155,9 +152,19 @@
                         <form action="" method="POST" id="editForm">
                             @csrf
                             <div class="form-group">
-                                <label for="inputText">Kelompok Pasar</label>
-                                <input type="text" class="form-control" id="namaKelompokPasar"
-                                    name="namaKelompokPasar" placeholder="Kelompok Pasar">
+                                <label for="inputText">Nama Dinas</label>
+                                <input type="text" class="form-control" id="namadinas"
+                                    name="namadinas" placeholder="Kelompok Pasar">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputText">Nama Kepala Dinas</label>
+                                <input type="text" class="form-control" id="kepala"
+                                    name="kepala" placeholder="Kelompok Pasar">
+                            </div>
+                            <div class="form-group">
+                                <label for="inputText">Nomor Telepon</label>
+                                <input type="text" class="form-control" id="notelp"
+                                    name="notelp" placeholder="notelp">
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -215,10 +222,12 @@
         $(document).ready(function() {
             $('.edit-button').click(function() {
                 var jsonData = $(this).data('jsondata');
-                $('#namaKelompokPasar').val(jsonData.kelompok_pasar);
+                $('#namadinas').val(jsonData.nama_dinas);
+                $('#kepala').val(jsonData.kepala_dinas);
+                $('#notelp').val(jsonData.no_telp_dinas);
 
                 var updateForm = $('#editForm');
-                var actionUrl = '/kelompok-pasar/update/' + jsonData.id;
+                var actionUrl = '/pengaturan/update/' + jsonData.id;
 
                 updateForm.attr('action', actionUrl);
             });

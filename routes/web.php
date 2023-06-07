@@ -73,9 +73,11 @@ Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 
 Route::get('/pengaturan', [pengaturancontroller::class, 'index']);
+Route::post('/pengaturan/update/{id}', [pengaturancontroller::class, 'update']);
 
 Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
 Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDeposit'])->name('setor-deposit');
+Route::post('/tolak-deposit/{depositId}', [BendaharaController::class, 'tolakdeposit'])->name('tolak-deposit');
 
 
 
@@ -103,6 +105,7 @@ Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
 
 
 Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');
+Route::post('/batalkan/{batalId}', [BendaharaController::class, 'batalkank'])->name('batalkan-kali');
 
 
 

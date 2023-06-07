@@ -78,7 +78,7 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
                                         <td>{{ $item->officer_name }}</td>
-                                        
+
                                         <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }}</td>
                                         <td>{{ $item->penyetoran_melalui }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
@@ -86,7 +86,7 @@
                                         <td>
                                             @if ($item->status == 'belum_setor')
                                                 <p style="text-decoration: underline; color:#243763;">Belum Disetor</p>
-                                            @elseif ($item->status == 'pending')
+                                            @elseif ($item->status == 'menunggu_konfirmasi')
                                                 <p style=" color:#000000;">Menunggu</p>
                                             @else
                                                 {{ $item->status }}
@@ -94,17 +94,20 @@
                                         </td>
                                         <td>
                                             @if ($item->status !== 'belum_setor')
-                                                <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}"
-                                                    method="POST">
-                                                    @csrf
-                                                    <button type="submit" class="btn btn-block"
-                                                        style="background-color:#192C58; color:white;">Konfirmasi</button>
-                                                </form>
+                                                <button type="submit" class="btn btn-block detail-button"
+                                                    style="background-color:#192C58; color:white;" data-toggle="modal"
+                                                    data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
                                             @else
                                                 <button type="button" class="btn btn-block"
-                                                    style="background-color:#192C58; color:white;" disabled>Konfirmasi</button>
+                                                    style="background-color:#192C58; color:white;"
+                                                    disabled>Konfirmasi</button>
                                             @endif
                                         </td>
+
+                                        {{-- <td>
+                                            <button type="submit" class="btn btn-block"
+                                            style="background-color:#192C58; color:white;" data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Konfirmasi</button>
+                                        </td> --}}
 
                                     </tr>
                                 @endforeach
@@ -117,6 +120,73 @@
                 </div>
             </div>
         </div>
+
+         {{-- MODAL DETAIL --}}
+         <div class="modal fade" id="myModalDetail">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Rincian Permohonan Persetujuan Setoran</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+        
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-bordered table-striped">
+                            <tbody id="modal-table-body">
+                                <tr>
+                                    <th>Nama Pasar</th>
+                                    <td id="modal-property1"></td>
+                                </tr>
+                                <tr>
+                                    <th>Petugas</th>
+                                    <td id="modal-property2"></td>
+                                </tr>
+                                <tr>
+                                    <th>Jumlah Setoran</th>
+                                    <td id="modal-property3"></td>
+                                </tr>
+                                <tr>
+                                    <th>Penyetoran Melalui</th>
+                                    <td id="modal-property4"></td>
+                                </tr>
+                                <tr>
+                                    <th>Tanggal Disetor</th>
+                                    <td id="modal-property5"></td>
+                                </tr>
+                                <tr>
+                                    <th>Tanggal Penyetoran</th>
+                                    <td id="modal-property6"></td>
+                                </tr>
+                                <tr>
+                                    <th>Status</th>
+                                    <td id="modal-property7"></td>
+                                </tr>
+                                <tr>
+                                    <th>Bukti Penyetoran</th>
+                                    <td><a href="#" class="image-link" >Lihat KTP</a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+        
+                    <div class="modal-footer d-flex justify-content-center">
+                        <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-block" style="background-color:#192C58; color:white;"
+                                data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Konfirmasi</button>
+                        </form>
+                        <form action="{{ route('tolak-deposit', ['depositId' => $item->id]) }}" method="POST">
+                            @csrf
+                            <button type="submit" class="btn btn-block btn-warning" style=" color:white;"
+                                data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Menunda</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
 
         {{-- MODAL HAPUS --}}
         <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
@@ -144,9 +214,56 @@
                 </div>
             </div>
         </div>
-
+        <div class="modal" id="myModalKtp">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Gambar KTP</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="text-center">
+                            <img src="" alt="Image" id="modalImage" style="max-width: 100%; max-height: 400px;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
     </main>
+    <script>
+        $(document).ready(function() {
+            $('.detail-button').click(function() {
+                var jsonData = $(this).data('jsondata');
+    
+                $('#modal-property1').text(jsonData.nama_pasar);
+                $('#modal-property2').text(jsonData.officer_name);
+                $('#modal-property3').text(jsonData.jumlah_setoran);
+                $('#modal-property4').text(jsonData.penyetoran_melalui);
+                $('#modal-property5').text(jsonData.tanggal_disetor);
+                $('#modal-property6').text(jsonData.tanggal_penyetoran);
+                $('#modal-property7').text(jsonData.status);
+                $('#modal-property8').text(jsonData.bukti_setoran);
+                $('.image-link').attr('data-url',  jsonData.bukti_setoran);
+            });
+        });
 
+        $(document).ready(function () {
+        $('.image-link').click(function (e) {
+            e.preventDefault();
+            var jsonData = $(this).data('jsondata');
+            var imageUrl = 'http://127.0.0.1:8000/ktp/' + $(this).data('url');
+            $('#modalImage').attr('src', imageUrl);
+            $('#myModalKtp').modal('show');
+        });
+    });
+    </script>
+    
+  
+   
 
 
     <script>
@@ -163,6 +280,26 @@
                     }
                 });
             });
+        });
+    </script>
+    
+    <script>
+        document.getElementById('id="btnKonfirmasi{{ $item->id }}"').addEventListener('click', function() {
+            // Ambil ID deposit dari tombol yang diklik
+            var depositId = {{ $item->id }};
+
+            // Kirim permintaan AJAX untuk mengubah status deposit
+            axios.post('{{ route('setor-deposit', ['depositId' => $item->id]) }}')
+                .then(function(response) {
+                    // Tampilkan pesan berhasil
+                    alert(response.data.success);
+                    // Refresh halaman
+                    location.reload();
+                })
+                .catch(function(error) {
+                    // Tampilkan pesan gagal
+                    alert(error.response.data.error);
+                });
         });
     </script>
 @endsection

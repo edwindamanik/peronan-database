@@ -70,14 +70,7 @@ class WajibRetribusiController extends Controller
                 $obligation_retribution->ktp = $ktpName;
             }
 
-            // $users->nama = $request->input('nama');
-            // $users->username = $request->input('username');
-            // $users->role = 'wajib_retribusi';
-            // $users->kabupaten_id = $kabupatenId;
-            // $users['password'] = bcrypt($request->password);
-            // $obligation_retribution->pekerjaan = $request->input('pekerjaan');
-            // $obligation_retribution->nik = $request->input('nik');
-            // $obligation_retribution->save();
+       
 
             $users->nama = $request->input('nama');
             $users->username = $request->input('username');

@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal_penyetoran');
             $table->date('tanggal_disetor')->nullable();
             $table->string('bukti_setoran')->nullable();
-            $table->enum('status', ['sudah_setor', 'pending']);
+            $table->enum('status', ['menunggu_konfirmasi', 'disetujui', 'belum_setor', 'ditolak']);
             $table->string('alasan_tidak_setor');
             $table->unsignedBigInteger('users_id')->nullable();
             $table->unsignedBigInteger('wajib_retribusi_id')->nullable();

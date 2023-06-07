@@ -31,7 +31,7 @@
                 </ol>
             </nav>
             {{-- <a href="/setor/export_excel" class="btn btn-primary">Export Laporan</a> --}}
-            <button type="button" class="btn " data-toggle="modal" data-target="#myModalex"  style="background-color: #243763 color:white;">
+            <button type="button" class="btn " data-toggle="modal" data-target="#myModalex"  style="background-color: #243763; color:white;">
                 Export Laporan
             </button>
             <br>
@@ -157,8 +157,7 @@
                                     @endforeach
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-primary">Export to Excel</button>
-                            <button type="submit" class="btn btn-primary" formaction="{{ route('pdf.setor') }}">Export to PDF</button>
+                            <button type="submit" class="btn btn-primary" style="background-color: #243763">Export to Excel</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                         </form>
                     </div>

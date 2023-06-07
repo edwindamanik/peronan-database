@@ -18,10 +18,13 @@ return new class extends Migration
             $table->date('tanggal');
             $table->string('bukti_pembatalan', 100)->nullable();
             $table->string('bukti_pembayaran', 100)->nullable();
+            $table->enum('status', ['0', '1', '2', '3']);
             $table->unsignedBigInteger('unit_id');
             $table->unsignedBigInteger('pasar_id');
+            $table->unsignedBigInteger('deposit_id');
             $table->foreign('unit_id')->references('id')->on('units')->onDelete('cascade');
             $table->foreign('pasar_id')->references('id')->on('markets')->onDelete('cascade');
+            $table->foreign('deposit_id')->references('id')->on('deposits')->onDelete('cascade');
             $table->timestamps();
         });
     }

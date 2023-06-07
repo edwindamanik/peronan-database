@@ -58,6 +58,7 @@ class DailyRetributionController extends Controller
             'tanggal_disetor' => null,
             'bukti_setoran' => null,
             'status' => 'pending',
+            'alasan_tidak_setor' => null,
             'users_id' => $user_id,
             'pasar_id' => $pasar_id
         ]);

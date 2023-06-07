@@ -147,8 +147,10 @@
                         
                         <div class="form-group">
                             <label for="inputText">KTP</label>
-                            <input type="file" class="form-control" name="ktp" placeholder="KTP" required>
+                            <input type="file" class="form-control" name="ktp" placeholder="KTP" accept=".png, .jpg, .jpeg" required>
+                            <small class="form-text text-muted">File yang diunggah harus berformat PNG, JPG, atau JPEG.</small>
                         </div>
+                        
                         <div class="form-group">
                             <label for="inputText">Pekerjaan</label>
                             <input type="text" class="form-control" name="pekerjaan" placeholder="Pekerjaan" required>

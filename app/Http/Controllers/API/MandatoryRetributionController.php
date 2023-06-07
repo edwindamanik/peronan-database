@@ -366,12 +366,13 @@ class MandatoryRetributionController extends Controller
     
                 if ($transactionStatus === 'SUCCESS') {
                     $currentMonth = Carbon::now()->format('m');
+                    $currentDate = Carbon::now()->format('Y-m-d');
                 
                     DB::table('mandatory_retributions')
                         ->where('status_pembayaran', 'belum_dibayar')
                         ->where('contract_id', $finalNumber)
-                        ->where(function ($query) use ($currentMonth) {
-                            $query->where(function ($query) use ($currentMonth) {
+                        ->where(function ($query) use ($currentMonth, $currentDate) {
+                            $query->where(function ($query) use ($currentMonth, $currentDate) {
                                 $query->whereMonth('jatuh_tempo', '<', $currentMonth)
                                     ->orWhere(function ($query) use ($currentMonth) {
                                         $query->whereMonth('jatuh_tempo', $currentMonth)
@@ -380,7 +381,7 @@ class MandatoryRetributionController extends Controller
                             })
                             ->orWhereMonth('jatuh_tempo', $currentMonth); // Menambahkan kondisi ini
                         })
-                        ->update(['status_pembayaran' => 'sudah_dibayar']);
+                        ->update(['status_pembayaran' => 'sudah_dibayar', 'total_retribusi' => $request->input('order.amount'), 'metode_pembayaran' => $request->input('service.id'), 'tanggal_pembayaran' => $currentDate]);
                 }                
             }
 
@@ -392,5 +393,22 @@ class MandatoryRetributionController extends Controller
             return response('Invalid Signature', 400)->header('Content-Type', 'text/plain');
         }
 
+    }
+
+    public function riwayatPembayaran($user_id) {
+        $data = DB::table('mandatory_retributions')
+                    ->join('contracts', 'mandatory_retributions.contract_id', '=', 'contracts.id')
+                    ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
+                    // ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+                    ->select('mandatory_retributions.total_retribusi', 'mandatory_retributions.tanggal_pembayaran')
+                    ->distinct('mandatory_retributions.tanggal_pembayaran')
+                    ->whereNotNull('mandatory_retributions.tanggal_pembayaran')
+                    ->whereIn('mandatory_retributions.metode_pembayaran', ['VIRTUAL_ACCOUNT', 'QRIS'])
+                    ->where('obligation_retributions.users_id', $user_id)
+                    ->get();
+
+        return response()->json([
+            'data' => $data,
+        ]);
     }
 }
