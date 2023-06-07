@@ -30,7 +30,7 @@
                     <li class="breadcrumb-item active" aria-current="page">Daftar Konfirmasi Pembatalan</li>
                 </ol>
             </nav>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalex">
+            <button type="button" class="btn " data-toggle="modal" data-target="#myModalex" style="background-color: #243763; color:white;">
                 Export Laporan
             </button>
             <div class="card mb-4">
@@ -83,7 +83,7 @@
                                         <td>{{ $item->nama }}</td>
                                         <td>ds</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
-                                        <td>{{ $item->biaya_retribusi }}</td>
+                                        <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
 
                                     </tr>
                                 @endforeach
@@ -155,7 +155,7 @@
                              </select>
                          </div>
                          <button type="submit" class="btn btn-primary">Export to Excel</button>
-                         <button type="submit" class="btn btn-primary" formaction="{{ route('pdf.batal') }}">Export to PDF</button>
+                         
                          <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                      </form>
                  </div>

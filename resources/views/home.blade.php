@@ -37,14 +37,19 @@
     <link rel="stylesheet"
         href="{{ URL::asset('template/template-admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- Daterange picker -->
-    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/plugins/daterangepicker/daterangepicker.css') }}">
-    <link rel="stylesheet" href="{{ URL::asset('template/template-admin/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet"
+        href="{{ secure_asset('template/template-admin/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet"
+        href="{{ URL::asset('template/template-admin/plugins/daterangepicker/daterangepicker.css') }}">
+
     <!-- summernote -->
-    <link rel="stylesheet" href="{{ secure_asset('template/template-admin/plugins/summernote/summernote-bs4.min.css') }}">
-    <link rel="stylesheet" href="{{ URL::asset('template/template-admin/plugins/summernote/summernote-bs4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ secure_asset('template/template-admin/plugins/summernote/summernote-bs4.min.css') }}">
+    <link rel="stylesheet"
+        href="{{ URL::asset('template/template-admin/plugins/summernote/summernote-bs4.min.css') }}">
     <!-- Select2 -->
-    <link rel="stylesheet" href="{{secure_asset('css/select2.min.css')}}" />
-    <link rel="stylesheet" href="{{URL::asset('css/select2.min.css')}}" />
+    <link rel="stylesheet" href="{{ secure_asset('css/select2.min.css') }}" />
+    <link rel="stylesheet" href="{{ URL::asset('css/select2.min.css') }}" />
 
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css"
         id="theme-styles">
@@ -56,14 +61,13 @@
 
     <link href="https://cdn.datatables.net/1.10.20/css/dataTables.bootstrap4.min.css" rel="stylesheet"
         crossorigin="anonymous" />
-    <link rel="stylesheet" href="{{secure_asset('text-editor/rte_theme_default.css')}}" />
-    <link rel="stylesheet" href="{{URL::asset('text-editor/rte_theme_default.css')}}" />
-    <script type="text/javascript" src="{{secure_asset('text-editor/rte.js')}}"></script>
-    <script type="text/javascript" src="{{URL::asset('text-editor/rte.js')}}"></script>
+    <link rel="stylesheet" href="{{ secure_asset('text-editor/rte_theme_default.css') }}" />
+    <link rel="stylesheet" href="{{ URL::asset('text-editor/rte_theme_default.css') }}" />
+    <script type="text/javascript" src="{{ secure_asset('text-editor/rte.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('text-editor/rte.js') }}"></script>
     {{-- <script type="text/javascript" src="{{asset('text-editor/plugins/all_plugins.js')}}"></script> --}}
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous">
-    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.5.0/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/promise-polyfill@8/dist/polyfill.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
@@ -78,7 +82,6 @@
             max-height: 150px !important;
             overflow-y: auto !important;
         }
-
     </style>
 </head>
 
@@ -90,7 +93,8 @@
             <!-- Left navbar links -->
             <ul class="navbar-nav">
                 <li class="nav-item">
-                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+                    <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i
+                            class="fas fa-bars"></i></a>
                 </li>
             </ul>
 
@@ -98,16 +102,9 @@
             <ul class="navbar-nav ml-auto">
 
                 <!-- Notifications Dropdown Menu -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link" data-toggle="dropdown" href="#">
-                        <i class="far fa-user"></i>
-                    </a>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                        <span class="dropdown-header">{{ Auth::user()->nama }}</span>
-                        <div class="dropdown-divider"></div>
-                        <a href="/logout" class="dropdown-item dropdown-footer" style="color: red">Logout</a>
-                    </div>
-                </li>
+                
+                <p><a href="/logout"  style="color: red">Logout</a></p>
+                
             </ul>
         </nav>
         <!-- /.navbar -->
@@ -116,7 +113,7 @@
         <aside class="main-sidebar elevation-4" style="background-color:#243763;">
             <!-- Brand Logo -->
             <a href="#" class="brand-link">
-                <img src="{{secure_asset('/source-image/logo-footer.png')}}" alt="SIAPPARA" class="brand-image "
+                <img src="{{ URL::asset('/source-image/logo-footer.png') }}" alt="SIAPPARA" class="brand-image "
                     style="opacity: .8" style="position:absolute; left:5%"><br>
                 <span class="brand-text font-weight-light" style="color: white; font-size: 18px;"></span>
             </a>
@@ -128,76 +125,81 @@
                 <nav>
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false" class="mt-2" style="style="color:blue;">
-                        <li class="nav-header">MENU</li>
+                        <li class="nav-header" style="color:#AAAAAA;">MENU</li>
                         @if (Auth::user()->role == 'admin')
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <p>
-                                    Data Master
-                                    <i class="fas fa-angle-left right"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                                        <p>Data Pasar</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/kelompok-pasar" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                                        <p>Data Kelompok Pasar</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/jenis-unit" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                                        <p>Data Jenis Unit</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/unit" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                                        <p>Data Unit</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/biaya-retribusi" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                                        <p>Data Biaya Retribusi</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/wajib-retribusi" class="nav-link">
-                                        &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; 
-                                        <p>Data Wajib Retribusi</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">
-                                <p>Manajemen Surat Sewa Menyewa <i class="fas fa-angle-left right"></i></p>
-                            </a>
-                            <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <p>
+                                        Data Master
+                                        <i class="fas fa-angle-left right"></i>
+                                    </p>
+                                </a>
+                                <ul class="nav nav-treeview">
+                                    <li class="nav-item">
+                                        <a href="/pasar" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Data Pasar</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/kelompok-pasar" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Data Kelompok Pasar</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/jenis-unit" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Data Jenis Unit</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/unit" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Data Unit</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/biaya-retribusi" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Data Biaya Retribusi</p>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a href="/wajib-retribusi" class="nav-link">
+                                            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Data Wajib Retribusi</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="#" class="nav-link">
+                                    <p>Manajemen Surat Sewa Menyewa <i class="fas fa-angle-left right"></i></p>
+                                </a>
+                                <ul class="nav nav-treeview">
 
-                                <li class="nav-item">
-                                    <a href="/kontrak" class="nav-link">
-                                       
-                                        <p>Data Surat Sewa Menyewa</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/users" class="nav-link">
-                                <p>Manajemen User</p>
-                            </a>
-                        </li>
+                                    <li class="nav-item">
+                                        <a href="/kontrak" class="nav-link">
+
+                                            <p>Data Surat Sewa Menyewa</p>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/users" class="nav-link">
+                                    <p>Manajemen User</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/pengaturan" class="nav-link">
+                                    <p>Pengaturan</p>
+                                </a>
+                            </li>
                         @endif
 
-                        @if(Auth::user()->role == 'bendahara')
+                        @if (Auth::user()->role == 'bendahara')
                             <li class="nav-item">
                                 <a href="#" class="nav-link">
                                     <p>
@@ -209,19 +211,19 @@
 
                                     <li class="nav-item">
                                         <a href="/konfirmasi-setoran" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp;  
+                                            &nbsp; &nbsp; &nbsp; &nbsp;
                                             <p>Konfirmasi Penyetoran</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/laporansetor" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; 
+                                            &nbsp; &nbsp; &nbsp; &nbsp;
                                             <p>Laporan Penyetoran</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/rekon" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; 
+                                            &nbsp; &nbsp; &nbsp; &nbsp;
                                             <p>Rekonsiliasi</p>
                                         </a>
                                     </li>
@@ -238,28 +240,28 @@
 
                                     <li class="nav-item">
                                         <a href="/konfirmasipembatalan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; 
+                                            &nbsp; &nbsp; &nbsp; &nbsp;
                                             <p>Konfirmasi Pembatalan</p>
                                         </a>
                                     </li>
                                     <li class="nav-item">
                                         <a href="/laporanpembatalan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp; 
+                                            &nbsp; &nbsp; &nbsp; &nbsp;
                                             <p>Laporan Pembatalan</p>
                                         </a>
                                     </li>
-                                    
+
                                     <li class="nav-item">
                                         <a href="/tagihan" class="nav-link">
-                                            &nbsp; &nbsp; &nbsp; &nbsp;  
-                                            <p>Laporan Tagihan</p>
+                                            &nbsp; &nbsp; &nbsp; &nbsp;
+                                            <p>Laporan Bukti Bayar</p>
                                         </a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="nav-item">
                                 <a href="/nonharian" class="nav-link">
-                                    <p>Retribusi Non Harian</p>
+                                    <p>Tagihan</p>
                                 </a>
                             </li>
                             <li class="nav-item">
@@ -277,16 +279,16 @@
         <div class="content-wrapper">
 
             @if (request()->is('/'))
-            Halaman Administrator
+                Halaman Administrator
             @else
-            @yield('content')
+                @yield('content')
             @endif
 
             <!-- /.content-wrapper -->
         </div>
 
         <footer class="main-footer" style="margin-top: 20%; display:none;">
-            <span class="text-muted">Copyright &copy; <?php echo date("Y"); ?> | Dinas Koperasi, Perdagangan Dan
+            <span class="text-muted">Copyright &copy; <?php echo date('Y'); ?> | Dinas Koperasi, Perdagangan Dan
                 Industri Kabupaten ....</span>
         </footer>
 
@@ -306,7 +308,6 @@
     <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
     <script>
         $.widget.bridge('uibutton', $.ui.button)
-
     </script>
     <!-- Bootstrap 4 -->
     <script src="{{ secure_asset('template/template-admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
@@ -333,14 +334,17 @@
     <!-- Tempusdominus Bootstrap 4 -->
     <script
         src="{{ secure_asset('template/template-admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}">
-        src="{{ URL::asset('template/template-admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}">
+        src =
+            "{{ URL::asset('template/template-admin/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js') }}" >
     </script>
     <!-- Summernote -->
     <script src="{{ secure_asset('template/template-admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <script src="{{ URL::asset('template/template-admin/plugins/summernote/summernote-bs4.min.js') }}"></script>
     <!-- overlayScrollbars -->
-    <script src="{{ secure_asset('template/template-admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}">
-    <script src="{{ URL::asset('template/template-admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}">
+    <script
+        src="{{ secure_asset('template/template-admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}">
+        < script src =
+            "{{ URL::asset('template/template-admin/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}" >
     </script>
     <!-- AdminLTE App -->
     <script src="{{ secure_asset('template/template-admin/dist/js/adminlte.js') }}"></script>
@@ -367,58 +371,54 @@
     @stack('select2')
     @stack('select_posisi')
 
-    {{--perbaikan-julio--}}
-    @if(Session::has('setoran_confirm'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "Setoran berhasil dikonfirmasi",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('setoran_confirm') }}
+    {{-- perbaikan-julio --}}
+    @if (Session::has('setoran_confirm'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "Setoran berhasil dikonfirmasi",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('setoran_confirm') }}
     @endif
 
-    @if(Session::has('user_created'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "User berhasil di tambahkan",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('user_created') }}
+    @if (Session::has('user_created'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "User berhasil di tambahkan",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('user_created') }}
     @endif
 
-    @if(Session::has('user_deleted'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "User berhasil di hapus",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('user_deleted') }}
+    @if (Session::has('user_deleted'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "User berhasil di hapus",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('user_deleted') }}
     @endif
-    @if(Session::has('user_updated'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "User berhasil di ubah",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('user_updated') }}
+    @if (Session::has('user_updated'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "User berhasil di ubah",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('user_updated') }}
     @endif
-    {{--@if($message = Session::get('success'))
+    {{-- @if ($message = Session::get('success'))
     <script>
         Swal.fire({
             title: "Pemberitahuan",
@@ -428,51 +428,46 @@
         });
     </script>
     {{ Session::forget('success') }}
-    @endif--}}
-    @if(Session::has('success_edit'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "{{Session::get('success_edit')}}",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('success_edit') }}
+    @endif --}}
+    @if (Session::has('success_edit'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "{{ Session::get('success_edit') }}",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('success_edit') }}
     @endif
-    @if(Session::has('success_delete'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "{{Session::get('success_delete')}}",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('success_delete') }}
+    @if (Session::has('success_delete'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "{{ Session::get('success_delete') }}",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('success_delete') }}
     @endif
-    @if(Session::has('success_insert'))
-    <script>
-        Swal.fire({
-            title: "Pemberitahuan",
-            text: "{{Session::get('success_insert')}}",
-            icon: 'success',
-            type: "success",
-        });
-
-    </script>
-    {{ Session::forget('success_insert') }}
+    @if (Session::has('success_insert'))
+        <script>
+            Swal.fire({
+                title: "Pemberitahuan",
+                text: "{{ Session::get('success_insert') }}",
+                icon: 'success',
+                type: "success",
+            });
+        </script>
+        {{ Session::forget('success_insert') }}
     @endif
     <script>
         // var editor1 = new RichTextEditor("#inp_editor1");
         //var editor2 = new RichTextEditor("#inp_editor2");
-
     </script>
     <script>
         // var editor1 = new RichTextEditor("#inp_editor1");
-
     </script>
     <script>
         function deleteUser(id) {
@@ -681,7 +676,6 @@
                 }
             })
         }
-
     </script>
 </body>
 

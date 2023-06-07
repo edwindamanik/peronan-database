@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\pengaturancontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -60,16 +61,23 @@ Route::get('/wajib-retribusi/delete/{id}', [WajibRetribusiController::class, 'de
 
 Route::get('/kontrak', [KontrakController::class, 'index']);
 Route::post('/kontrak/store', [KontrakController::class, 'store']);
+
+Route::get('/{id}/kontrakpreview', [KontrakController::class, 'preview'])->name('kontrak.view');
+
 Route::post('/kontrak/update/{id}', [KontrakController::class, 'update']);
 Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
-Route::get('/users', [UserController::class, 'index']);
+Route::get('/users', [UserController::class, 'index']); 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 
+Route::get('/pengaturan', [pengaturancontroller::class, 'index']);
+Route::post('/pengaturan/update/{id}', [pengaturancontroller::class, 'update']);
+
 Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
 Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDeposit'])->name('setor-deposit');
+Route::post('/tolak-deposit/{depositId}', [BendaharaController::class, 'tolakdeposit'])->name('tolak-deposit');
 
 
 
@@ -78,10 +86,8 @@ Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
 
 Route::get('/setor/export_excel', [BendaharaController::class, 'export'])->name('export.setor');
 
-Route::get('/setor/export_pdf', [BendaharaController::class, 'exportPdflapor'])->name('pdf.setor');
 
 Route::get('/batal/export_excel', [BendaharaController::class, 'exportbatal'])->name('export.batal');
-Route::get('/batal/export_pdf', [BendaharaController::class, 'exportPdfbatal'])->name('pdf.batal');
 
 
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
@@ -99,6 +105,7 @@ Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
 
 
 Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');
+Route::post('/batalkan/{batalId}', [BendaharaController::class, 'batalkank'])->name('batalkan-kali');
 
 
 

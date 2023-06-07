@@ -31,7 +31,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Daftar Tagihan</li>
             </ol>
         </nav>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModalTambah"  style="background-color: #243763 color:white;">
             Export Laporan
         </button><br>
         <div class="card mb-4">

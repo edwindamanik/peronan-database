@@ -25,13 +25,22 @@ class AuthController extends Controller
                 return response(['message' => 'Invalid credentials']);
             }
     
-            $accessToken = auth()->user()->createToken('authToken')->plainTextToken;
+            $user = auth()->user();
+            $accessToken = $user->createToken('authToken')->plainTextToken;
     
-            return redirect('/');
-        }  catch (\Exception $e) {
+            if ($user->role === 'bendahara') {
+                return redirect('/konfirmasi-setoran');
+            } elseif ($user->role === 'admin') {
+                return redirect('/pasar');
+            } else {
+                // Jika peran tidak diketahui, ganti return redirect sesuai kebutuhan
+                return redirect('/');
+            }
+        } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
+    
 
     public function logout() {
         auth()->user()->tokens()->delete();

@@ -4,10 +4,14 @@ namespace App\Http\Controllers;
 
 
 use Illuminate\Http\Request;
+use BaconQrCode\Renderer\Image\Png;
+use BaconQrCode\Writer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Contract;
+use DNS2D;
 use App\Models\MandatoryRetribution;
+use App\Models\LetterSetting;
 use Illuminate\Support\Carbon;
 
 class KontrakController extends Controller
@@ -187,7 +191,52 @@ class KontrakController extends Controller
             return response()->json(['errorMessage' => $e->getMessage()]);
         }
     }
-    
+
+    public function preview($id)
+    {
+        $surat = LetterSetting::first();
+
+        $user = Auth::user();
+        $kabupatenId = $user->kabupaten_id;
+
+        $data = DB::table('contracts')
+            ->join('units', 'contracts.unit_id', '=', 'units.id')
+            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+            ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
+            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
+            ->join('regencies', 'letter_settings.kabupaten_id', '=', 'regencies.id')
+            ->where('letter_settings.kabupaten_id', $kabupatenId)
+            ->where('contracts.id', $id)
+            ->select('contracts.*', 'users.nama','letter_settings.*','regencies.*','units.*','unit_types.*')
+            ->get();
+
+        $wajib_retribusi = DB::table('obligation_retributions')
+            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->where('kabupaten_id', $kabupatenId)
+            ->where('users.role', 'wajib_retribusi')
+            ->select('obligation_retributions.*', 'users.nama')
+            ->get();
+
+        $unit = DB::table('units')
+            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+            ->where('kabupaten_id', $kabupatenId)
+            ->select('units.*')
+            ->get();
+
+        $pengaturan = DB::table('letter_settings')
+            ->where('kabupaten_id', $kabupatenId)
+            ->get();
+
+            
+
+        // dd($data);
+
+        return view('admin.kontrakview', compact('data', 'wajib_retribusi', 'unit', 'pengaturan'));
+
+        // return $pdf->download('surat-kontrak.pdf');
+    }
+
     /**
      * Remove the specified resource from storage.
      */
