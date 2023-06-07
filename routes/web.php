@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\pengaturancontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
@@ -60,14 +61,16 @@ Route::get('/wajib-retribusi/delete/{id}', [WajibRetribusiController::class, 'de
 
 Route::get('/kontrak', [KontrakController::class, 'index']);
 Route::post('/kontrak/store', [KontrakController::class, 'store']);
-Route::post('/{id}/kontrakpreview', [KontrakController::class, 'preview']);
+Route::get('/{id}/kontrakpreview', [KontrakController::class, 'preview'])->name('kontrak.view');
 Route::post('/kontrak/update/{id}', [KontrakController::class, 'update']);
 Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
-Route::get('/users', [UserController::class, 'index']);
+Route::get('/users', [UserController::class, 'index']); 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
+
+Route::get('/pengaturan', [pengaturancontroller::class, 'index']);
 
 Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
 Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDeposit'])->name('setor-deposit');

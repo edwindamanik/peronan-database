@@ -114,7 +114,7 @@
                 <nav>
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                         data-accordion="false" class="mt-2" style="style="color:blue;">
-                        <li class="nav-header">MENU</li>
+                        <li class="nav-header" style="color:#AAAAAA;">MENU</li>
                         @if (Auth::user()->role == 'admin')
                         <li class="nav-item">
                             <a href="#" class="nav-link">
@@ -181,6 +181,11 @@
                                 <p>Manajemen User</p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="/pengaturan" class="nav-link">
+                                <p>Pengaturan</p>
+                            </a>
+                        </li>
                         @endif
 
                         @if(Auth::user()->role == 'bendahara')
@@ -238,14 +243,14 @@
                                     <li class="nav-item">
                                         <a href="/tagihan" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp;  
-                                            <p>Laporan Tagihan</p>
+                                            <p>Laporan Bukti Bayar</p>
                                         </a>
                                     </li>
                                 </ul>
                             </li>
                             <li class="nav-item">
                                 <a href="/nonharian" class="nav-link">
-                                    <p>Retribusi Non Harian</p>
+                                    <p>Tagihan</p>
                                 </a>
                             </li>
                             <li class="nav-item">

@@ -4,9 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\LetterSetting;
 use Illuminate\Http\Request;
+use BaconQrCode\Renderer\Image\Png;
+use BaconQrCode\Writer;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Contract;
+use DNS2D;
 use App\Models\MandatoryRetribution;
 use Illuminate\Support\Carbon;
 
@@ -195,12 +198,16 @@ class KontrakController extends Controller
         $kabupatenId = $user->kabupaten_id;
 
         $data = DB::table('contracts')
+            ->join('units', 'contracts.unit_id', '=', 'units.id')
+            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
             ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
             ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
+            ->join('regencies', 'letter_settings.kabupaten_id', '=', 'regencies.id')
             ->where('letter_settings.kabupaten_id', $kabupatenId)
-            ->select('contracts.*', 'users.nama')
-            ->paginate();
+            ->where('contracts.id', $id)
+            ->select('contracts.*', 'users.nama','letter_settings.*','regencies.*','units.*','unit_types.*')
+            ->get();
 
         $wajib_retribusi = DB::table('obligation_retributions')
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
@@ -218,6 +225,8 @@ class KontrakController extends Controller
         $pengaturan = DB::table('letter_settings')
             ->where('kabupaten_id', $kabupatenId)
             ->get();
+
+            
 
         // dd($data);
 

@@ -125,6 +125,25 @@
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
+                        <div class="form-group">
+                            <label for="inputText">Nama</label>
+                            <input type="text" class="form-control" name="nama" placeholder="Nama" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="inputText">Email</label>
+                            <input type="email" class="form-control" name="email" placeholder="Email"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputText">Username</label>
+                            <input type="text" class="form-control" name="username" placeholder="Username"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="inputText">Password</label>
+                            <input type="text" class="form-control" name="password" placeholder="Password" required>
+                        </div>
                         
                         <div class="form-group">
                             <label for="inputText">KTP</label>
@@ -134,24 +153,7 @@
                             <label for="inputText">Pekerjaan</label>
                             <input type="text" class="form-control" name="pekerjaan" placeholder="Pekerjaan" required>
                         </div>
-                        <div class="form-group">
-                            <label for="inputText">Jenis Usaha</label>
-                            <input type="text" class="form-control" name="jenisUsaha" placeholder="Jenis Usaha"
-                                required>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputText">Alamat</label>
-                            <input type="text" class="form-control" name="alamat" placeholder="Alamat" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="inputText">Pengguna</label>
-                            <select class="form-control" name="usersId" required>
-                                <option value="">Pilih User</option>
-                                @foreach ($users as $itemUsers)
-                                <option value="{{ $itemUsers->id }}">{{ $itemUsers->nama }}</option>
-                                @endforeach
-                            </select>
-                        </div>
+                        
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>

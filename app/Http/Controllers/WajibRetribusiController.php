@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\ObligationRetribution;
+use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Carbon;
@@ -51,35 +52,59 @@ class WajibRetribusiController extends Controller
      * Store a newly created resource in storage.
      */
     public function store(Request $request)
-{
-    try {
-        $obligation_retribution = new ObligationRetribution;
+    {
+        $user = Auth::user();
+        $kabupatenId = $user->kabupaten_id;
+        try {
+            $obligation_retribution = new ObligationRetribution();
+            $users = new User();
 
-        $request->validate([
-            'nik' => 'required|size:16'
-        ]);
 
-        if ($request->hasFile('ktp')) {
-            $ktp = $request->file('ktp');
-            $ktpName = time() . '.' . $ktp->extension();
-            $ktp->move(public_path('ktp'), $ktpName);
 
-            // update the deposit data with the new file name
-            $obligation_retribution->ktp = $ktpName;
+            if ($request->hasFile('ktp')) {
+                $ktp = $request->file('ktp');
+                $ktpName = time() . '.' . $ktp->extension();
+                $ktp->move(public_path('ktp'), $ktpName);
+
+                // update the deposit data with the new file name
+                $obligation_retribution->ktp = $ktpName;
+            }
+
+            // $users->nama = $request->input('nama');
+            // $users->username = $request->input('username');
+            // $users->role = 'wajib_retribusi';
+            // $users->kabupaten_id = $kabupatenId;
+            // $users['password'] = bcrypt($request->password);
+            // $obligation_retribution->pekerjaan = $request->input('pekerjaan');
+            // $obligation_retribution->nik = $request->input('nik');
+            // $obligation_retribution->save();
+
+            $users->nama = $request->input('nama');
+            $users->username = $request->input('username');
+            $users->email = $request->input('email');
+            $users->role = 'wajib_retribusi';
+            $users->kabupaten_id = $kabupatenId;
+            $users['password'] = bcrypt($request->password);
+            $users->save();
+
+            $obligation_retribution->pekerjaan = $request->input('pekerjaan');
+            $obligation_retribution->alamat = 'Silahkan atur alamat'; 
+            $obligation_retribution->jenis_usaha = 'Silahkan Jenis usaha'; 
+            $obligation_retribution->nik = $request->input('nik');
+            $obligation_retribution->users_id = $users->id;
+            $obligation_retribution->save();
+
+
+            return back()->with('storeMessage', 'Wajib Retribusi berhasil ditambahkan');
+        } catch (\Exception $e) {
+            return back()->withInput()->withErrors(['nik' => 'NIK harus terdiri dari 16 karakter']);
         }
-
-        $obligation_retribution->alamat = $request->input('alamat');
-        $obligation_retribution->pekerjaan = $request->input('pekerjaan');
-        $obligation_retribution->jenis_usaha = $request->input('jenisUsaha');
-        $obligation_retribution->nik = $request->input('nik');
-        $obligation_retribution->users_id = $request->input('usersId');
-        $obligation_retribution->save();
-
-        return back()->with('storeMessage', 'Wajib Retribusi berhasil ditambahkan');
-    } catch (\Exception $e) {
-        return back()->withInput()->withErrors(['nik' => 'NIK harus terdiri dari 16 karakter']);
+        // dd([
+        //     'request' => $request->all(),
+        //     'role' => $users->role,
+        //     'kabupaten_id' => $users->kabupaten_id,
+        // ]);
     }
-}
 
 
     /**
