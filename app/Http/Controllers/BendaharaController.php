@@ -5,11 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\DailyRetribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use App\Exports\laporansetor;
-use App\Exports\pembatalan;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Deposit;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\laporansetor;
+use App\Exports\pembatalan;
 
 class BendaharaController extends Controller
 {
@@ -161,6 +161,7 @@ class BendaharaController extends Controller
 
         return view('bendahara.laporansetor', compact('data'));
     }
+
     public function export(Request $request)
     {
         $startDate = $request->input('start_date');

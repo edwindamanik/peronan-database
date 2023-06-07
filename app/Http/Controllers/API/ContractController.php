@@ -168,11 +168,12 @@ class ContractController extends Controller
             if($contract->status == 'benar') {
                 $jatuhTempo = Carbon::parse($contract->tanggal_mulai)->lastOfMonth();
                 $tanggalSelesai = Carbon::parse($contract->tanggal_selesai);
+                $randomNumber = mt_rand(10000, 99999);
 
                 while ($jatuhTempo <= $tanggalSelesai) {
 
                     $mandatory_retribution = new MandatoryRetribution();
-                    $mandatory_retribution->no_tagihan = str_pad(rand(0, 999999), 6, '0', STR_PAD_LEFT);
+                    $mandatory_retribution->no_tagihan = mt_rand(10000, 99999).$contract->id;
                     $mandatory_retribution->no_tagihan_ref = null;
                     $mandatory_retribution->biaya_retribusi = $harga->harga;
                     $mandatory_retribution->total_retribusi = $harga->harga;

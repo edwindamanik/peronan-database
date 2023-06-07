@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\LetterSetting;
+
 use Illuminate\Http\Request;
 use BaconQrCode\Renderer\Image\Png;
 use BaconQrCode\Writer;
@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Contract;
 use DNS2D;
 use App\Models\MandatoryRetribution;
+use App\Models\LetterSetting;
 use Illuminate\Support\Carbon;
 
 class KontrakController extends Controller
@@ -190,6 +191,7 @@ class KontrakController extends Controller
             return response()->json(['errorMessage' => $e->getMessage()]);
         }
     }
+
     public function preview($id)
     {
         $surat = LetterSetting::first();
@@ -234,6 +236,7 @@ class KontrakController extends Controller
 
         // return $pdf->download('surat-kontrak.pdf');
     }
+
     /**
      * Remove the specified resource from storage.
      */
