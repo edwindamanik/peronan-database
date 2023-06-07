@@ -67,8 +67,11 @@ Route::get('/{id}/kontrakpreview', [KontrakController::class, 'preview'])->name(
 Route::post('/kontrak/update/{id}', [KontrakController::class, 'update']);
 Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
-Route::get('/users', [UserController::class, 'index']); 
-Route::post('/register', [AuthController::class, 'register']);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/register', [AuthController::class, 'displayRegister']);
+Route::post('/registerDinas', [AuthController::class, 'registerDinas']);
+Route::get('/register-admin/{regencyID}', [AuthController::class, 'registerUserView'])->name('register-admin');
+Route::post('/process-admin', [AuthController::class, 'registerUser']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 
