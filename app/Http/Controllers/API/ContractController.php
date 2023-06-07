@@ -173,7 +173,11 @@ class ContractController extends Controller
                 while ($jatuhTempo <= $tanggalSelesai) {
 
                     $mandatory_retribution = new MandatoryRetribution();
+<<<<<<< Updated upstream
                     $mandatory_retribution->no_tagihan = $randomNumber;
+=======
+                    $mandatory_retribution->no_tagihan = mt_rand(10000, 99999).$contract->id;
+>>>>>>> Stashed changes
                     $mandatory_retribution->no_tagihan_ref = null;
                     $mandatory_retribution->biaya_retribusi = $harga->harga;
                     $mandatory_retribution->tanggal_pembayaran = null;
