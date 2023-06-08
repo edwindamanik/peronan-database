@@ -207,7 +207,7 @@ class BendaharaController extends Controller
             ->join('users', 'deposits.users_id', '=', 'users.id')
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
-            ->where('deposits.status', 'sudah_setor')
+            ->where('deposits.status', 'disetujui')
             ->where('market_groups.kabupaten_id', $kabupatenId)
             ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
             ->get();

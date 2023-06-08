@@ -14,7 +14,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/js/all.min.js" crossorigin="anonymous"></script>
 </head>
 
-<body class="bg" style="background-color: #212429">
+<body class="bg" style="background-color: #243763;">
     <div id="layoutAuthentication">
         <div id="layoutAuthentication_content">
             <main>
@@ -66,13 +66,19 @@
                                                 <label class="custom-control-label" for="remember">Remember Me</label>
                                             </div>
                                         </div>
-                                        <div
-                                            class="form-group d-flex align-items-center justify-content-between mt-4 mb-0">
-                                            {{-- <a class="small" href="{{ route('password.request') }}">Forgot Password?</a> --}}
-                                            <button type="submit" class="btn btn-primary">
+                                        <div class="form-group d-flex flex-column align-items-center justify-content-center mt-4 mb-0">
+                                            <button type="submit" class="btn" style="background-color: #243763; color:white;">
                                                 Login
                                             </button>
+                                            <div class="mt-3">
+                                                <p>Belum mendaftarkan Dinas?</p>
+                                            </div>
+                                            <div class="mt-2">
+                                                
+                                                <a href="/register">Daftarkan Sekarang</a>
+                                            </div>
                                         </div>
+                                        
                                     </form>
                                 </div>
                             </div>
@@ -81,16 +87,7 @@
                 </div>
             </main>
         </div>
-        <div id="layoutAuthentication_footer">
-            <footer class="py-4 bg-light mt-auto">
-                <div class="container-fluid">
-                    <div class="d-flex align-items-center justify-content-between small">
-                        <div class="text-muted">Copyright &copy; <?php echo date('Y'); ?> | Dinas Koperasi, Perdagangan Dan
-                            Industri Kabupaten Humbang Hasundutan</div>
-                    </div>
-                </div>
-            </footer>
-        </div>
+       
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous">

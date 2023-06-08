@@ -20,16 +20,30 @@ class RekonController extends Controller
             ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
             ->join('units', 'units.id', '=', 'contracts.unit_id')
             ->join('markets', 'markets.id', '=', 'units.pasar_id')
-            ->where('mandatory_retributions.status_pembayaran', '=', 'belum_dibayar')
+            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->where('mandatory_retributions.status_pembayaran', '=', 'sudah_dibayar')
+            ->where('mandatory_retributions.metode_pembayaran', '=', 'CASH')
             ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
-            ->select('SUM(mandatory_retributions.total_retribusi) AS total_retribusi')
-            ->first();
+            ->select(DB::raw('SUM(mandatory_retributions.total_retribusi) AS total_retribusii'))
+            ->get();
+
+            $you = DB::table('deposits')
+            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+            ->join('users', 'deposits.users_id', '=', 'users.id')
+            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
+            ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
+            ->where('deposits.status', 'disetujui')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
+            ->select(DB::raw('SUM(deposits.jumlah_setoran) AS setoran'))
+            ->get();
 
 
 
-        dd($data);
 
-        return view('bendahara.rekonsiliasi', compact('data'));
+        return view('bendahara.rekonsiliasi', compact('data','you'));
     }
 
 }

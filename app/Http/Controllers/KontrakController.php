@@ -25,10 +25,12 @@ class KontrakController extends Controller
         $kabupatenId = $user->kabupaten_id;
 
         $data = DB::table('contracts')
+            ->join('unit_types', 'contracts.unit_id', '=', 'unit_types.id')
             ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
             ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
             ->where('letter_settings.kabupaten_id', $kabupatenId)
+            ->whereIn('unit_types.jenis_pembayaran', ['bulanan', 'tahunan'])
             ->select('contracts.*', 'users.nama')
             ->paginate();
 
@@ -208,7 +210,7 @@ class KontrakController extends Controller
             ->join('regencies', 'letter_settings.kabupaten_id', '=', 'regencies.id')
             ->where('letter_settings.kabupaten_id', $kabupatenId)
             ->where('contracts.id', $id)
-            ->select('contracts.*', 'users.nama','letter_settings.*','regencies.*','units.*','unit_types.*')
+            ->select('contracts.*', 'users.nama', 'letter_settings.*', 'regencies.*', 'units.*', 'unit_types.*')
             ->get();
 
         $wajib_retribusi = DB::table('obligation_retributions')
@@ -228,7 +230,7 @@ class KontrakController extends Controller
             ->where('kabupaten_id', $kabupatenId)
             ->get();
 
-            
+
 
         // dd($data);
 

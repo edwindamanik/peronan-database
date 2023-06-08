@@ -70,7 +70,7 @@ Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/register', [AuthController::class, 'displayRegister']);
-Route::post('/registerDinas', [AuthController::class, 'registerDinas']);
+Route::post('/registerDinas', [AuthController::class, 'registerDinas'])->name('registerDinas');;
 Route::get('/register-admin/{regencyID}', [AuthController::class, 'registerUserView'])->name('register-admin');
 Route::post('/process-admin', [AuthController::class, 'registerUser']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
