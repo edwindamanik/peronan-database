@@ -265,7 +265,7 @@
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a href="/UserManualSiappara.pdf" class="nav-link">
+                                <a href="{{ URL::asset('source-image/komass.pdf') }}" class="nav-link" download>
                                     <p>Unduh User Manual</p>
                                 </a>
                             </li>
