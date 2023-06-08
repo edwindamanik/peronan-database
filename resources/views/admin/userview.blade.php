@@ -114,7 +114,7 @@
 
                 <!-- Modal body -->
                 <div class="modal-body">
-                    <form action="{{ URL('/register') }}" enctype="multipart/form-data" method="post">
+                    <form action="{{ URL('/daftar') }}" enctype="multipart/form-data" method="post">
                         @csrf
                         <div class="form-group">
                             <label for="inputText">Nama</label>

@@ -73,6 +73,7 @@ Route::get('/register', [AuthController::class, 'displayRegister']);
 Route::post('/registerDinas', [AuthController::class, 'registerDinas'])->name('registerDinas');;
 Route::get('/register-admin/{regencyID}', [AuthController::class, 'registerUserView'])->name('register-admin');
 Route::post('/process-admin', [AuthController::class, 'registerUser']);
+Route::post('/daftar', [AuthController::class, 'daftar']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 
