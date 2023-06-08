@@ -30,7 +30,7 @@ class pembatalan implements FromQuery, WithMapping, WithHeadings
             ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
             ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
             ->join('users', 'users.id', '=', 'market_officers.users_id')
-            ->where('daily_retributions.status', '=', 1)
+            ->where('daily_retributions.status', '=', '2')
             ->where('markets.id', $this->pasarId)
             ->whereBetween('daily_retributions.tanggal', [$this->startDate, $this->endDate])
             ->select('daily_retributions.*', 'markets.*', 'users.nama');

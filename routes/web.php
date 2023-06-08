@@ -94,6 +94,10 @@ Route::get('/setor/export_excel', [BendaharaController::class, 'export'])->name(
 
 Route::get('/batal/export_excel', [BendaharaController::class, 'exportbatal'])->name('export.batal');
 
+Route::get('/tagihan/export_excel', [BendaharaController::class, 'exportbukti'])->name('tagihan.batal');
+
+Route::get('/harian/export_excel', [BendaharaController::class, 'exportharian'])->name('harian.batal');
+
 
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 

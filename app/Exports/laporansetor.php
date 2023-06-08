@@ -28,6 +28,7 @@ class laporansetor implements FromQuery, WithMapping, WithHeadings
         return Deposit::query()
             ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
             ->join('users', 'users.id', '=', 'deposits.users_id')
+            ->where('deposits.status', 'disetujui')
             ->where('markets.id', $this->pasarId)
             ->whereBetween('deposits.tanggal_disetor', [$this->startDate, $this->endDate])
             ->select('markets.nama_pasar', 'users.nama', 'deposits.jumlah_setoran', 'deposits.penyetoran_melalui', 'deposits.tanggal_penyetoran', 'deposits.tanggal_disetor');

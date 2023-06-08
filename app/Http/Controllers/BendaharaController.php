@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\nonharian;
+use App\Exports\TagihanExport;
 use App\Models\DailyRetribution;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -99,8 +101,6 @@ class BendaharaController extends Controller
             ->join('users', 'users.id', '=', 'market_officers.users_id')
             ->join('users AS officer', 'market_officers.users_id', '=', 'officer.id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->whereNotNull('daily_retributions.bukti_pembatalan')
-            ->where('daily_retributions.status', '=', '3')
             ->select('daily_retributions.*', 'markets.*', 'users.nama', 'officer.nama AS officers', 'units.*')
             ->get();
 
@@ -178,23 +178,7 @@ class BendaharaController extends Controller
         return view('bendahara.laporanpembatalan', compact('data'));
     }
 
-    //     public function setorDeposit(Request $request)
-// {
-//     $depositId = $request->input('depositId');
 
-    //     // Temukan deposit berdasarkan ID
-//     $deposit = Deposit::find($depositId);
-
-    //     if ($deposit) {
-//         // Perbarui status menjadi "sudah_disetor"
-//         $deposit->status = 'sudah_setor';
-//         $deposit->save();
-
-    //         return response()->json(['message' => 'Status berhasil diubah.']);
-//     } else {
-//         return response()->json(['error' => 'Deposit tidak ditemukan.'], 404);
-//     }
-// }
 
     public function lapsetor()
     {
@@ -221,6 +205,7 @@ class BendaharaController extends Controller
         $endDate = $request->input('end_date');
         $pasarId = $request->input('pasar_id');
 
+
         return Excel::download(new laporansetor($startDate, $endDate, $pasarId), 'laporan_setor.xlsx');
     }
 
@@ -229,11 +214,29 @@ class BendaharaController extends Controller
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $pasarId = $request->input('pasar_id');
+        
+        // return [$startDate, $endDate, $pasarId];
 
         return Excel::download(new pembatalan($startDate, $endDate, $pasarId), 'data.xlsx');
     }
 
+    public function exportbukti(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $pasarId = $request->input('pasar_id');
 
+        return Excel::download(new TagihanExport($startDate, $endDate, $pasarId), 'file.xlsx');
+    }
+
+    public function exportharian(Request $request)
+    {
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+        $pasarId = $request->input('pasar_id');
+
+        return Excel::download(new nonharian($startDate, $endDate, $pasarId), 'file.xlsx');
+    }
 
 
 

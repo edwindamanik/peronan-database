@@ -30,7 +30,7 @@
                     <li class="breadcrumb-item active" aria-current="page">Daftar Tagihan</li>
                 </ol>
             </nav>
-            <button type="button" class="btn " data-toggle="modal" data-target="#myModalTambah"  style="background-color: #243763 color:white;">
+            <button type="button" class="btn " data-toggle="modal" data-target="#myModalex"  style="background-color: #243763; color:white;">
                 Export Laporan
             </button><br>
             <div class="card mb-4">
@@ -136,6 +136,45 @@
                 </div>
             </div>
         </div>
+
+         {{-- MODAL Export --}}
+         <div class="modal fade" id="myModalex" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
+         aria-hidden="true">
+         <div class="modal-dialog" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title">Pengaturan Export</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <div class="modal-body">
+                     <form action="{{ route('tagihan.batal') }}" method="GET">
+                         <div class="form-group">
+                             <label for="start_date">Tanggal Mulai:</label>
+                             <input type="date" name="start_date" id="start_date" class="form-control">
+                         </div>
+                         <div class="form-group">
+                             <label for="end_date">Tanggal Akhir:</label>
+                             <input type="date" name="end_date" id="end_date" class="form-control">
+                         </div>
+                         <div class="form-group">
+                             <label for="pasar_id">Pasar:</label>
+                             <select id="pasar_id" name="pasar_id" class="form-control">
+                                 <option value="">Pilih Pasar</option>
+                                 @foreach ($ret as $item)
+                                     <option value="{{ $item->pasar_id }}">{{ $item->nama_pasar }}</option>
+                                 @endforeach
+                             </select>
+                         </div>
+                         
+                         <button type="submit" class="btn btn-primary" style="background-color: #243763">Export to Excel</button>
+                         <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
+                     </form>
+                 </div>
+             </div>
+         </div>
+     </div>
 
     </main>
 
