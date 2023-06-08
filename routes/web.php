@@ -3,6 +3,7 @@
 use App\Http\Controllers\pengaturancontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RekonController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PasarController;
 use App\Http\Controllers\KelompokPasarController;
@@ -99,7 +100,7 @@ Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
 
 
 
-Route::get('/rekon', [BendaharaController::class, 'rekon']);
+Route::get('/rekon', [RekonController::class, 'rekon']);
 Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
 
 
