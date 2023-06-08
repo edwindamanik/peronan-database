@@ -153,10 +153,11 @@
                                 <select id="pasar_id" name="pasar_id" class="form-control">
                                     <option value="">Pilih Pasar</option>
                                     @foreach ($data as $item)
-                                        <option value="{{ $item->id }}">{{ $item->nama_pasar }}</option>
+                                        <option value="{{ $item->pasar_id }}">{{ $item->nama_pasar }}</option>
                                     @endforeach
                                 </select>
                             </div>
+                            
                             <button type="submit" class="btn btn-primary" style="background-color: #243763">Export to Excel</button>
                             <button type="button" class="btn btn-danger" data-dismiss="modal">Batal</button>
                         </form>

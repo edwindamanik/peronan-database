@@ -3,6 +3,7 @@
 use App\Http\Controllers\pengaturancontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\RekonController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PasarController;
 use App\Http\Controllers\KelompokPasarController;
@@ -69,9 +70,10 @@ Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/register', [AuthController::class, 'displayRegister']);
-Route::post('/registerDinas', [AuthController::class, 'registerDinas']);
+Route::post('/registerDinas', [AuthController::class, 'registerDinas'])->name('registerDinas');;
 Route::get('/register-admin/{regencyID}', [AuthController::class, 'registerUserView'])->name('register-admin');
 Route::post('/process-admin', [AuthController::class, 'registerUser']);
+Route::post('/daftar', [AuthController::class, 'daftar']);
 Route::post('/update-user/{id}', [AuthController::class, 'updateUser']);
 Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 
@@ -92,6 +94,10 @@ Route::get('/setor/export_excel', [BendaharaController::class, 'export'])->name(
 
 Route::get('/batal/export_excel', [BendaharaController::class, 'exportbatal'])->name('export.batal');
 
+Route::get('/tagihan/export_excel', [BendaharaController::class, 'exportbukti'])->name('tagihan.batal');
+
+Route::get('/harian/export_excel', [BendaharaController::class, 'exportharian'])->name('harian.batal');
+
 
 Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
@@ -102,7 +108,7 @@ Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
 
 
 
-Route::get('/rekon', [BendaharaController::class, 'rekon']);
+Route::get('/rekon', [RekonController::class, 'rekon']);
 Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
 
 

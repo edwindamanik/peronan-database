@@ -64,16 +64,14 @@
                                 <th align="center" >SYSTEM</th>
                                 <th align="center">REAL</th>
                                 <th align="center">SELISIH</th>
-                                <th align="center">STATUS</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
                                 <td align="center"><b>PASAR BALIGE</b></td>
-                                <td>RP. 90.000.000,.</td>
-                                <td>RP. 80.000.000,.</td>
-                                <td>RP. 10.000.000,.</td>
-                                <td><a href="#" class="btn btn-warning btn-xs">Menunggu</a></td>
+                                <td>Rp. 100.000</td>
+                                <td>Rp. 22.000</td>
+                                <td>Rp. 78.000</td>
                                 
                             </tr>
                         </tbody>

@@ -31,7 +31,7 @@
                 <li class="breadcrumb-item active" aria-current="page">Daftar Tagihan</li>
             </ol>
         </nav>
-        <button type="button" class="btn " data-toggle="modal" data-target="#myModalTambah"  style="background-color: #243763 color:white;">
+        <button type="button" class="btn " data-toggle="modal" data-target="#myModalTambah"  style="background-color: #243763; color:white;">
             Export Laporan
         </button><br>
         <div class="card mb-4">
@@ -74,28 +74,21 @@
                             </tr>
                         </thead>
                         <tbody>
+                          
                             <tr>
                                 <td align="center"><b>CASH</b></td>
-                                <td>RP. 90.000.000,.</td>
-                                <td>RP. 80.000.000,.</td>
-                                <td>RP. 10.000.000,.</td>
-                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
                                 
-                            </tr>
-                            <tr>
-                                <td align="center"><b>QRIS</b></td>
-                                <td>RP. 75.000.000,.</td>
-                                <td>RP. 75.000.000,.</td>
-                                <td>RP. 0,.</td>
+                                @foreach ($you as $setor)
+                                    <td>Rp. {{ number_format($setor->setoran, 0, ',', '.') }}</td>
+                                @endforeach
+                                @foreach ($data as $item)
+                                    <td>Rp. {{ number_format($item->total_retribusii, 0, ',', '.') }}</td>
+                                @endforeach
+                                <td>Rp. {{ number_format($setor->setoran - $item->total_retribusii, 0, ',', '.') }}</td>
                                 <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
                             </tr>
-                            <tr>
-                                <td align="center"><b>VA</b></td>
-                                <td>RP. 60.000.000,.</td>
-                                <td>RP. 60.000.000,.</td>
-                                <td>RP. 0,.</td>
-                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
-                            </tr>
+                            
+                           
                             
                         </tbody>
                     </table>

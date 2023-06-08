@@ -1,50 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Register</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <link href="{{ URL::asset('styles/styles.css') }}" rel="stylesheet" />
     <link href="{{ secure_asset('styles/styles.css') }}" rel="stylesheet" />
 </head>
+
 <body>
-    <div class="d-flex justify-content-center align-items-center" style="padding: 0 300px 0 300px">
-        <div style="height: 100vh; width: 100%" class="py-5 px-3">
-            <h4 class="text-center fw-bold">Registrasi</h4>
-            <p class="fw-bold">1. Data Dinas</p>
-            <form action="{{ URL('/registerDinas') }}" method="post" enctype="multipart/form-data">
-                @csrf
-                <input type="text" class="form-control" placeholder="Nama Dinas" name="nama_dinas" required>
-                <input type="text" class="form-control mt-4" placeholder="Nama Kepala Dinas" name="kepala_dinas" required>
-                <input type="text" class="form-control mt-4" placeholder="Nomor Telepon" name="no_telp_dinas" required>
-                <input type="email" class="form-control mt-4" placeholder="Email" name="email_dinas" required>
-                <select class="form-control mt-4" name="provinsi" required>
-                    <option value="">Pilih Provinsi</option>
-                    <option value="Sumatera Utara">Sumatera Utara</option>
-                </select>
-                <select class="form-control mt-4" name="kabupaten" required>
-                    <option value="">Pilih Kabupaten</option>
-                    <option value="Humbang Hasundutan">Humbang Hasundutan</option>
-                    <option value="Tobasa">Tobasa</option>
-                    <option value="Tarutung">Tarutung</option>
-                </select>
-                <input type="text" class="form-control mt-4" placeholder="Peraturan Daerah" name="perda" required>
-                <div class="mt-4">
-                    <span>Upload Perda</span>
-                    <input type="file" name="upload_perda" class="form-control" required>
+    <div class="container-fluid d-flex justify-content-center align-items-center" style="padding: 0 300px">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-lg border-0 rounded-lg">
+                    <div class="card-body">
+                        <h4 class="card-title text-center fw-bold mb-4">Registrasi</h4>
+                        <h5 class="card-title  fw-bold mb-4">1.Data Dinas</h5>
+                        <form action="{{ route('registerDinas') }}" method="post" enctype="multipart/form-data">
+                            @csrf
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Nama Dinas" name="nama_dinas"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Nama Kepala Dinas"
+                                    name="kepala_dinas" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Nomor Telepon"
+                                    name="no_telp_dinas" required>
+                            </div>
+                            <div class="mb-3">
+                                <input type="email" class="form-control" placeholder="Email" name="email_dinas"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select" name="provinsi" required>
+                                    <option value="">Pilih Provinsi</option>
+                                    <option value="Sumatera Utara">Sumatera Utara</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <select class="form-select" name="kabupaten" required>
+                                    <option value="">Pilih Kabupaten</option>
+                                    <option value="Humbang Hasundutan">Humbang Hasundutan</option>
+                                    <option value="Tobasa">Tobasa</option>
+                                    <option value="Tarutung">Tarutung</option>
+                                </select>
+                            </div>
+                            <div class="mb-3">
+                                <input type="text" class="form-control" placeholder="Peraturan Daerah" name="perda"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="upload_perda" class="form-label">Upload Perda</label>
+                                <input type="file" id="upload_perda" name="upload_perda" class="form-control"
+                                    required>
+                            </div>
+                            <div class="mb-3">
+                                <label for="logo" class="form-label">Upload Logo</label>
+                                <input type="file" id="logo" name="logo" class="form-control" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Selanjutnya</button>
+                        </form>
+                    </div>
                 </div>
-                <div class="mt-3">
-                    <span>Upload logo</span>
-                    <input type="file" name="logo" class="form-control" required>
+            </div>
+            <div class="col-md-6 d-flex justify-content-center align-items-center">
+                <div style="background-color: #243763; height: 100%" class="text-center">
+                    <img src="{{ URL::asset('source-image/wood_hand.png') }}" alt=""
+                        style="max-height: 100vh; max-width: 100%">
                 </div>
-                <button type="submit" class="form-control mt-4">Selanjutnya</button>
-            </form>
-        </div>
-        <div style="background-color: #243763; height: 100vh; width: 100%">
-            <img src="{{ URL::asset('source-image/wood_hand.png') }}" alt="">
+            </div>
         </div>
     </div>
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
 </body>
-{{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.min.js"></script> --}}
+
 </html>

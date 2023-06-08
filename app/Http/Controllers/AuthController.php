@@ -110,6 +110,31 @@ class AuthController extends Controller
         return view('register-admin');
     }
 
+
+    public function daftar(Request $request) {
+        try {
+            $validateUser = $request->validate([
+                'nama' => 'required',
+                'email' => 'required|email',
+                'username' => 'required',
+                'password' => 'required',
+                'role' => 'required',
+                'kabupaten_id' => 'required',
+            ]);
+    
+            $validateUser['password'] = bcrypt($request->password);
+            
+            $user = User::create($validateUser);
+    
+            $accessToken = $user->createToken('Token Name')->plainTextToken;
+    
+            return back()->with('storeMessage', 'Berhasil menambahkan user baru');
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+    
+
     public function registerUser(Request $request) {
         try {
             $validateUser = $request->validate([
