@@ -18,7 +18,7 @@ return new class extends Migration
             $table->date('tanggal');
             $table->string('bukti_pembatalan', 100)->nullable();
             $table->string('bukti_pembayaran', 100)->nullable();
-            $table->enum('status', ['0', '1', '2', '3']);
+            $table->enum('status', ['sudah_bayar', 'batal', 'approve_batal']);
             $table->unsignedBigInteger('unit_id');
             $table->unsignedBigInteger('pasar_id');
             $table->unsignedBigInteger('deposit_id');

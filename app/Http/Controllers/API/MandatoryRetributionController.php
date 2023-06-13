@@ -118,6 +118,9 @@ class MandatoryRetributionController extends Controller
 
     public function getBulanan($pasar_id) 
     {
+        $now = Carbon::now();
+        $tanggalTerakhir = $now->endOfMonth()->format('Y-m-d');
+
         $bulan_sebelumnya = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
                 ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
@@ -127,12 +130,28 @@ class MandatoryRetributionController extends Controller
                 ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
                 ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
-                // ->where('mandatory_retributions.petugas_id', $petugas_id)
                 ->where('units.pasar_id', $pasar_id)
-                ->whereYear('mandatory_retributions.jatuh_tempo', '=', date('Y'))
-                ->whereMonth('mandatory_retributions.jatuh_tempo', '<', date('m'))
+                ->where('mandatory_retributions.jatuh_tempo', '<', $tanggalTerakhir)
                 ->groupBy('mandatory_retributions.contract_id')
                 ->get();
+
+        $hasil_bulan_sebelumnya = $bulan_sebelumnya->first();
+
+        $bulan_sekarang = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->join('units', 'units.id', '=', 'contracts.unit_id')
+                ->select('mandatory_retributions.contract_id')
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
+                ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
+                ->where('units.pasar_id', $pasar_id)
+                ->where('mandatory_retributions.jatuh_tempo', '=', $tanggalTerakhir)
+                ->groupBy('mandatory_retributions.contract_id')
+                ->get();
+
+        $hasil_bulan_sekarang = $bulan_sekarang->first();
 
         $bulan_setelahnya = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -145,11 +164,7 @@ class MandatoryRetributionController extends Controller
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
                 // ->where('mandatory_retributions.petugas_id', $petugas_id)
                 ->where('units.pasar_id', $pasar_id)
-                ->where(function ($query) {
-                    $query->whereYear('mandatory_retributions.jatuh_tempo', '=', date('Y'))
-                          ->whereMonth('mandatory_retributions.jatuh_tempo', '>', date('m'))
-                          ->orWhereYear('mandatory_retributions.jatuh_tempo', '>', date('Y'));
-                })
+                ->where('mandatory_retributions.jatuh_tempo', '>', $tanggalTerakhir)
                 ->groupBy('mandatory_retributions.contract_id')
                 ->count();
 
@@ -164,15 +179,23 @@ class MandatoryRetributionController extends Controller
                 ->where('units.pasar_id', $pasar_id)
                 ->whereYear('mandatory_retributions.jatuh_tempo', '=', date('Y'))
                 ->whereMonth('mandatory_retributions.jatuh_tempo', '=', date('m'))
-                ->get()
-                ->map(function ($item) use ($bulan_sebelumnya, $bulan_setelahnya) {
-                    $total_biaya = $bulan_sebelumnya->firstWhere('contract_id', $item->contract_id)->total_biaya ?? 0;
-                    $item->total_retribusi = $item->biaya_retribusi + $total_biaya;
-                    $item->tunggakan = intval($total_biaya);
-                    $item->total_bulan_setelahnya = $bulan_setelahnya;
-                    $item->jumlah_periode = $bulan_sebelumnya->firstWhere('contract_id', $item->contract_id)->jumlah_periode+1 ?? 0;
-                    return $item;
-                });
+                ->get();
+
+        if($hasil_bulan_sebelumnya != null) {
+            foreach($data as $item) {
+                $item->total_retribusi = intval($hasil_bulan_sebelumnya->total_biaya) + intval($hasil_bulan_sekarang->total_biaya);
+                $item->tunggakan = intval($hasil_bulan_sebelumnya->total_biaya);
+                $item->total_bulan_setelahnya = $bulan_setelahnya;
+                $item->jumlah_periode = $hasil_bulan_sebelumnya->jumlah_periode + $hasil_bulan_sekarang->jumlah_periode;
+            }
+        } else {
+            foreach($data as $item) {
+                $item->total_retribusi = intval($hasil_bulan_sekarang->total_biaya);
+                $item->tunggakan = 0;
+                $item->total_bulan_setelahnya = $bulan_setelahnya;
+                $item->jumlah_periode = $hasil_bulan_sekarang->jumlah_periode;
+            }
+        }
 
         return response()->json(['data' => $data]);
     }
@@ -195,40 +218,41 @@ class MandatoryRetributionController extends Controller
             ]);
             
             $mandatory_retribution = MandatoryRetribution::findOrFail($id);
-        
-            // Cek apakah jatuh tempo saat ini adalah bulan ini dan status pembayaran adalah sudah_dibayar
-            $now = Carbon::now();
-            $jatuhTempo = Carbon::createFromFormat('Y-m-d', $validateMandatoryRetribution['jatuh_tempo']);
-            if ($now->month === $jatuhTempo->month && $validateMandatoryRetribution['status_pembayaran'] === 'sudah_dibayar') {
-                // Ambil semua data dengan jatuh tempo kurang dari bulan saat ini dan contract_id yang sama
-                $mandatoryRetributions = MandatoryRetribution::where('jatuh_tempo', '<', $now->toDateString())
-                    ->where('contract_id', $validateMandatoryRetribution['contract_id'])
-                    ->get();
-        
-                // Update status_pembayaran dari setiap data yang ditemukan
-                foreach ($mandatoryRetributions as $mandatoryRetribution) {
-                    $mandatoryRetribution->status_pembayaran = 'sudah_dibayar';
-                    $mandatoryRetribution->save();
+
+            $bulan_sebelumnya = MandatoryRetribution::where('jatuh_tempo', '<=', $validateMandatoryRetribution['jatuh_tempo'])
+                        ->where('contract_id', $validateMandatoryRetribution['contract_id'])
+                        ->get();
+
+            foreach($bulan_sebelumnya as $pembayaran_nonHarian) {
+                $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
+                $pembayaran_nonHarian->metode_pembayaran = 'CASH';
+                $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
+                $pembayaran_nonHarian->total_retribusi = $validateMandatoryRetribution['total_retribusi'];
+                $pembayaran_nonHarian->petugas_id = $validateMandatoryRetribution['petugas_id'];
+                $pembayaran_nonHarian->save();
+            }
+
+            // $mandatory_retribution->update($validateMandatoryRetribution);
+
+            $count = $request->count;
+            if($count > 0) {
+                $bulan_setelahnya = MandatoryRetribution::where('jatuh_tempo', '>', $validateMandatoryRetribution['jatuh_tempo'])
+                            ->where('contract_id', $validateMandatoryRetribution['contract_id'])
+                            ->orderBy('jatuh_tempo', 'asc') 
+                            ->take($count) 
+                            ->get();
+
+                foreach($bulan_setelahnya as $pembayaran_nonHarian) {
+                    $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
+                    $pembayaran_nonHarian->metode_pembayaran = 'CASH';
+                    $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
+                    $pembayaran_nonHarian->total_retribusi = $validateMandatoryRetribution['total_retribusi'];
+                    $pembayaran_nonHarian->petugas_id = $validateMandatoryRetribution['petugas_id'];
+                    $pembayaran_nonHarian->save();
                 }
             }
-
-            $mandatory_retribution->update($validateMandatoryRetribution);
-
-            // Ubah status_pembayaran pada data dengan jatuh tempo lebih besar dari bulan sekarang dengan rentang waktu sebanyak count bulan
-            $count = $request->input('count');
-            $endDate = Carbon::now()->addMonths($count+1); // Hitung tanggal akhir rentang waktu
-            $mandatoryRetributions = MandatoryRetribution::where('jatuh_tempo', '>', $now->toDateString())
-                ->where('jatuh_tempo', '<=', $endDate->toDateString())
-                ->where('contract_id', $validateMandatoryRetribution['contract_id'])
-                ->get();
-
-            // Update status_pembayaran dari setiap data yang ditemukan
-            foreach ($mandatoryRetributions as $mandatoryRetribution) {
-                $mandatoryRetribution->status_pembayaran = 'sudah_dibayar';
-                $mandatoryRetribution->save();
-            }
-
-            return response()->json(['data' => $mandatory_retribution]);
+        
+            return response()->json(['data' => 'Berhasil Melakukan Pembayaran']);
         
         } catch (\Exception $e) {
             return $e->getMessage();

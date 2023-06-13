@@ -26,7 +26,7 @@ return new class extends Migration
             $table->char('url_pembayaran_qris')->nullable();
             $table->unsignedBigInteger('petugas_id')->nullable();
             $table->unsignedBigInteger('contract_id');
-            $table->foreign('petugas_id')->references('id')->on('market_officers')->onDelete('cascade');
+            $table->foreign('petugas_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
             $table->timestamps();
             $table->softDeletes();

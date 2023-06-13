@@ -18,52 +18,56 @@ class DailyRetributionController extends Controller
         $daily_retributions = DB::table('daily_retributions')->get();
         return response()->json(['data' => $daily_retributions]);
     }
-
+    
     public function uploadSetoranRetribusi(Request $request, $user_id, $pasar_id)
     {
         $data = $request->json()->all();
 
+        $total_harian_nonharian = 0;
+
         foreach($data as $item) {
+            $total_harian_nonharian += $item['biaya_retribusi'];
+        }
+
+        $tanggal = date('Y-m-d');
+        $retributions_bulanan = DB::table('mandatory_retributions')
+            ->where('status_pembayaran', 'sudah_dibayar')
+            ->where('tanggal_pembayaran', $tanggal)
+            ->where('petugas_id', $user_id)
+            ->select(DB::raw('SUM(biaya_retribusi) as total_biaya'))
+            ->first();
+
+        $total_harian_nonharian += $retributions_bulanan->total_biaya;
+
+        $depositId = DB::table('deposits')->insertGetId([
+            'jumlah_setoran' => $total_harian_nonharian,
+            'penyetoran_melalui' => null,
+            'tanggal_penyetoran' => now(),
+            'tanggal_disetor' => null,
+            'bukti_setoran' => null,
+            'status' => 'belum_setor',
+            'alasan_tidak_setor' => null,
+            'users_id' => $user_id,
+            'wajib_retribusi_id' => null,
+            'pasar_id' => $pasar_id
+        ]);
+
+        foreach ($data as $item) {
             DB::table('daily_retributions')->insert([
                 'no_bukti_pembayaran' => $item['no_bukti_pembayaran'],
                 'biaya_retribusi' => $item['biaya_retribusi'],
                 'tanggal' => $item['tanggal'],
                 'bukti_pembatalan' => $item['bukti_pembatalan'],
                 'bukti_pembayaran' => $item['bukti_pembayaran'],
+                'status' => 'sudah_bayar',
+                'deposit_id' => $depositId,
                 'unit_id' => $item['unit_id'],
                 'pasar_id' => $item['pasar_id'],
                 'created_at' => now()
             ]);
         }
 
-        $retributions = DB::table('daily_retributions')
-            ->select(DB::raw('DATE(created_at) as created_date'), 'pasar_id', DB::raw('SUM(biaya_retribusi) as total_biaya'))
-            ->groupBy('created_date', 'pasar_id')
-            ->first();
-
-        $tanggal = date('Y-m-d');
-        $retributions_bulanan = DB::table('mandatory_retributions')
-            ->where('status_pembayaran', 'sudah_dibayar')
-            ->where('tanggal_pembayaran', $tanggal)
-            ->where('petugas_id', 1)
-            ->select(DB::raw('SUM(total_retribusi) as total_biaya'))
-            ->first();
-
-        $total_harian_nonharian = $retributions->total_biaya + $retributions_bulanan->total_biaya;
-
-        DB::table('deposits')->insert([
-            'jumlah_setoran' => $total_harian_nonharian,
-            'penyetoran_melalui' => null,
-            'tanggal_penyetoran' => now(),
-            'tanggal_disetor' => null,
-            'bukti_setoran' => null,
-            'status' => 'pending',
-            'alasan_tidak_setor' => null,
-            'users_id' => $user_id,
-            'pasar_id' => $pasar_id
-        ]);
-
-        return response()->json(['data' => 'data berhasil diupload'], Response::HTTP_CREATED);
+        return response()->json(['data' => 'Berhasil melakukan penyetoran']);
     }
 
     public function show($id)

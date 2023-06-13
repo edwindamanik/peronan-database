@@ -89,6 +89,18 @@ class DepositController extends Controller
     public function update(Request $request, $id)
     {
         try {
+
+            if($request->has('alasan_tidak_setor')) {
+                $deposit = Deposit::findOrFail($id);
+                $deposit->alasan_tidak_setor = $request->input('alasan_tidak_setor');
+                $deposit->status = 'belum_setor';
+                $deposit->save();
+
+                return response()->json([
+                    'message' => 'Alasan berhasil dikirim',
+                ]);
+            }
+
             $request->validate([
                 'penyetoran_melalui' => 'required',
                 'tanggal_disetor' => 'required',
@@ -114,6 +126,8 @@ class DepositController extends Controller
         
             $deposit->penyetoran_melalui = $request->input('penyetoran_melalui');
             $deposit->tanggal_disetor = $request->input('tanggal_disetor');
+            $deposit->status = 'menunggu_konfirmasi';
+            $deposit->alasan_tidak_setor = null;
             $deposit->save();
 
             // get the image URL
@@ -160,7 +174,7 @@ class DepositController extends Controller
     public function unggahBuktiBayar($user_id, $pasar_id) {
         $data = DB::table('deposits')
                 ->where('bukti_setoran', null)
-                ->where('status', 'pending')
+                ->where('status', 'belum_setor')
                 ->where('users_id', $user_id)
                 ->where('pasar_id', $pasar_id)
                 ->get();
