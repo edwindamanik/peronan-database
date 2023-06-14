@@ -64,7 +64,7 @@ class BendaharaController extends Controller
 
         if ($deposit) {
             // Perbarui status menjadi "sudah_disetor"
-            $deposit->status = 'sudah_setor';
+            $deposit->status = 'disetujui';
             $deposit->save();
 
             return redirect()->back()->with('success', 'Status berhasil diubah.');

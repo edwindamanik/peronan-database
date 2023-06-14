@@ -25,19 +25,17 @@
 <div class="messages"></div>
 <main>
     <div class="container-fluid">
-        <h2 class="mt-4">Daftar Tagihan</h2>
+        <h2 class="mt-4">REKONSILIASI</h2>
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Daftar Tagihan</li>
+                <li class="breadcrumb-item active" aria-current="page">Rekonsiliasi</li>
             </ol>
         </nav>
-        <button type="button" class="btn " data-toggle="modal" data-target="#myModalTambah"  style="background-color: #243763; color:white;">
-            Export Laporan
-        </button><br>
+        
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Daftar Tagihan
+                Rekonsiliasi
             </div>
             <div class="card-body">
                 @if (session()->has('deleteMessage'))

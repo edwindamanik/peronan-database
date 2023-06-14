@@ -82,6 +82,10 @@
             max-height: 150px !important;
             overflow-y: auto !important;
         }
+
+        .nav.nav-pills.nav-sidebar.flex-column li.nav-item a.nav-link p {
+            color: white;
+        }
     </style>
 </head>
 
@@ -102,9 +106,9 @@
             <ul class="navbar-nav ml-auto">
 
                 <!-- Notifications Dropdown Menu -->
-                
-                <p><a href="/logout"  style="color: red">Logout</a></p>
-                
+
+                <p><a href="/logout" style="color: red">Logout</a></p>
+
             </ul>
         </nav>
         <!-- /.navbar -->

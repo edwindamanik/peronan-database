@@ -55,9 +55,7 @@
 </head>
 
 <body>
-    <div>
-        <a @click.prevent="printme()" href="/"><button class="btn btn-primary">Export</button></a>
-    </div>
+   
     <div class="head justify-content-center container">
         <div class="p-3 py-5 container contract-letter" style="border: 1px solid black;">
             <div class="row letter-head">

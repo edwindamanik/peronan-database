@@ -69,9 +69,9 @@
                         <tbody>
                             <tr>
                                 <td align="center"><b>PASAR BALIGE</b></td>
-                                <td>Rp. 100.000</td>
+                                <td>Rp. 50.000</td>
                                 <td>Rp. 22.000</td>
-                                <td>Rp. 78.000</td>
+                                <td>Rp. 28.000</td>
                                 
                             </tr>
                         </tbody>
