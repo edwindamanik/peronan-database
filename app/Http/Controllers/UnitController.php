@@ -5,39 +5,56 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class UnitController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-
+    
         $data = DB::table('units')
             ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
             ->join('markets', 'units.pasar_id', '=', 'markets.id')
             ->where('unit_types.kabupaten_id', $kabupatenId)
             ->whereNull('units.deleted_at')
-            ->orderBy('units.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
-            ->orderBy('units.updated_at', 'desc') 
+            ->orderBy('units.created_at', 'desc')
+            ->orderBy('units.updated_at', 'desc')
             ->select('units.*', 'markets.nama_pasar', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
             ->paginate(5);
-
+    
         $pasar = DB::table('markets')
-                 ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-                 ->where('market_groups.kabupaten_id', $kabupatenId)
-                 ->select('markets.id', 'markets.nama_pasar')
-                 ->get();
-
+            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->select('markets.id', 'markets.nama_pasar')
+            ->get();
+    
         $jenis_unit = DB::table('unit_types')
-                      ->where('kabupaten_id', $kabupatenId)
-                      ->get();
-
-        // dd($pasar);
-
+            ->where('kabupaten_id', $kabupatenId)
+            ->get();
+    
+        if ($request->wantsJson()) {
+            if ($data->isEmpty()) {
+                $responseData = [
+                    'message' => 'No data found.',
+                    'data' => [],
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            } else {
+                $responseData = [
+                    'message' => 'Data retrieved successfully.',
+                    'data' => $data,
+                    'pasar' => $pasar,
+                    'jenis_unit' => $jenis_unit,
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            }
+        }
+    
         return view('admin.unit', compact('data', 'pasar', 'jenis_unit'));
     }
 

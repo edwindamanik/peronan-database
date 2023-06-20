@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\ObligationRetribution;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Carbon;
 
@@ -16,27 +17,42 @@ class WajibRetribusiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-
+    
         $data = DB::table('obligation_retributions')
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
             ->where('users.kabupaten_id', $kabupatenId)
             ->where('users.role', 'wajib_retribusi')
-            ->orderBy('obligation_retributions.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('obligation_retributions.created_at', 'desc')
             ->orderBy('obligation_retributions.updated_at', 'desc')
             ->select('obligation_retributions.*', 'users.nama')
             ->paginate(5);
-
+    
         $users = DB::table('users')
             ->where('role', 'wajib_retribusi')
             ->where('kabupaten_id', $kabupatenId)
             ->get();
-
-        // dd($data);
-
+    
+        if ($request->wantsJson()) {
+            if ($data->isEmpty()) {
+                $responseData = [
+                    'message' => 'No data found.',
+                    'data' => [],
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            } else {
+                $responseData = [
+                    'message' => 'Data retrieved successfully.',
+                    'data' => $data,
+                    'users' => $users,
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            }
+        }
+    
         return view('admin.wajibretribusi', compact('data', 'users'));
     }
 
