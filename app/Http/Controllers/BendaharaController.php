@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\nonharian;
 use App\Exports\TagihanExport;
 use App\Models\DailyRetribution;
-use Illuminate\Http\Request;
+// use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Deposit;
@@ -14,6 +14,7 @@ use App\Exports\laporansetor;
 use App\Exports\pembatalan;
 use Illuminate\Http\Response;
 // use Symfony\Component\HttpFoundation\Request;
+Use Request;
 
 class BendaharaController extends Controller
 {
@@ -105,8 +106,7 @@ class BendaharaController extends Controller
         }
     }
 
-    use Illuminate\Http\Request;
-    use Illuminate\Http\Response;
+
     
     public function laptagihan(Request $request)
     {
