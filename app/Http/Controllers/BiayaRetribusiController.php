@@ -11,36 +11,56 @@ class BiayaRetribusiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+  use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 
-        $data = DB::table('retribution_fees')
-            ->join('market_groups', 'retribution_fees.kelompok_pasar', '=', 'market_groups.id')
-            ->join('unit_types', 'retribution_fees.jenis_unit_id', '=', 'unit_types.id')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('unit_types.kabupaten_id', $kabupatenId)
-            ->orderBy('retribution_fees.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
-            ->orderBy('retribution_fees.updated_at', 'desc')
-            ->whereNull('retribution_fees.deleted_at')
-            ->select('retribution_fees.*', 'market_groups.id AS kelompok_pasar_id', 'market_groups.kelompok_pasar', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
-            ->paginate(5);
+public function index(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
 
-        $kelompok_pasar = DB::table('market_groups')
-            ->where('kabupaten_id', $kabupatenId)
-            ->select('market_groups.id', 'market_groups.kelompok_pasar')
-            ->get();
+    $data = DB::table('retribution_fees')
+        ->join('market_groups', 'retribution_fees.kelompok_pasar', '=', 'market_groups.id')
+        ->join('unit_types', 'retribution_fees.jenis_unit_id', '=', 'unit_types.id')
+        ->where('market_groups.kabupaten_id', $kabupatenId)
+        ->where('unit_types.kabupaten_id', $kabupatenId)
+        ->orderBy('retribution_fees.created_at', 'desc')
+        ->orderBy('retribution_fees.updated_at', 'desc')
+        ->whereNull('retribution_fees.deleted_at')
+        ->select('retribution_fees.*', 'market_groups.id AS kelompok_pasar_id', 'market_groups.kelompok_pasar', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
+        ->paginate(5);
 
-        $jenis_unit = DB::table('unit_types')
-            ->where('kabupaten_id', $kabupatenId)
-            ->select('unit_types.id', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
-            ->get();
+    $kelompok_pasar = DB::table('market_groups')
+        ->where('kabupaten_id', $kabupatenId)
+        ->select('market_groups.id', 'market_groups.kelompok_pasar')
+        ->get();
 
-        // dd($data);
+    $jenis_unit = DB::table('unit_types')
+        ->where('kabupaten_id', $kabupatenId)
+        ->select('unit_types.id', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar')
+        ->get();
 
-        return view('admin.biayaretribusi', compact('data', 'kelompok_pasar', 'jenis_unit'));
+    if ($request->wantsJson()) {
+        if ($data->isEmpty()) {
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        } else {
+            $responseData = [
+                'message' => 'Data retrieved successfully.',
+                'data' => $data,
+                'kelompok_pasar' => $kelompok_pasar,
+                'jenis_unit' => $jenis_unit,
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
     }
+
+    return view('admin.biayaretribusi', compact('data', 'kelompok_pasar', 'jenis_unit'));
+}
+
 
     /**
      * Show the form for creating a new resource.

@@ -6,28 +6,42 @@ use Illuminate\Http\Request;
 use App\Models\UnitType;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\Response;
 
 class JenisUnitController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
         $now = now();
-
+    
         $data = DB::table('unit_types')
             ->where('kabupaten_id', $kabupatenId)
             ->whereNull('unit_types.deleted_at')
-            ->orderBy('unit_types.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('unit_types.created_at', 'desc')
             ->orderBy('unit_types.updated_at', 'desc')
-
             ->paginate(5);
-
-        // dd($data);
-
+    
+        if ($request->wantsJson()) {
+            if ($data->isEmpty()) {
+                $responseData = [
+                    'message' => 'No data found.',
+                    'data' => [],
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            } else {
+                $responseData = [
+                    'message' => 'Data retrieved successfully.',
+                    'data' => $data,
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            }
+        }
+    
         return view('admin.jenisunit', compact('data'));
     }
 

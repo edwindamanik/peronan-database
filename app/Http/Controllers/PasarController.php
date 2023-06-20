@@ -6,47 +6,61 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Market;
+use Illuminate\Http\Response;
 
 class PasarController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-
+    
         $data = DB::table('markets')
             ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->orderBy('markets.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('markets.created_at', 'desc')
             ->orderBy('markets.updated_at', 'desc') 
             ->whereNull('markets.deleted_at')
-            ->orderBy('market_groups.created_at', 'desc') // Urutkan berdasarkan 'created_at' secara menurun
+            ->orderBy('market_groups.created_at', 'desc')
             ->orderBy('market_groups.updated_at', 'desc')
             ->select('markets.*', 'market_groups.kelompok_pasar')
             ->paginate(5);
-
+    
         $petugas = DB::table('users')
             ->where('users.role', 'petugas')
             ->where('kabupaten_id', $kabupatenId)
             ->get();
-
+    
         $kelompok_pasar = DB::table('market_groups')
             ->where('kabupaten_id', $kabupatenId)
             ->get();
-
+    
+        if ($data->isEmpty()) {
+            // Handle empty data scenario
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
+    
         foreach ($data as $item) {
             $petugas_pasar = DB::table('market_officers')
                 ->join('users', 'users.id', '=', 'market_officers.users_id')
                 ->select('users.nama')
                 ->where('market_officers.pasar_id', $item->id)
                 ->get();
-
+    
             $item->petugas = $petugas_pasar;
         }
-
-        // dd($petugas);
-
+    
+        $responseData = [
+            'message' => 'Data retrieved successfully.',
+            'data' => $data,
+            'petugas' => $petugas,
+            'kelompok_pasar' => $kelompok_pasar,
+        ];
+    
         return view('admin.pasar', compact('data', 'petugas', 'kelompok_pasar'));
     }
 

@@ -12,28 +12,44 @@ use App\Models\Deposit;
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\laporansetor;
 use App\Exports\pembatalan;
+use Illuminate\Http\Response;
 
 class BendaharaController extends Controller
 {
-    public function confirmDeposit()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+    public function confirmDeposit(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
 
-        $data = DB::table('deposits')
-            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
-            ->join('users', 'deposits.users_id', '=', 'users.id')
-            ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id') // tambahkan join untuk users pada market_officers
-            ->whereIn('deposits.status', ['belum_setor', 'menunggu_konfirmasi'])
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'market_officers.*', 'officer_users.nama AS officer_name') // tambahkan officer_users.nama untuk mendapatkan nama pengguna pada market_officers
-            ->get();
-        // dd($data);
+    $data = DB::table('deposits')
+        ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+        ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+        ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
+        ->join('users', 'deposits.users_id', '=', 'users.id')
+        ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
+        ->whereIn('deposits.status', ['belum_setor', 'menunggu_konfirmasi'])
+        ->where('market_groups.kabupaten_id', $kabupatenId)
+        ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'market_officers.*', 'officer_users.nama AS officer_name')
+        ->get();
 
-        return view('bendahara.konfirmasipenyetoran', compact('data'));
+    if ($request->wantsJson()) {
+        if ($data->isEmpty()) {
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        } else {
+            $responseData = [
+                'message' => 'Data retrieved successfully.',
+                'data' => $data,
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
     }
+
+    return view('bendahara.konfirmasipenyetoran', compact('data'));
+}
 
     public function updateDeposit()
     {
@@ -88,11 +104,14 @@ class BendaharaController extends Controller
         }
     }
 
-    public function laptagihan()
+    use Illuminate\Http\Request;
+    use Illuminate\Http\Response;
+    
+    public function laptagihan(Request $request)
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-
+    
         $ret = DB::table('daily_retributions')
             ->join('units', 'units.id', '=', 'daily_retributions.unit_id')
             ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
@@ -103,30 +122,60 @@ class BendaharaController extends Controller
             ->where('market_groups.kabupaten_id', $kabupatenId)
             ->select('daily_retributions.*', 'markets.*', 'users.nama', 'officer.nama AS officers', 'units.*')
             ->get();
-
-
-
+    
+        if ($request->wantsJson()) {
+            if ($ret->isEmpty()) {
+                $responseData = [
+                    'message' => 'No data found.',
+                    'data' => [],
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            } else {
+                $responseData = [
+                    'message' => 'Data retrieved successfully.',
+                    'data' => $ret,
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            }
+        }
+    
         return view('bendahara.laporantagihan', compact('ret'));
+    }
+    
 
+    public function konfirbatal(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
+
+    $data = DB::table('daily_retributions')
+        ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
+        ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+        ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
+        ->join('users', 'users.id', '=', 'market_officers.users_id')
+        ->where('market_groups.kabupaten_id', $kabupatenId)
+        ->where('daily_retributions.status', '=',  '1')
+        ->select('daily_retributions.*', 'markets.*', 'users.nama')
+        ->get();
+
+    if ($request->wantsJson()) {
+        if ($data->isEmpty()) {
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        } else {
+            $responseData = [
+                'message' => 'Data retrieved successfully.',
+                'data' => $data,
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
     }
 
-    public function konfirbatal()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
-
-        $data = DB::table('daily_retributions')
-            ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
-            ->join('users', 'users.id', '=', 'market_officers.users_id')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.status', '=',  '1')
-            ->select('daily_retributions.*', 'markets.*', 'users.nama')
-            ->get();
-
-        return view('bendahara.konfirmasipembatalan', compact('data'));
-    }
+    return view('bendahara.konfirmasipembatalan', compact('data'));
+}
     public function batalkan($batalId)
     {
         // Temukan deposit berdasarkan ID
@@ -160,44 +209,75 @@ class BendaharaController extends Controller
     }
 
 
-    public function laporbatal()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+    public function laporbatal(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
 
-        $data = DB::table('daily_retributions')
-            ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
-            ->join('users', 'users.id', '=', 'market_officers.users_id')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.status', '=', '2')
-            ->select('daily_retributions.*', 'markets.*', 'users.nama')
-            ->get();
+    $data = DB::table('daily_retributions')
+        ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
+        ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+        ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
+        ->join('users', 'users.id', '=', 'market_officers.users_id')
+        ->where('market_groups.kabupaten_id', $kabupatenId)
+        ->where('daily_retributions.status', '=', '2')
+        ->select('daily_retributions.*', 'markets.*', 'users.nama')
+        ->get();
 
-        return view('bendahara.laporanpembatalan', compact('data'));
+    if ($request->wantsJson()) {
+        if ($data->isEmpty()) {
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        } else {
+            $responseData = [
+                'message' => 'Data retrieved successfully.',
+                'data' => $data,
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
     }
 
+    return view('bendahara.laporanpembatalan', compact('data'));
+}
 
 
-    public function lapsetor()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+public function lapsetor(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
 
-        $data = DB::table('deposits')
-            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('users', 'deposits.users_id', '=', 'users.id')
-            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
-            ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
-            ->where('deposits.status', 'disetujui')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
-            ->get();
+    $data = DB::table('deposits')
+        ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+        ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
+        ->join('users', 'deposits.users_id', '=', 'users.id')
+        ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
+        ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
+        ->where('deposits.status', 'disetujui')
+        ->where('market_groups.kabupaten_id', $kabupatenId)
+        ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
+        ->get();
 
-        return view('bendahara.laporansetor', compact('data'));
+    if ($request->wantsJson()) {
+        if ($data->isEmpty()) {
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        } else {
+            $responseData = [
+                'message' => 'Data retrieved successfully.',
+                'data' => $data,
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
     }
+
+    return view('bendahara.laporansetor', compact('data'));
+}
 
     public function export(Request $request)
     {
@@ -258,23 +338,38 @@ class BendaharaController extends Controller
     }
 
 
-    public function retribusi()
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+    public function retribusi(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
 
-        $data = DB::table('mandatory_retributions')
-            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
-            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
-            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
-            ->join('units', 'units.id', '=', 'contracts.unit_id')
-            ->join('markets', 'markets.id', '=', 'units.pasar_id')
-            ->where('mandatory_retributions.status_pembayaran','=', 'belum_dibayar')
-            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
-            ->get();
+    $data = DB::table('mandatory_retributions')
+        ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+        ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+        ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+        ->join('units', 'units.id', '=', 'contracts.unit_id')
+        ->join('markets', 'markets.id', '=', 'units.pasar_id')
+        ->where('mandatory_retributions.status_pembayaran','=', 'belum_dibayar')
+        ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
+        ->get();
 
-
-        return view('bendahara.retribusiharian', compact('data'));
+    if ($request->wantsJson()) {
+        if ($data->isEmpty()) {
+            $responseData = [
+                'message' => 'No data found.',
+                'data' => [],
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        } else {
+            $responseData = [
+                'message' => 'Data retrieved successfully.',
+                'data' => $data,
+            ];
+            return response()->json($responseData, Response::HTTP_OK);
+        }
     }
+
+    return view('bendahara.retribusiharian', compact('data'));
+}
 
 }
