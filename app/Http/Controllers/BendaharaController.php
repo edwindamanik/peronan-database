@@ -34,21 +34,7 @@ class BendaharaController extends Controller
         ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'market_officers.*', 'officer_users.nama AS officer_name')
         ->get();
 
-    if ($request->wantsJson()) {
-        if ($data->isEmpty()) {
-            $responseData = [
-                'message' => 'No data found.',
-                'data' => [],
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        } else {
-            $responseData = [
-                'message' => 'Data retrieved successfully.',
-                'data' => $data,
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        }
-    }
+   
 
     return view('bendahara.konfirmasipenyetoran', compact('data'));
 }
@@ -159,21 +145,7 @@ class BendaharaController extends Controller
         ->select('daily_retributions.*', 'markets.*', 'users.nama')
         ->get();
 
-    if ($request->wantsJson()) {
-        if ($data->isEmpty()) {
-            $responseData = [
-                'message' => 'No data found.',
-                'data' => [],
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        } else {
-            $responseData = [
-                'message' => 'Data retrieved successfully.',
-                'data' => $data,
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        }
-    }
+   
 
     return view('bendahara.konfirmasipembatalan', compact('data'));
 }
@@ -225,21 +197,7 @@ class BendaharaController extends Controller
         ->select('daily_retributions.*', 'markets.*', 'users.nama')
         ->get();
 
-    if ($request->wantsJson()) {
-        if ($data->isEmpty()) {
-            $responseData = [
-                'message' => 'No data found.',
-                'data' => [],
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        } else {
-            $responseData = [
-                'message' => 'Data retrieved successfully.',
-                'data' => $data,
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        }
-    }
+   
 
     return view('bendahara.laporanpembatalan', compact('data'));
 }
@@ -261,21 +219,7 @@ public function lapsetor(Request $request)
         ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
         ->get();
 
-    if ($request->wantsJson()) {
-        if ($data->isEmpty()) {
-            $responseData = [
-                'message' => 'No data found.',
-                'data' => [],
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        } else {
-            $responseData = [
-                'message' => 'Data retrieved successfully.',
-                'data' => $data,
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        }
-    }
+   
 
     return view('bendahara.laporansetor', compact('data'));
 }
@@ -354,21 +298,7 @@ public function lapsetor(Request $request)
         ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
         ->get();
 
-    if ($request->wantsJson()) {
-        if ($data->isEmpty()) {
-            $responseData = [
-                'message' => 'No data found.',
-                'data' => [],
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        } else {
-            $responseData = [
-                'message' => 'Data retrieved successfully.',
-                'data' => $data,
-            ];
-            return response()->json($responseData, Response::HTTP_OK);
-        }
-    }
+   
 
     return view('bendahara.retribusiharian', compact('data'));
 }
