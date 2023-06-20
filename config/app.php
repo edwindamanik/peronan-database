@@ -214,6 +214,7 @@ return [
         // 'ExampleClass' => App\Example\ExampleClass::class,
 
         'Excel' => Maatwebsite\Excel\Facades\Excel::class,
+        'Request'   => Illuminate\Support\Facades\Request::class,
 
     ])->toArray(),
 
