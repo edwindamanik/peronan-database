@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Exports\nonharian;
 use App\Exports\TagihanExport;
 use App\Models\DailyRetribution;
-// use Illuminate\Http\Request;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Deposit;
@@ -13,7 +13,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\laporansetor;
 use App\Exports\pembatalan;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Request;
+// use Illuminate\Support\Facades\Request;
 // use Symfony\Component\HttpFoundation\Request;
 // Use Request;
 
