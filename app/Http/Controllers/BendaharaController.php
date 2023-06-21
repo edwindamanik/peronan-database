@@ -13,8 +13,9 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\laporansetor;
 use App\Exports\pembatalan;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Request;
 // use Symfony\Component\HttpFoundation\Request;
-Use Request;
+// Use Request;
 
 class BendaharaController extends Controller
 {
