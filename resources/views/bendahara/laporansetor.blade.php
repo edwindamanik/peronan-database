@@ -81,7 +81,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
-                                        <td>{{ $item->officer_name }}</td>
+                                        <td>{{ $item->nama }}</td>
                                         <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
                                         <td>{{ $item->penyetoran_melalui }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal_penyetoran)->format('d M Y') }}

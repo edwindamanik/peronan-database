@@ -69,7 +69,7 @@
                                     <th>No Bukti Bayar</th>
                                     <th>Pasar</th>
                                     <th>Petugas</th>
-                                    <th>jumlah unit</th>
+                                    <th>Unit</th>
                                     <th>Tanggal </th>
                                     <th>Biaya retribusi</th>
                                 </tr>
@@ -81,7 +81,7 @@
                                         <td>{{ $item->no_bukti_pembayaran }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
                                         <td>{{ $item->nama }}</td>
-                                        <td>ds</td>
+                                        <td>{{ $item->no_unit }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
                                         <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
 

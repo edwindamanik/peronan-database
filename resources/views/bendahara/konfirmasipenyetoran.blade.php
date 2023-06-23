@@ -77,7 +77,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
-                                        <td>{{ $item->officer_name }}</td>
+                                        <td>{{ $item->nama }}</td>
 
                                         <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }}</td>
                                         <td>{{ $item->penyetoran_melalui }}</td>
@@ -93,14 +93,14 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($item->status !== 'belum_setor')
-                                                <button type="submit" class="btn btn-block detail-button"
-                                                    style="background-color:#192C58; color:white;" data-toggle="modal"
-                                                    data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
+                                            @if ($item->status == 'disetujui')
+                                                <button type="button" disabled class="btn btn-block"
+                                                style="background-color:#192C58; color:white;"
+                                                disabled>Konfirmasi</button>   
                                             @else
-                                                <button type="button" class="btn btn-block"
-                                                    style="background-color:#192C58; color:white;"
-                                                    disabled>Konfirmasi</button>
+                                                <button type="submit" class="btn btn-block detail-button"
+                                                style="background-color:#192C58; color:white;" data-toggle="modal"
+                                                data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
                                             @endif
                                         </td>
 
@@ -165,7 +165,7 @@
                                 </tr>
                                 <tr>
                                     <th>Bukti Penyetoran</th>
-                                    <td><a href="#" class="image-link" >Lihat KTP</a></td>
+                                    <td><a href="#" class="image-link" >Lihat Bukti Setoran</a></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -240,7 +240,7 @@
                 var jsonData = $(this).data('jsondata');
     
                 $('#modal-property1').text(jsonData.nama_pasar);
-                $('#modal-property2').text(jsonData.officer_name);
+                $('#modal-property2').text(jsonData.nama);
                 $('#modal-property3').text(jsonData.jumlah_setoran);
                 $('#modal-property4').text(jsonData.penyetoran_melalui);
                 $('#modal-property5').text(jsonData.tanggal_disetor);
@@ -255,7 +255,7 @@
         $('.image-link').click(function (e) {
             e.preventDefault();
             var jsonData = $(this).data('jsondata');
-            var imageUrl = 'http://127.0.0.1:8000/ktp/' + $(this).data('url');
+            var imageUrl = 'http://127.0.0.1:8000/images/' + $(this).data('url');
             $('#modalImage').attr('src', imageUrl);
             $('#myModalKtp').modal('show');
         });

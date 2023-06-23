@@ -13,12 +13,12 @@ return new class extends Migration
     {
         Schema::create('va_payments', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('payment_id');
+            $table->bigInteger('reference_number');
             $table->date('date');
             $table->string('original_request_id');
             $table->string('transaksi_id');
-            $table->string('terminal_id');
-            $table->integer('invoice_number');
+            $table->string('channel_id');
+            $table->string('invoice_number');
             $table->integer('amount');
             $table->string('virtual_account_number');
             $table->enum('status', ['menunggu', 'sudah_setor', 'belum_setor', 'ditolak']);

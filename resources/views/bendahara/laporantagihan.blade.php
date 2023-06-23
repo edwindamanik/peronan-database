@@ -72,7 +72,6 @@
                                     <th>No Unit</th>
                                     <th>Retribusi</th>
                                     <th>Tanggal Transaksi</th>
-                                    <th>Status</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -81,15 +80,10 @@
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->no_bukti_pembayaran }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
-                                        <td>{{ $item->officers }}</td>
+                                        <td>{{ $item->nama }}</td>
                                         <td>{{ $item->no_unit }}</td>
                                         <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
-                                        @if ($item->status == 1)
-                                            <td>Sudah Dibayar</td>
-                                        @else
-                                            <td>Belum Dibayar</td>
-                                        @endif
                                         {{-- <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
                                 <td>{{ $item->penyetoran_melalui }}</td>
                                 <td>{{ \Carbon\Carbon::parse($item->tanggal_penyetoran)->format('d M Y') }}

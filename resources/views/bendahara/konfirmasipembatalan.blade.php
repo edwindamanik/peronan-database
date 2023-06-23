@@ -82,7 +82,7 @@
 
                                         <td>
                                             <div class="d-flex">
-                                                @if ($item->status !== '0')
+                                                @if ($item->status == 'batal')
                                                     <button type="submit" class="btn  detail-button mr-2"
                                                         style="background-color:#192C58; color:white;" data-toggle="modal"
                                                         data-target="#myModalDetail"
