@@ -59,6 +59,16 @@
                                 </div>
                             </div>
                         </div>
+
+                        <form method="GET" action="{{ route('data.limit') }}">
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                        
+                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#192C58; color:white;">Tunai</button>
+                            <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#192C58; color:white;">Non Tunai</button>
+                        </form>
+                        
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
@@ -77,12 +87,10 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
-                                        <td>{{ $item->officer_name }}</td>
-
+                                        <td>{{ $item->nama }}</td>
                                         <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }}</td>
                                         <td>{{ $item->penyetoran_melalui }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}
-                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}</td>
                                         <td>
                                             @if ($item->status == 'belum_setor')
                                                 <p style="text-decoration: underline; color:#243763;">Belum Disetor</p>
@@ -93,26 +101,19 @@
                                             @endif
                                         </td>
                                         <td>
-                                            @if ($item->status !== 'belum_setor')
-                                                <button type="submit" class="btn btn-block detail-button"
-                                                    style="background-color:#192C58; color:white;" data-toggle="modal"
-                                                    data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
+                                            @if ($item->status == 'disetujui')
+                                                <button type="button" disabled class="btn btn-block" style="background-color:#192C58; color:white;" disabled>Konfirmasi</button>
+                                            @elseif($item->status == 'belum_setor')
+                                                <button type="button" disabled class="btn btn-block" style="background-color:#192C58; color:white;" disabled>Konfirmasi</button>
                                             @else
-                                                <button type="button" class="btn btn-block"
-                                                    style="background-color:#192C58; color:white;"
-                                                    disabled>Konfirmasi</button>
+                                                <button type="submit" class="btn btn-block detail-button" style="background-color:#192C58; color:white;" data-toggle="modal" data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
                                             @endif
                                         </td>
-
-                                        {{-- <td>
-                                            <button type="submit" class="btn btn-block"
-                                            style="background-color:#192C58; color:white;" data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Konfirmasi</button>
-                                        </td> --}}
-
                                     </tr>
                                 @endforeach
                             </tbody>
                         </table>
+                        
                         {{-- <div class="d-flex justify-content-end">
                         {{ $data->appends(['search' => request()->input('search')])->links('pagination::bootstrap-4') }}
                 </div> --}}
@@ -121,8 +122,8 @@
             </div>
         </div>
 
-         {{-- MODAL DETAIL --}}
-         <div class="modal fade" id="myModalDetail">
+        {{-- MODAL DETAIL --}}
+        <div class="modal fade" id="myModalDetail">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- Modal header -->
@@ -130,7 +131,7 @@
                         <h5 class="modal-title">Rincian Permohonan Persetujuan Setoran</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
-        
+
                     <!-- Modal body -->
                     <div class="modal-body">
                         <table class="table table-bordered table-striped">
@@ -165,12 +166,12 @@
                                 </tr>
                                 <tr>
                                     <th>Bukti Penyetoran</th>
-                                    <td><a href="#" class="image-link" >Lihat KTP</a></td>
+                                    <td><a href="#" class="image-link">Lihat Bukti Setoran</a></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-        
+
                     <div class="modal-footer d-flex justify-content-center">
                         <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
                             @csrf
@@ -179,14 +180,14 @@
                         </form>
                         <form action="{{ route('tolak-deposit', ['depositId' => $item->id]) }}" method="POST">
                             @csrf
-                            <button type="submit" class="btn btn-block btn-warning" style=" color:white;"
-                                data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Menunda</button>
+                            <button type="submit" class="btn btn-block btn-danger" style=" color:white;"
+                                data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Tolak</button>
                         </form>
                     </div>
                 </div>
             </div>
         </div>
-        
+
 
         {{-- MODAL HAPUS --}}
         <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
@@ -218,52 +219,53 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Gambar KTP</h5>
+                        <h5 class="modal-title">Bukti</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
                     </div>
                     <div class="modal-body">
                         <div class="text-center">
-                            <img src="" alt="Image" id="modalImage" style="max-width: 100%; max-height: 400px;">
+                            <img src="" alt="Image" id="modalImage"
+                                style="max-width: 100%; max-height: 400px;">
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        
-        
+
+
     </main>
     <script>
         $(document).ready(function() {
             $('.detail-button').click(function() {
                 var jsonData = $(this).data('jsondata');
-    
+
                 $('#modal-property1').text(jsonData.nama_pasar);
-                $('#modal-property2').text(jsonData.officer_name);
+                $('#modal-property2').text(jsonData.nama);
                 $('#modal-property3').text(jsonData.jumlah_setoran);
                 $('#modal-property4').text(jsonData.penyetoran_melalui);
                 $('#modal-property5').text(jsonData.tanggal_disetor);
                 $('#modal-property6').text(jsonData.tanggal_penyetoran);
                 $('#modal-property7').text(jsonData.status);
                 $('#modal-property8').text(jsonData.bukti_setoran);
-                $('.image-link').attr('data-url',  jsonData.bukti_setoran);
+                $('.image-link').attr('data-url', jsonData.bukti_setoran);
             });
         });
 
-        $(document).ready(function () {
-        $('.image-link').click(function (e) {
-            e.preventDefault();
-            var jsonData = $(this).data('jsondata');
-            var imageUrl = 'http://127.0.0.1:8000/ktp/' + $(this).data('url');
-            $('#modalImage').attr('src', imageUrl);
-            $('#myModalKtp').modal('show');
+        $(document).ready(function() {
+            $('.image-link').click(function(e) {
+                e.preventDefault();
+                var jsonData = $(this).data('jsondata');
+                var imageUrl = 'http://127.0.0.1:8000/images/' + $(this).data('url');
+                $('#modalImage').attr('src', imageUrl);
+                $('#myModalKtp').modal('show');
+            });
         });
-    });
     </script>
-    
-  
-   
+
+
+
 
 
     <script>
@@ -282,7 +284,7 @@
             });
         });
     </script>
-    
+
     <script>
         document.getElementById('id="btnKonfirmasi{{ $item->id }}"').addEventListener('click', function() {
             // Ambil ID deposit dari tombol yang diklik

@@ -28,7 +28,7 @@ class RekonController extends Controller
             ->select(DB::raw('SUM(mandatory_retributions.total_retribusi) AS total_retribusii'))
             ->get();
 
-            $you = DB::table('deposits')
+        $you = DB::table('deposits')
             ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
             ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
             ->join('users', 'deposits.users_id', '=', 'users.id')

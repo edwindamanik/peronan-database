@@ -81,7 +81,7 @@
                                         <td>{{ $item->no_tagihan }}</td>
                                         <td>{{ $item->nama }}</td>
                                         <td>{{ $item->no_unit }}</td>
-                                        <td>Rp {{ number_format($item->total_retribusi, 0, ',', '.') }}</td>
+                                        <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->jatuh_tempo)->format('d M Y') }}</td>
                                         {{-- <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }},-</td>
                                 <td>{{ $item->penyetoran_melalui }}</td>

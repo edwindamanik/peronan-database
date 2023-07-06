@@ -315,6 +315,61 @@ class MandatoryRetributionController extends Controller
         }
     }
 
+    public function cashlessPaymentQris(Request $request)
+    {
+        try {
+            $randomString = Str::uuid()->toString();
+            $formattedString = substr($randomString, 0, 13) . 'l';
+
+            $clientId = env("DOKU_CLIENT_ID");
+            $requestId = $formattedString;
+            $requestDate = gmdate('Y-m-d\TH:i:s\Z');
+            $targetPath = "/checkout/v1/payment"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
+            // $targetPath = "/mandiri-virtual-account/v2/payment-code"; // For merchant request to Jokul, use Jokul path here. For HTTP Notification, use merchant path here
+            $secretKey = env("DOKU_SECRET_KEY");
+            $requestBody = $request->json()->all();
+
+            // Generate Digest
+            $digestValue = base64_encode(hash('sha256', json_encode($requestBody), true));
+
+            // Prepare Signature Component
+            $componentSignature = "Client-Id:" . $clientId . "\n" .
+                "Request-Id:" . $requestId . "\n" .
+                "Request-Timestamp:" . $requestDate . "\n" .
+                "Request-Target:" . $targetPath . "\n" .
+                "Digest:" . $digestValue;
+
+            // Calculate HMAC-SHA256 base64 from all the components above
+            $signature = base64_encode(hash_hmac('sha256', $componentSignature, $secretKey, true));
+
+            // Sample of Usage
+            $headerSignature =  "Client-Id:" . $clientId . "\n" .
+                "Request-Id:" . $requestId . "\n" .
+                "Request-Timestamp:" . $requestDate . "\n" .
+                // Prepend encoded result with algorithm info HMACSHA256=
+                "Signature:" . "HMACSHA256=" . $signature;
+
+            // Send POST request to API endpoint
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Client-Id' => $clientId,
+                'Request-Id' => $requestId,
+                'Request-Timestamp' => $requestDate,
+                'Signature' => 'HMACSHA256=' . $signature,
+            ])->post("https://api.doku.com/checkout/v1/payment", $requestBody);
+            // ])->post("https://api-sandbox.doku.com/mandiri-virtual-account/v2/payment-code", $requestBody);
+
+            $responseJson = json_decode($response->body(), true);
+            $httpCode = $response->status();
+
+            return response()->json([
+                'data' => $responseJson,
+            ]);
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
     public function getRetribusiWr($user_id) {
         $bulan_sebelumnya = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -366,55 +421,75 @@ class MandatoryRetributionController extends Controller
     }
 
     public function notifications(Request $request) {
-        $notificationHeader = getallheaders();
-        $notificationBody = file_get_contents('php://input');
-        $notificationPath = '/api/after-payments'; // Adjust according to your notification path
-        $secretKey = 'SK-3ut5p5VDAKku2Dqd541q'; // Adjust according to your secret key
-    
-        $digest = base64_encode(hash('sha256', $notificationBody, true));
-        $rawSignature = "Client-Id:" . $notificationHeader['Client-Id'] . "\n"
-            . "Request-Id:" . $notificationHeader['Request-Id'] . "\n"
-            . "Request-Timestamp:" . $notificationHeader['Request-Timestamp'] . "\n"
-            . "Request-Target:" . $notificationPath . "\n"
-            . "Digest:" . $digest;
-    
-        $signature = base64_encode(hash_hmac('sha256', $rawSignature, $secretKey, true));
-        $finalSignature = 'HMACSHA256=' . $signature;
-    
-        if ($finalSignature == $notificationHeader['Signature']) {
-            // TODO: Process if Signature is Valid
+        try {
+            $notificationHeader = getallheaders();
+            $notificationBody = file_get_contents('php://input');
+            $notificationPath = '/api/after-payments'; // Adjust according to your notification path
+            $secretKey = env("DOKU_SECRET_KEY"); // Adjust according to your secret key
+        
+            $digest = base64_encode(hash('sha256', $notificationBody, true));
+            $rawSignature = "Client-Id:" . $notificationHeader['Client-Id'] . "\n"
+                . "Request-Id:" . $notificationHeader['Request-Id'] . "\n"
+                . "Request-Timestamp:" . $notificationHeader['Request-Timestamp'] . "\n"
+                . "Request-Target:" . $notificationPath . "\n"
+                . "Digest:" . $digest;
+        
+            $signature = base64_encode(hash_hmac('sha256', $rawSignature, $secretKey, true));
+            $finalSignature = 'HMACSHA256=' . $signature;
 
-            if ($transactionStatus = $request->input('transaction.status')) {
-                $invoiceNumber = $request->input('order.invoice_number');
-                $finalNumber = substr($invoiceNumber, -2);
-    
-                if ($transactionStatus === 'SUCCESS') {
-                    $currentMonth = Carbon::now()->format('m');
-                    $currentDate = Carbon::now()->format('Y-m-d');
-                
-                    DB::table('mandatory_retributions')
-                        ->where('status_pembayaran', 'belum_dibayar')
-                        ->where('contract_id', $finalNumber)
-                        ->where(function ($query) use ($currentMonth, $currentDate) {
-                            $query->where(function ($query) use ($currentMonth, $currentDate) {
-                                $query->whereMonth('jatuh_tempo', '<', $currentMonth)
-                                    ->orWhere(function ($query) use ($currentMonth) {
-                                        $query->whereMonth('jatuh_tempo', $currentMonth)
-                                            ->where('jatuh_tempo', '<=', Carbon::now()->format('Y-m-d'));
-                                    });
+            // return response()->json(['data' => $finalSignature]);
+        
+            if ($finalSignature == $notificationHeader['Signature']) {
+                // TODO: Process if Signature is Valid
+
+                if ($transactionStatus = $request->input('transaction.status')) {
+                    $invoiceNumber = $request->input('order.invoice_number');
+                    $finalNumber = substr($invoiceNumber, -2);
+        
+                    if ($transactionStatus === 'SUCCESS') {
+                        $currentMonth = Carbon::now()->format('m');
+                        $currentDate = Carbon::now()->format('Y-m-d');
+                    
+                        DB::table('mandatory_retributions')
+                            ->where('status_pembayaran', 'belum_dibayar')
+                            ->where('contract_id', $finalNumber)
+                            ->where(function ($query) use ($currentMonth, $currentDate) {
+                                $query->where(function ($query) use ($currentMonth, $currentDate) {
+                                    $query->whereMonth('jatuh_tempo', '<', $currentMonth)
+                                        ->orWhere(function ($query) use ($currentMonth) {
+                                            $query->whereMonth('jatuh_tempo', $currentMonth)
+                                                ->where('jatuh_tempo', '<=', Carbon::now()->format('Y-m-d'));
+                                        });
+                                })
+                                ->orWhereMonth('jatuh_tempo', $currentMonth); // Menambahkan kondisi ini
                             })
-                            ->orWhereMonth('jatuh_tempo', $currentMonth); // Menambahkan kondisi ini
-                        })
-                        ->update(['status_pembayaran' => 'sudah_dibayar', 'total_retribusi' => $request->input('order.amount'), 'metode_pembayaran' => $request->input('service.id'), 'tanggal_pembayaran' => $currentDate]);
-                }                
-            }
+                            ->update(['status_pembayaran' => 'sudah_dibayar', 'total_retribusi' => $request->input('order.amount'), 'metode_pembayaran' => $request->input('service.id'), 'tanggal_pembayaran' => $currentDate]);
 
-            return response('OK', 200)->header('Content-Type', 'text/plain');
-    
-            // TODO: Do update the transaction status based on the `transaction.status`
-        } else {
-            // TODO: Response with 400 errors for Invalid Signature
-            return response('Invalid Signature', 400)->header('Content-Type', 'text/plain');
+                        if($request->input('service.id') == 'VIRTUAL_ACCOUNT') {
+                            DB::table('va_payments')->insert([
+                                'reference_number' => $request->input('virtual_account_payment.reference_number'),
+                                'date' => Carbon::createFromFormat('YmdHis', $request->input('virtual_account_payment.date'))->format('Y-m-d H:i:s'),
+                                'original_request_id' => $request->input('transaction.original_request_id'),
+                                'transaksi_id' => $request->input('virtual_account_payment.identifier.0.value'),
+                                'channel_id' => $request->input('virtual_account_payment.identifier.1.value'),
+                                'invoice_number' => $request->input('order.invoice_number'),
+                                'amount' => $request->input('order.amount'),
+                                'virtual_account_number' => $request->input('virtual_account_info.virtual_account_number'),
+                                'status' => 'menunggu'
+                            ]);
+                        }
+                    }                
+                }
+
+                return response('OK', 200)->header('Content-Type', 'text/plain');
+        
+                // TODO: Do update the transaction status based on the `transaction.status`
+            } else {
+                // TODO: Response with 400 errors for Invalid Signature
+                return response('Invalid Signature', 400)->header('Content-Type', 'text/plain');
+            }
+        } catch (\Exception $e) {
+            return $e->getMessage();
         }
 
     }

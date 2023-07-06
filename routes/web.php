@@ -80,14 +80,15 @@ Route::get('/remove-user/{id}', [AuthController::class, 'removeUser']);
 Route::get('/pengaturan', [pengaturancontroller::class, 'index']);
 Route::post('/pengaturan/update/{id}', [pengaturancontroller::class, 'update']);
 
-Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
+// Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit']);
+Route::get('/konfirmasi-setoran', [BendaharaController::class, 'confirmDeposit'])->name('data.limit');
 Route::post('/setor-deposit/{depositId}', [BendaharaController::class, 'setorDeposit'])->name('setor-deposit');
 Route::post('/tolak-deposit/{depositId}', [BendaharaController::class, 'tolakdeposit'])->name('tolak-deposit');
 
 
 
 
-Route::get('/laporansetor', [BendaharaController::class, 'lapsetor']);
+Route::get('/laporansetor', [BendaharaController::class, 'lapsetor'])->name('setor.limit');;
 
 Route::get('/setor/export_excel', [BendaharaController::class, 'export'])->name('export.setor');
 
@@ -103,8 +104,8 @@ Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
 
 Route::get('/nonharian', [BendaharaController::class, 'retribusi']);
 
-Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal']);
-Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal']);
+Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal'])->name('batal.limit');
+Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal'])->name('lapba.limit');
 
 
 

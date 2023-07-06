@@ -62,6 +62,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <form method="GET" action="{{ route('lapba.limit') }}">
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                        
+                        </form>
+
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
@@ -69,7 +77,7 @@
                                     <th>No Bukti Bayar</th>
                                     <th>Pasar</th>
                                     <th>Petugas</th>
-                                    <th>jumlah unit</th>
+                                    <th>Unit</th>
                                     <th>Tanggal </th>
                                     <th>Biaya retribusi</th>
                                 </tr>
@@ -81,7 +89,7 @@
                                         <td>{{ $item->no_bukti_pembayaran }}</td>
                                         <td>{{ $item->nama_pasar }}</td>
                                         <td>{{ $item->nama }}</td>
-                                        <td>ds</td>
+                                        <td>{{ $item->no_unit }}</td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
                                         <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
 

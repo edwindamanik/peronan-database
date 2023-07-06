@@ -120,6 +120,9 @@ Route::get('user/{id}', [App\Http\Controllers\API\AuthController::class, 'userDe
 // API UNTUK PAYMENT GATEWAY
 Route::post('/payment', [App\Http\Controllers\API\MandatoryRetributionController::class, 'cashlessPayment']);
 
+// API UNTUK PAYMENT GATEWAY QRIS
+Route::post('/payment/qris', [App\Http\Controllers\API\MandatoryRetributionController::class, 'cashlessPaymentQris']);
+
 // API UNTUK MENAMPILKAN TAGIHAN NON HARIAN WAJIB RETRIBUSI
 Route::get('/retribution-wr/{user_id}', [App\Http\Controllers\API\MandatoryRetributionController::class, 'getRetribusiWr']);
 
