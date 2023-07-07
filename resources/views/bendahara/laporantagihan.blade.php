@@ -62,6 +62,17 @@
                                 </div>
                             </div>
                         </div>
+
+                        
+                        <form method="GET" action="{{ route('tagihan.limit') }}">
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                        
+                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#192C58; color:white;">Tunai</button>
+                            <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#192C58; color:white;">Non Tunai</button>
+                        </form>
+
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>

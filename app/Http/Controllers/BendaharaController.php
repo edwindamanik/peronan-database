@@ -151,15 +151,26 @@ class BendaharaController extends Controller
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
 
-        $ret = DB::table('daily_retributions')
+        $limit = $request->input('limit', 10);
+        $penyetoranMelalui = $request->input('penyetoran_melalui', null);
+
+        $query = DB::table('daily_retributions')
             ->join('deposits', 'deposits.id', '=', 'daily_retributions.deposit_id')
             ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
             ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
             ->join('users', 'users.id', '=', 'deposits.users_id')
             ->join('units', 'units.id', '=', 'daily_retributions.unit_id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('daily_retributions.status', 'sudah_bayar')
-            ->select('daily_retributions.id', 'daily_retributions.no_bukti_pembayaran', 'markets.nama_pasar', 'users.nama', 'units.no_unit', 'daily_retributions.tanggal', 'daily_retributions.biaya_retribusi', 'markets.id AS pasar_id')
+            ->where('daily_retributions.status', 'sudah_bayar');
+
+        if ($penyetoranMelalui === 'tunai') {
+            $query->where('deposits.penyetoran_melalui', 'langsung');
+        } elseif ($penyetoranMelalui === 'nontunai') {
+            $query->where('deposits.penyetoran_melalui', 'transfer_bank');
+        }
+
+        $ret = $query->select('daily_retributions.id', 'daily_retributions.no_bukti_pembayaran', 'markets.nama_pasar', 'users.nama', 'units.no_unit', 'daily_retributions.tanggal', 'daily_retributions.biaya_retribusi', 'markets.id AS pasar_id')
+            ->take($limit)
             ->get();
 
         if ($request->wantsJson()) {
@@ -180,7 +191,7 @@ class BendaharaController extends Controller
 
         // dd($ret);
 
-        return view('bendahara.laporantagihan', compact('ret'));
+        return view('bendahara.laporantagihan', compact('ret', 'limit', 'penyetoranMelalui'));
     }
 
 
@@ -207,7 +218,7 @@ class BendaharaController extends Controller
 
         // dd($data);
 
-        return view('bendahara.konfirmasipembatalan', compact('data','limit'));
+        return view('bendahara.konfirmasipembatalan', compact('data', 'limit'));
     }
     public function batalkan($batalId)
     {
@@ -266,7 +277,7 @@ class BendaharaController extends Controller
 
         // dd($data);
 
-        return view('bendahara.laporanpembatalan', compact('data','limit'));
+        return view('bendahara.laporanpembatalan', compact('data', 'limit'));
     }
 
 
@@ -367,6 +378,8 @@ class BendaharaController extends Controller
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
 
+        $limit = $request->input('limit', 10);
+
         $today = Carbon::now()->endOfMonth()->format('Y-m-d');
 
         $data = DB::table('mandatory_retributions')
@@ -380,13 +393,14 @@ class BendaharaController extends Controller
             ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
             ->where('mandatory_retributions.jatuh_tempo', $today)
             ->select('mandatory_retributions.no_tagihan', 'users.nama', 'units.no_unit', 'mandatory_retributions.biaya_retribusi', 'mandatory_retributions.jatuh_tempo', 'markets.id as pasar_id', 'markets.nama_pasar')
+            ->take($limit)
             ->get();
 
 
 
         // dd($data);
 
-        return view('bendahara.retribusiharian', compact('data'));
+        return view('bendahara.retribusiharian', compact('data','limit'));
     }
 
 }

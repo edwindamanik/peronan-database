@@ -63,6 +63,13 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <form method="GET" action="{{ route('non.limit') }}">
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                        
+                        </form>
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>

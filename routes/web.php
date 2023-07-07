@@ -100,9 +100,9 @@ Route::get('/tagihan/export_excel', [BendaharaController::class, 'exportbukti'])
 Route::get('/harian/export_excel', [BendaharaController::class, 'exportharian'])->name('harian.batal');
 
 
-Route::get('/tagihan', [BendaharaController::class, 'laptagihan']);
+Route::get('/tagihan', [BendaharaController::class, 'laptagihan'])->name('tagihan.limit');
 
-Route::get('/nonharian', [BendaharaController::class, 'retribusi']);
+Route::get('/nonharian', [BendaharaController::class, 'retribusi'])->name('non.limit');
 
 Route::get('/konfirmasipembatalan', [BendaharaController::class, 'konfirbatal'])->name('batal.limit');
 Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal'])->name('lapba.limit');
