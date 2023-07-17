@@ -135,7 +135,7 @@ class MandatoryRetributionController extends Controller
                 ->groupBy('mandatory_retributions.contract_id')
                 ->get();
 
-        $hasil_bulan_sebelumnya = $bulan_sebelumnya->first();
+        // $hasil_bulan_sebelumnya = $bulan_sebelumnya->first();
 
         $bulan_sekarang = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -151,7 +151,7 @@ class MandatoryRetributionController extends Controller
                 ->groupBy('mandatory_retributions.contract_id')
                 ->get();
 
-        $hasil_bulan_sekarang = $bulan_sekarang->first();
+        // $hasil_bulan_sekarang = $bulan_sekarang->first();
 
         $bulan_setelahnya = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -162,11 +162,10 @@ class MandatoryRetributionController extends Controller
                 ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
                 ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
-                // ->where('mandatory_retributions.petugas_id', $petugas_id)
                 ->where('units.pasar_id', $pasar_id)
                 ->where('mandatory_retributions.jatuh_tempo', '>', $tanggalTerakhir)
                 ->groupBy('mandatory_retributions.contract_id')
-                ->count();
+                ->get();
 
         $data = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -181,19 +180,28 @@ class MandatoryRetributionController extends Controller
                 ->whereMonth('mandatory_retributions.jatuh_tempo', '=', date('m'))
                 ->get();
 
-        if($hasil_bulan_sebelumnya != null) {
-            foreach($data as $item) {
-                $item->total_retribusi = intval($hasil_bulan_sebelumnya->total_biaya) + intval($hasil_bulan_sekarang->total_biaya);
-                $item->tunggakan = intval($hasil_bulan_sebelumnya->total_biaya);
-                $item->total_bulan_setelahnya = $bulan_setelahnya;
-                $item->jumlah_periode = $hasil_bulan_sebelumnya->jumlah_periode + $hasil_bulan_sekarang->jumlah_periode;
+        if (!empty($bulan_sebelumnya)) {
+            foreach ($data as $index => $item) {
+                if (isset($bulan_sebelumnya[$index])) {
+                    $item->total_retribusi = intval($bulan_sebelumnya[$index]->total_biaya) + intval($bulan_sekarang[$index]->total_biaya);
+                    $item->tunggakan = intval($bulan_sebelumnya[$index]->total_biaya);
+                    $item->total_bulan_setelahnya = $bulan_setelahnya[$index]->jumlah_periode;
+                    $item->jumlah_periode = $bulan_sebelumnya[$index]->jumlah_periode + $bulan_sekarang[$index]->jumlah_periode;
+                } else {
+                    // Handle ketika data $bulan_sebelumnya tidak ada
+                    $item->total_retribusi = intval($bulan_sekarang[$index]->total_biaya);
+                    $item->tunggakan = 0;
+                    $item->total_bulan_setelahnya = $bulan_setelahnya[$index]->jumlah_periode;
+                    $item->jumlah_periode = $bulan_sekarang[$index]->jumlah_periode;
+                }
             }
         } else {
-            foreach($data as $item) {
-                $item->total_retribusi = intval($hasil_bulan_sekarang->total_biaya);
+            // Handle ketika data $bulan_sebelumnya tidak ada untuk semua elemen $data
+            foreach ($data as $item) {
+                $item->total_retribusi = intval($bulan_sekarang[0]->total_biaya);
                 $item->tunggakan = 0;
                 $item->total_bulan_setelahnya = $bulan_setelahnya;
-                $item->jumlah_periode = $hasil_bulan_sekarang->jumlah_periode;
+                $item->jumlah_periode = $bulan_sekarang[0]->jumlah_periode;
             }
         }
 
@@ -443,13 +451,16 @@ class MandatoryRetributionController extends Controller
                 // TODO: Process if Signature is Valid
 
                 if ($transactionStatus = $request->input('transaction.status')) {
-                    $invoiceNumber = $request->input('order.invoice_number');
-                    $finalNumber = substr($invoiceNumber, -2);
         
                     if ($transactionStatus === 'SUCCESS') {
                         $currentMonth = Carbon::now()->format('m');
                         $currentDate = Carbon::now()->format('Y-m-d');
-                    
+
+                        $invoiceNumber = $request->input('order.invoice_number');
+                        $nextInvoiceNumber = explode('-', $invoiceNumber);
+                        $finalNumber = end($nextInvoiceNumber);
+                        $finalNumber = (int)$finalNumber;
+
                         DB::table('mandatory_retributions')
                             ->where('status_pembayaran', 'belum_dibayar')
                             ->where('contract_id', $finalNumber)
@@ -481,7 +492,10 @@ class MandatoryRetributionController extends Controller
                     }                
                 }
 
-                return response('OK', 200)->header('Content-Type', 'text/plain');
+                // return response('OK', 200)->header('Content-Type', 'text/plain');
+                return response()->json([
+                    'data' => $finalNumber,
+                ]);
         
                 // TODO: Do update the transaction status based on the `transaction.status`
             } else {

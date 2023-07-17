@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('markets', function (Blueprint $table) {
             $table->id();
-            $table->char('kode_pasar', 2);
+            $table->char('kode_pasar', 4);
             $table->string('nama_pasar', 50);
             $table->string('alamat');
             $table->year('tahun_berdiri');

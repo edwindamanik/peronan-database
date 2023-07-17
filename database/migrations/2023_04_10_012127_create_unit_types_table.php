@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('unit_types', function (Blueprint $table) {
             $table->id();
-            $table->char('kode', 2);
+            $table->char('kode', 4);
             $table->string('jenis_unit', 25);
             $table->float('panjang');
             $table->float('lebar');
