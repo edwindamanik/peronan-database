@@ -309,7 +309,7 @@
                             @csrf
                             <div class="form-group">
                                 <label for="inputText">Nama Pasar</label>
-                                <input type="text" class="form-control" id="nama" name="nama"
+                                <input type="text" class="form-control" id="namaPasar" name="namaPasar"
                                     placeholder="Nama Pasar">
                             </div>
                             <div class="form-group">
@@ -474,7 +474,7 @@
                 });
 
 
-                $('#nama').val(jsonData.nama_pasar);
+                $('#namaPasar').val(jsonData.nama_pasar);
                 $('#kode').val(jsonData.kode_pasar);
                 $('#alamat').val(jsonData.alamat);
                 $('#koordinat').val(jsonData.koordinat);
