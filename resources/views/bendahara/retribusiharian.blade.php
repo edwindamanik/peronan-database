@@ -67,14 +67,21 @@
                         <form method="GET" action="{{ route('non.limit') }}">
                             <label for="limit">Jumlah Baris:</label>
                             <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <label for="market_id">Nama Market:</label>
+                            <select name="market_id" id="market_id">
+                                <option value="">Semua</option>
+                                @foreach ($markets as $id => $market)
+                                    <option value="{{ $id }}" {{ $id == $marketId ? 'selected' : '' }}>{{ $market }}</option>
+                                @endforeach
+                            </select>
                             <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
-                        
                         </form>
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
                                     <th>No</th>
                                     <th>Nomor Tagihan</th>
+                                    <th>Pasar</th>
                                     <th>Wajib Retribusi</th>
                                     <th>Unit</th>
                                     <th>Total Retribusi</th>
@@ -86,6 +93,7 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->no_tagihan }}</td>
+                                        <td>{{ $item->nama_pasar }}</td>
                                         <td>{{ $item->nama }}</td>
                                         <td>{{ $item->no_unit }}</td>
                                         <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>

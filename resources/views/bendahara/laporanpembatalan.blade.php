@@ -78,6 +78,7 @@
                                     <th>Pasar</th>
                                     <th>Petugas</th>
                                     <th>Unit</th>
+                                    <th>Ukuran</th>
                                     <th>Tanggal </th>
                                     <th>Biaya retribusi</th>
                                 </tr>
@@ -90,6 +91,7 @@
                                         <td>{{ $item->nama_pasar }}</td>
                                         <td>{{ $item->nama }}</td>
                                         <td>{{ $item->no_unit }}</td>
+                                        <td>{{ $item->panjang }} x {{ $item->lebar }} </td>
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal)->format('d M Y') }}</td>
                                         <td>Rp {{ number_format($item->biaya_retribusi, 0, ',', '.') }}</td>
 

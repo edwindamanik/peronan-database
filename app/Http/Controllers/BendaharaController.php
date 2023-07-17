@@ -267,9 +267,10 @@ class BendaharaController extends Controller
             ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
             ->join('users', 'users.id', '=', 'deposits.users_id')
             ->join('units', 'units.id', '=', 'daily_retributions.unit_id')
+            ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
             ->where('daily_retributions.status', 'approve_batal')
-            ->select('daily_retributions.id', 'daily_retributions.no_bukti_pembayaran', 'markets.nama_pasar', 'users.nama', 'units.no_unit', 'daily_retributions.tanggal', 'daily_retributions.biaya_retribusi')
+            ->select('daily_retributions.id', 'daily_retributions.no_bukti_pembayaran', 'markets.nama_pasar', 'users.nama', 'units.no_unit', 'unit_types.*', 'daily_retributions.tanggal', 'daily_retributions.biaya_retribusi')
             ->take($limit)
             ->get();
 
@@ -373,34 +374,38 @@ class BendaharaController extends Controller
     }
 
 
-    public function retribusi(Request $request)
-    {
-        $user = Auth::user();
-        $kabupatenId = $user->kabupaten_id;
+   public function retribusi(Request $request)
+{
+    $user = Auth::user();
+    $kabupatenId = $user->kabupaten_id;
 
-        $limit = $request->input('limit', 10);
+    $limit = $request->input('limit', 10);
+    $marketId = $request->input('market_id');
 
-        $today = Carbon::now()->endOfMonth()->format('Y-m-d');
+    $today = Carbon::now()->endOfMonth()->format('Y-m-d');
 
-        $data = DB::table('mandatory_retributions')
-            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
-            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
-            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
-            ->join('units', 'units.id', '=', 'contracts.unit_id')
-            ->join('letter_settings', 'letter_settings.id', '=', 'contracts.pengaturan_id')
-            ->join('markets', 'markets.id', '=', 'units.pasar_id')
-            ->where('letter_settings.kabupaten_id', $kabupatenId)
-            ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
-            ->where('mandatory_retributions.jatuh_tempo', $today)
-            ->select('mandatory_retributions.no_tagihan', 'users.nama', 'units.no_unit', 'mandatory_retributions.biaya_retribusi', 'mandatory_retributions.jatuh_tempo', 'markets.id as pasar_id', 'markets.nama_pasar')
-            ->take($limit)
-            ->get();
+    $query = DB::table('mandatory_retributions')
+        ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+        ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+        ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+        ->join('units', 'units.id', '=', 'contracts.unit_id')
+        ->join('letter_settings', 'letter_settings.id', '=', 'contracts.pengaturan_id')
+        ->join('markets', 'markets.id', '=', 'units.pasar_id')
+        ->where('letter_settings.kabupaten_id', $kabupatenId)
+        ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
+        ->where('mandatory_retributions.jatuh_tempo', $today)
+        ->select('mandatory_retributions.no_tagihan', 'users.nama', 'units.no_unit', 'mandatory_retributions.biaya_retribusi', 'mandatory_retributions.jatuh_tempo', 'markets.id as pasar_id', 'markets.nama_pasar');
 
-
-
-        // dd($data);
-
-        return view('bendahara.retribusiharian', compact('data','limit'));
+    if (!empty($marketId)) {
+        $query->where('markets.id', $marketId);
     }
 
+    $data = $query->take($limit)
+        ->get();
+
+    $markets = DB::table('markets')->pluck('nama_pasar', 'id'); // Mengambil daftar nama pasar
+
+    return view('bendahara.retribusiharian', compact('data', 'limit', 'marketId', 'markets'));
+}
+   
 }

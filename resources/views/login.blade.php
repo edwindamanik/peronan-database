@@ -24,13 +24,18 @@
                             <div class="card shadow-lg border-0 rounded-lg mt-5">
                                 <div class="card-header">
                                     <div class="text-center">
-                                        <img src="{{ URL::asset('source-image/logo.png') }}" class="img-fluid" alt=""
-                                            width="50%" height="50%">
+                                        <img src="{{ URL::asset('source-image/logo.png') }}" class="img-fluid"
+                                            alt="" width="50%" height="50%">
                                         <p>PErOnan (Platform e-retribusi Onan)
                                         <p>
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    @if ($errors->has('message'))
+                                        <div class="alert alert-danger">
+                                            {{ $errors->first('message') }}
+                                        </div>
+                                    @endif
                                     <form method="POST" action="{{ URL('/login') }}">
                                         @csrf
                                         @if (session('error'))
@@ -66,20 +71,23 @@
                                                 <label class="custom-control-label" for="remember">Remember Me</label>
                                             </div>
                                         </div>
-                                        <div class="form-group d-flex flex-column align-items-center justify-content-center mt-4 mb-0">
-                                            <button type="submit" class="btn" style="background-color: #243763; color:white;">
+                                        <div
+                                            class="form-group d-flex flex-column align-items-center justify-content-center mt-4 mb-0">
+                                            <button type="submit" class="btn"
+                                                style="background-color: #243763; color:white;">
                                                 Login
                                             </button>
                                             <div class="mt-3">
                                                 <p>Belum mendaftarkan Dinas?</p>
                                             </div>
                                             <div class="mt-2">
-                                                
+
                                                 <a href="/register">Daftarkan Sekarang</a>
                                             </div>
                                         </div>
-                                        
+
                                     </form>
+
                                 </div>
                             </div>
                         </div>
@@ -87,7 +95,7 @@
                 </div>
             </main>
         </div>
-       
+
     </div>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" crossorigin="anonymous">

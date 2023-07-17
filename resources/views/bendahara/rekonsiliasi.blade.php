@@ -74,7 +74,10 @@
                         <tbody>
                           
                             <tr>
-                                <td align="center"><b>CASH</b></td>
+                                @foreach ($jenis as $item)
+                                <td align="center"><b>{{ $item->metode_pembayaran }}</b></td> 
+                                @endforeach
+                                
                                 
                                 @foreach ($you as $setor)
                                     <td>Rp. {{ number_format($setor->setoran, 0, ',', '.') }}</td>

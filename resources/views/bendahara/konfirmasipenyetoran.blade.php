@@ -27,13 +27,13 @@
             <h2 class="mt-4">Daftar Permohonan Persetujuan Setoran</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">Daftar Permohonan Persetujuan Setoran</li>
+                    <li class="breadcrumb-item active" aria-current="page">Daftar Permohonan Persetujuan </li>
                 </ol>
             </nav>
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
-                    Daftar Permohonan Persetujuan Setoran
+                    
                 </div>
                 <div class="card-body">
                     @if (session()->has('deleteMessage'))
@@ -61,12 +61,13 @@
                         </div>
 
                         <form method="GET" action="{{ route('data.limit') }}">
+                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
+                            <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non Tunai</button><br><br>
                             <label for="limit">Jumlah Baris:</label>
                             <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
                             <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
                         
-                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#192C58; color:white;">Tunai</button>
-                            <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#192C58; color:white;">Non Tunai</button>
+                            
                         </form>
                         
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
@@ -93,7 +94,12 @@
                                         <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}</td>
                                         <td>
                                             @if ($item->status == 'belum_setor')
-                                                <p style="text-decoration: underline; color:#243763;">Belum Disetor</p>
+                                            {{-- <a href="#" data-toggle="modal" data-target="#myModalAlasan" class="alasan-button" data-jsondata="{{ json_encode($item) }}" style="text-decoration: underline; color:#243763;">Belum Disetor</a>
+                                             --}}
+                                             <a href type="submit" class=" alasan-button" style="background-color:#ffffff; color:rgb(45, 67, 211);" data-toggle="modal" data-target="#myModalAlasan" data-jsondata="{{ json_encode($item) }}">Belum Disetor</a>
+
+
+
                                             @elseif ($item->status == 'menunggu_konfirmasi')
                                                 <p style=" color:#000000;">Menunggu</p>
                                             @else
@@ -189,6 +195,35 @@
         </div>
 
 
+         {{-- MODAL Alasan --}}
+         <div class="modal fade" id="myModalAlasan">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <!-- Modal header -->
+                    <div class="modal-header">
+                        <h5 class="modal-title">Rincian Permohonan Persetujuan Setoran</h5>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+
+                    <!-- Modal body -->
+                    <div class="modal-body">
+                        <table class="table table-bordered table-striped">
+                            <tbody id="modal-table-body">
+                                <tr>
+                                    
+                                    <td id="tiann"><input type="text" id="tiann"></td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+
+                  
+                </div>
+            </div>
+        </div>
+
+        
         {{-- MODAL HAPUS --}}
         <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
             aria-hidden="true">
@@ -253,6 +288,11 @@
             });
         });
 
+       
+
+
+        
+
         $(document).ready(function() {
             $('.image-link').click(function(e) {
                 e.preventDefault();
@@ -264,7 +304,15 @@
         });
     </script>
 
-
+<script>
+    $(document).ready(function() {
+       $('.alasan-button').click(function() {
+          var jsonData = $(this).data('jsondata');
+          $('#tiann').text(jsonData.alasan_tidak_setor);
+       });
+    });
+    </script>
+    
 
 
 
