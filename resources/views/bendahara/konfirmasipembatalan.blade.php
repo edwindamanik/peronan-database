@@ -59,6 +59,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <form method="GET" action="{{ route('batal.limit') }}">
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                        
+                        </form>
+
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>
@@ -96,7 +104,7 @@
                                                     method="POST" style="display: inline-block;">
                                                     @csrf
                                                     <button type="submit" class="btn "
-                                                        style="background-color:#b6a9a9; color:white;">Batal</button>
+                                                        style="background-color:#e90000; color:white;">Batal</button>
                                                 </form>
                                             </div>
                                         </td>
@@ -119,7 +127,7 @@
                                         </td> --}}
 
                                     </tr>
-                                @endforeach
+                                    @endforeach
                             </tbody>
                         </table>
                         {{-- <div class="d-flex justify-content-end">
@@ -130,6 +138,7 @@
             </div>
         </div>
         {{-- MODAL Batal --}}
+        @foreach ($data as $item)
         <div class="modal fade" id="myModalDetail" tabindex="-1" role="dialog" aria-labelledby="myModalDetailLabel"
             aria-hidden="true">
             <div class="modal-dialog" role="document">
@@ -159,7 +168,7 @@
                 </div>
             </div>
         </div>
-
+       @endforeach
 
 
 

@@ -38,7 +38,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
-                    Daftar Setoran
+        
                 </div>
                 <div class="card-body">
                     @if (session()->has('deleteMessage'))
@@ -64,6 +64,17 @@
                                 </div>
                             </div>
                         </div>
+                        
+                        <form method="GET" action="{{ route('setor.limit') }}">
+                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn"  style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
+                            <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non Tunai</button>
+                            {{-- <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button> --}}
+                        
+                          
+                        </form>
+                        
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
                                 <tr>

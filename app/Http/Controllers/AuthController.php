@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\DB;
 class AuthController extends Controller
 {
 
-    public function displayLogin() {
+    public function displayLogin()
+    {
         return view('login');
     }
 
@@ -21,14 +22,14 @@ class AuthController extends Controller
                 'username' => 'required',
                 'password' => 'required'
             ]);
-    
+
             if (!auth()->attempt($loginData)) {
-                return response(['message' => 'Invalid credentials']);
+                return redirect()->back()->withErrors(['message' => 'Username/Password anda Salah']);
             }
-    
+
             $user = auth()->user();
             $accessToken = $user->createToken('authToken')->plainTextToken;
-    
+
             if ($user->role === 'bendahara') {
                 return redirect('/konfirmasi-setoran');
             } elseif ($user->role === 'admin') {
@@ -41,19 +42,23 @@ class AuthController extends Controller
             return $e->getMessage();
         }
     }
-    
 
-    public function logout() {
+
+
+    public function logout()
+    {
         auth()->user()->tokens()->delete();
 
         return redirect('/login');
     }
 
-    public function displayRegister() {
+    public function displayRegister()
+    {
         return view('register');
     }
 
-    public function registerDinas(Request $request) {
+    public function registerDinas(Request $request)
+    {
         try {
             $request->validate([
                 'nama_dinas' => 'required',
@@ -66,25 +71,25 @@ class AuthController extends Controller
                 'no_telp_dinas' => 'required',
                 'upload_perda' => 'required',
             ]);
-    
+
             $regency = new Regency;
-            
+
             if ($request->hasFile('logo') || $request->hasFile('perda')) {
-        
+
                 // save the new file
                 $logo = $request->file('logo');
-                $logoName = time().'.'.$logo->extension();
+                $logoName = time() . '.' . $logo->extension();
                 $logo->move(public_path('logo'), $logoName);
-    
+
                 $upload_perda = $request->file('upload_perda');
-                $upload_perdaName = time().'.'.$upload_perda->extension();
+                $upload_perdaName = time() . '.' . $upload_perda->extension();
                 $upload_perda->move(public_path('upload_perda'), $upload_perdaName);
-        
+
                 // update the deposit data with the new file name
                 $regency->logo = $logoName;
                 $regency->upload_perda = $upload_perdaName;
             }
-        
+
             $regency->nama_dinas = $request->input('nama_dinas');
             $regency->perda = $request->input('perda');
             $regency->kepala_dinas = $request->input('kepala_dinas');
@@ -92,26 +97,28 @@ class AuthController extends Controller
             $regency->kabupaten = $request->input('kabupaten');
             $regency->email_dinas = $request->input('email_dinas');
             $regency->no_telp_dinas = $request->input('no_telp_dinas');
-            
+
             $regency->save();
             $regencyId = $regency->id;
-    
+
             // get the image URL
             $logoUrl = asset('logo/' . $regency->logo);
             $perdaUrl = asset('upload_perda/' . $regency->upload_perda);
-        
+
             return redirect()->route('register-admin', ['regencyID' => $regencyId]);
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function registerUserView() {
+    public function registerUserView()
+    {
         return view('register-admin');
     }
 
 
-    public function daftar(Request $request) {
+    public function daftar(Request $request)
+    {
         try {
             $validateUser = $request->validate([
                 'nama' => 'required',
@@ -121,21 +128,22 @@ class AuthController extends Controller
                 'role' => 'required',
                 'kabupaten_id' => 'required',
             ]);
-    
+
             $validateUser['password'] = bcrypt($request->password);
-            
+
             $user = User::create($validateUser);
-    
+
             $accessToken = $user->createToken('Token Name')->plainTextToken;
-    
+
             return back()->with('storeMessage', 'Berhasil menambahkan user baru');
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
-    
 
-    public function registerUser(Request $request) {
+
+    public function registerUser(Request $request)
+    {
         try {
             $validateUser = $request->validate([
                 'nama' => 'required',
@@ -146,23 +154,24 @@ class AuthController extends Controller
                 'kabupaten_id' => 'required',
             ]);
 
-            if($request->input('password') != $request->input('konfirmasi_password')) {
+            if ($request->input('password') != $request->input('konfirmasi_password')) {
                 return 'Password tidak serupa';
             }
-    
+
             $validateUser['password'] = bcrypt($request->password);
 
             $user = User::create($validateUser);
-    
+
             $accessToken = $user->createToken('Token Name')->plainTextToken;
-    
+
             return redirect('/login');
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function updateUser(Request $request, $id) {
+    public function updateUser(Request $request, $id)
+    {
         try {
             $validateUser = $request->validate([
                 'nama' => 'required',
@@ -172,17 +181,18 @@ class AuthController extends Controller
                 'role' => 'required',
                 'kabupaten_id' => 'required',
             ]);
-            
+
             $user = User::find($id);
             $user->update($validateUser);
-    
+
             return back()->with('updateMessage', 'Berhasil mengubah user');
         } catch (\Exception $e) {
             return $e->getMessage();
         }
     }
 
-    public function removeUser($id) {
+    public function removeUser($id)
+    {
         try {
             DB::table('users')->where('id', $id)->delete();
 

@@ -67,8 +67,8 @@
                                 <tr>
                                     <th>No</th>
                                     <th>Wajib Retribusi</th>
+                                    <th>Jenis Retribusi</th>
                                     <th>Tanggal Mulai</th>
-                                    <th>Tanggal Selesai</th>
                                     <th>Status</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -78,8 +78,8 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $item->nama }}</td>
+                                        <td>{{ $item->jenis_pembayaran }}</td>
                                         <td>{{ $item->tanggal_mulai }}</td>
-                                        <td>{{ $item->tanggal_selesai }}</td>
                                         <td
                                             style="font-weight: bold ;color: {{ $item->status === 'menunggu' ? '#FF9C07' : ($item->status === 'benar' ? '#32B83F' : '#343A40') }}">
                                             {{ $item->status }}</td>

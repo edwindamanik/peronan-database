@@ -6,7 +6,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Market;
+use App\Models\MarketOfficer;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
+
 
 class PasarController extends Controller
 {
@@ -60,34 +63,83 @@ class PasarController extends Controller
             'petugas' => $petugas,
             'kelompok_pasar' => $kelompok_pasar,
         ];
-    
+        
         return view('admin.pasar', compact('data', 'petugas', 'kelompok_pasar'));
     }
 
-    public function store(Request $request)
-    {
-        try {
-            $market = Market::create([
-                'kode_pasar' => $request->input('kodePasar'),
-                'nama_pasar' => $request->input('namaPasar'),
-                'alamat' => $request->input('alamatPasar'),
-                'tahun_berdiri' => $request->input('tahunBerdiri'),
-                'tahun_pembangunan' => $request->input('tahunPembangunan'),
-                'koordinat' => $request->input('koordinatPasar'),
-                'kondisi_pasar' => $request->input('kondisiPasar'),
-                'luas_lahan' => $request->input('luasLahan'),
-                'pengelola' => $request->input('pengelola'),
-                'operasional_pasar' => $request->input('operasionalPasar'),
-                'jumlah_pedagang' => $request->input('jumlahPedagang'),
-                'omzet_perbulan' => $request->input('omzetPerbulan'),
-                'kelompok_pasar_id' => $request->input('kelompokPasar')
-            ]);
+    // public function store(Request $request)
+    // {
+    //     try {
+    //         $market = Market::create([
+    //             'kode_pasar' => $request->input('kodePasar'),
+    //             'nama_pasar' => $request->input('namaPasar'),
+    //             'alamat' => $request->input('alamatPasar'),
+    //             'tahun_berdiri' => $request->input('tahunBerdiri'),
+    //             'tahun_pembangunan' => $request->input('tahunPembangunan'),
+    //             'koordinat' => $request->input('koordinatPasar'),
+    //             'kondisi_pasar' => $request->input('kondisiPasar'),
+    //             'luas_lahan' => $request->input('luasLahan'),
+    //             'pengelola' => $request->input('pengelola'),
+    //             'operasional_pasar' => $request->input('operasionalPasar'),
+    //             'jumlah_pedagang' => $request->input('jumlahPedagang'),
+    //             'omzet_perbulan' => $request->input('omzetPerbulan'),
+    //             'kelompok_pasar_id' => $request->input('kelompokPasar')
+    //         ]);
 
-            return redirect('/pasar');
-        } catch (\Exception $e) {
-            return response()->json(['errorMessage' => $e->getMessage()]);
-        }
+    //         return redirect('/pasar');
+    //     } catch (\Exception $e) {
+    //         return response()->json(['errorMessage' => $e->getMessage()]);
+    //     }
+    // }
+
+    public function store(Request $request)
+{
+    try {
+        $this->validate($request, [
+            'kodePasar' => 'required',
+            'namaPasar' => 'required',
+            'alamatPasar' => 'required',
+            'tahunBerdiri' => 'required',
+            'tahunPembangunan' => 'required',
+            'koordinatPasar' => 'required',
+            'kondisiPasar' => 'required',
+            'luasLahan' => 'required',
+            'pengelola' => 'required',
+            'operasionalPasar' => 'required',
+            'jumlahPedagang' => 'required',
+            'omzetPerbulan' => 'required',
+            'kelompokPasar' => 'required',
+            'petugasPasar' => 'required'
+        ]);
+
+        $market = Market::create([
+            'kode_pasar' => $request->input('kodePasar'),
+            'nama_pasar' => $request->input('namaPasar'),
+            'alamat' => $request->input('alamatPasar'),
+            'tahun_berdiri' => $request->input('tahunBerdiri'),
+            'tahun_pembangunan' => $request->input('tahunPembangunan'),
+            'koordinat' => $request->input('koordinatPasar'),
+            'kondisi_pasar' => $request->input('kondisiPasar'),
+            'luas_lahan' => $request->input('luasLahan'),
+            'pengelola' => $request->input('pengelola'),
+            'operasional_pasar' => $request->input('operasionalPasar'),
+            'jumlah_pedagang' => $request->input('jumlahPedagang'),
+            'omzet_perbulan' => $request->input('omzetPerbulan'),
+            'kelompok_pasar_id' => $request->input('kelompokPasar')
+        ]);
+        $marketOfficer = MarketOfficer::create([
+            'users_id' => $request->input('petugasPasar'),
+            'pasar_id' => $market->id
+        ]);
+     
+
+
+        return redirect('/pasar')->with('success', 'Pasar berhasil ditambahkan');
+    } catch (\Exception $e) {
+        return redirect()->back()->withInput()->withErrors(['errorMessage' => $e->getMessage()]);
     }
+}
+
 
     public function update(Request $request, $id)
     {
