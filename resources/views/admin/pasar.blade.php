@@ -1,7 +1,6 @@
 @extends('home')
 
 @section('content')
-
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
@@ -173,27 +172,6 @@
             </div>
         </div>
 
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-        @if ($errors->any())
-            <div class="alert alert-danger">
-                <ul>
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
-                </ul>
-            </div>
-        @endif
-
-
         {{-- MODAL TAMBAH --}}
         <div class="modal fade" id="myModalTambah">
             <div class="modal-dialog">
@@ -279,7 +257,7 @@
                             </div>
                             <div class="form-group">
                                 <label for="petugasSelect">Pilih Petugas:</label>
-                                <select id="petugasSelect" class="form-control">
+                                <select id="petugasSelect" name="petugasPasar" class="form-control">
                                     <option value="">Pilih Petugas</option>
                                     @foreach ($petugas as $item)
                                         <option value="{{ $item->id }}">{{ $item->nama }}</option>
@@ -309,67 +287,67 @@
                             @csrf
                             <div class="form-group">
                                 <label for="inputText">Nama Pasar</label>
-                                <input type="text" class="form-control" id="namaPasar" name="namaPasar"
-                                    placeholder="Nama Pasar">
+                                <input type="text" class="form-control" name="namaPasar" placeholder="Nama Pasar"
+                                    id="namaPasar">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Kode Pasar</label>
-                                <input type="text" class="form-control" id="kode" name="kodePasar"
-                                    placeholder="Kode Pasar">
+                                <input type="text" class="form-control" name="kodePasar" placeholder="Kode Pasar"
+                                    id="kodePasar">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Alamat Pasar</label>
-                                <input type="text" class="form-control" id="alamat" name="alamatPasar"
-                                    placeholder="Alamat Pasar">
+                                <input type="text" class="form-control" name="alamatPasar" placeholder="Alamat Pasar"
+                                    id="alamatPasar">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Koordinat Pasar</label>
-                                <input type="text" class="form-control" id="koordinat" name="koordinatPasar"
-                                    placeholder="Koordinat Pasar">
+                                <input type="text" class="form-control" name="koordinatPasar"
+                                    placeholder="Koordinat Pasar" id="koordinatPasar">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Luas Lahan</label>
-                                <input type="text" class="form-control" id="luas" name="luasLahan"
-                                    placeholder="Luas Lahan">
+                                <input type="text" class="form-control" name="luasLahan" placeholder="Luas Lahan"
+                                    id="luasLahan">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Tahun Berdiri</label>
-                                <input type="text" class="form-control" id="berdiri" name="tahunBerdiri"
-                                    placeholder="Tahun Berdiri">
+                                <input type="text" class="form-control" name="tahunBerdiri"
+                                    placeholder="Tahun Berdiri" id="tahunBerdiri">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Tahun Pembangunan</label>
-                                <input type="text" class="form-control" id="pembangunan" name="tahunPembangunan"
-                                    placeholder="Tahun Pembangunan">
+                                <input type="text" class="form-control" name="tahunPembangunan"
+                                    placeholder="Tahun Pembangunan" id="tahunPembangunan">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Kondisi Pasar</label>
-                                <input type="text" class="form-control" id="kondisi" name="kondisiPasar"
-                                    placeholder="Kondisi Pasar">
+                                <input type="text" class="form-control" name="kondisiPasar"
+                                    placeholder="Kondisi Pasar" id="kondisiPasar">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Pengelola</label>
-                                <input type="text" class="form-control" id="pengelola" name="pengelola"
-                                    placeholder="Pengelola">
+                                <input type="text" class="form-control" name="pengelola" placeholder="Pengelola"
+                                    id="pengelola">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Operasional Pasar</label>
-                                <input type="text" class="form-control" id="operasional" name="operasionalPasar"
-                                    placeholder="Operasional Pasar">
+                                <input type="text" class="form-control" name="operasionalPasar"
+                                    placeholder="Operasional Pasar" id="operasionalPasar">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Jumlah Pedagang</label>
-                                <input type="number" class="form-control" id="jumlah" name="jumlahPedagang"
-                                    placeholder="Jumlah Pedagang">
+                                <input type="number" class="form-control" name="jumlahPedagang"
+                                    placeholder="Jumlah Pedagang" id="jumlahPedagang">
                             </div>
                             <div class="form-group">
                                 <label for="inputText">Omzet Perbulan</label>
-                                <input type="text" class="form-control" id="omzet" name="omzetPerbulan"
-                                    placeholder="Omzet Perbulan">
+                                <input type="text" class="form-control" name="omzetPerbulan"
+                                    placeholder="Omzet Perbulan" id="omzetPerbulan">
                             </div>
                             <div class="form-group">
                                 <label for="kelompokPasarSelect">Kelompok Pasar:</label>
-                                <select id="kelompokPasarSelect" name="kelompokPasar" class="form-control">
+                                <select id="kelompokPasar" name="kelompokPasar" class="form-control">
                                     <option value="">Pilih Kelompok Pasar</option>
                                     @foreach ($kelompok_pasar as $item)
                                         <option value="{{ $item->id }}">{{ $item->kelompok_pasar }}</option>
@@ -466,35 +444,6 @@
             });
         });
 
-        $(document).ready(function() {
-            $('.edit-button').click(function() {
-                var jsonData = $(this).data('jsondata');
-                var petugasNames = jsonData.petugas.map(function(petugas) {
-                    return petugas.nama;
-                });
-
-
-                $('#namaPasar').val(jsonData.nama_pasar);
-                $('#kode').val(jsonData.kode_pasar);
-                $('#alamat').val(jsonData.alamat);
-                $('#koordinat').val(jsonData.koordinat);
-                $('#luas').val(jsonData.luas_lahan);
-                $('#berdiri').val(jsonData.tahun_berdiri);
-                $('#pembangunan').val(jsonData.tahun_pembangunan);
-                $('#kondisi').val(jsonData.kondisi_pasar);
-                $('#pengelola').val(jsonData.pengelola);
-                $('#operasional').val(jsonData.operasional_pasar);
-                $('#jumlah').val(jsonData.jumlah_pedagang);
-                $('#omzet').val(jsonData.omzet_perbulan);
-                $('#kelompok').val(jsonData.kelompok_pasar);
-
-                var updateForm = $('#editForm');
-                var actionUrl = '/pasar/update/' + jsonData.id;
-
-                updateForm.attr('action', actionUrl);
-            });
-        });
-
 
 
         $(document).ready(function() {
@@ -533,7 +482,36 @@
 
         });
 
+        $(document).ready(function() {
+            $('.edit-button').click(function() {
+                var jsonData = $(this).data('jsondata');
+                var petugasNames = jsonData.petugas.map(function(petugas) {
+                    return petugas.nama;
+                });
+                var petugasString = petugasNames.join(', ');
+                $('#namaPasar').val(jsonData.nama_pasar);
+                $('#kodePasar').val(jsonData.kode_pasar);
+                $('#alamatPasar').val(jsonData.alamat);
+                $('#koordinatPasar').val(jsonData.koordinat);
+                $('#luasLahan').val(jsonData.luas_lahan);
+                $('#tahunBerdiri').val(jsonData.tahun_berdiri);
+                $('#tahunPembangunan').val(jsonData.tahun_pembangunan);
+                $('#kondisiPasar').val(jsonData.kondisi_pasar);
+                $('#pengelola').val(jsonData.pengelola);
+                $('#operasionalPasar').val(jsonData.operasional_pasar);
+                $('#jumlahPedagang').val(jsonData.jumlah_pedagang);
+                $('#omzetPerbulan').val(jsonData.omzet_perbulan);
+                $('#kelompokPasar').val(jsonData.kelompok_pasar_id);
+                $('#petugasSelect').val(jsonData.petugas.map(function(petugas) {
+                    return petugas.id;
+                }));
 
+                var updateForm = $('#editForm');
+                var actionUrl = '/pasar/update/' + jsonData.id;
+
+                updateForm.attr('action', actionUrl);
+            });
+        });
 
         $(document).ready(function() {
             $('#myModalDelete').on('show.bs.modal', function(event) {
@@ -548,5 +526,4 @@
             });
         });
     </script>
-
 @endsection

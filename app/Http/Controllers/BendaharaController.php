@@ -65,30 +65,34 @@ class BendaharaController extends Controller
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-
+    
         $limit = $request->input('limit', 10);
         $penyetoranMelalui = $request->input('penyetoran_melalui', null);
-
+    
         $query = DB::table('deposits')
             ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
             ->join('users', 'deposits.users_id', '=', 'users.id')
             ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
-            ->whereIn('deposits.status', ['disetujui', 'menunggu_konfirmasi', 'belum_setor'])
+            ->whereIn('deposits.status', ['menunggu_konfirmasi', 'belum_setor'])
             ->where('market_groups.kabupaten_id', $kabupatenId);
-
-
+    
         if ($penyetoranMelalui === 'tunai') {
             $query->where('deposits.penyetoran_melalui', 'langsung');
+        } elseif ($penyetoranMelalui === 'nontunai-va') {
+            $query->where('deposits.penyetoran_melalui', 'VA');
+        } elseif ($penyetoranMelalui === 'nontunai-qris') {
+            $query->where('deposits.penyetoran_melalui', 'QRIS');
         } elseif ($penyetoranMelalui === 'nontunai') {
-            $query->where('deposits.penyetoran_melalui', 'transfer_bank');
+            $query->whereIn('deposits.penyetoran_melalui', ['VA', 'QRIS']);
         }
-
+    
         $data = $query->select('deposits.*', 'markets.nama_pasar', 'users.nama')
             ->take($limit)
             ->get();
-
+    
         return view('bendahara.konfirmasipenyetoran', compact('data', 'limit', 'penyetoranMelalui'));
     }
+    
 
 
     public function updateDeposit()

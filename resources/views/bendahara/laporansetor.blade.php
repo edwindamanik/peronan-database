@@ -68,9 +68,9 @@
                         <form method="GET" action="{{ route('setor.limit') }}">
                             <button type="submit" name="penyetoran_melalui" value="tunai" class="btn"  style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
                             <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non Tunai</button>
-                            <label for="limit">Jumlah Baris:</label>
+                            {{-- <label for="limit">Jumlah Baris:</label>
                             <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
-                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button> --}}
                         
                           
                         </form>

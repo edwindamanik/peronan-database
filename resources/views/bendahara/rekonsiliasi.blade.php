@@ -75,7 +75,7 @@
                           
                             <tr>
                                 @foreach ($jenis as $item)
-                                <td align="center"><b>{{ $item->metode_pembayaran }}</b></td> 
+                                <td align="center"><b>{{ $item ->metode_pembayaran }}</b></td> 
                                 @endforeach
                                 
                                 

@@ -60,15 +60,27 @@
                             </div>
                         </div>
 
-                        <form method="GET" action="{{ route('data.limit') }}">
+                        {{-- <form method="GET" action="{{ route('data.limit') }}">
                             <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
                             <button type="submit" name="penyetoran_melalui" value="nontunai" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non Tunai</button><br><br>
                             <label for="limit">Jumlah Baris:</label>
                             <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
                             <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
-                        
+                        </form> --}}
+
+                        <form method="GET" action="{{ route('data.limit') }}">
+                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
+                            <button id="nonTunaiButton" type="button" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non Tunai</button>
+
+                            <button id="vaButton" type="submit" name="penyetoran_melalui" value="nontunai-va" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px;  border:1px solid #000000; display: none;">VA</button>
+                            <button id="qrisButton" type="submit" name="penyetoran_melalui" value="nontunai-qris" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px; left:100px; border:1px solid #000000; display: none;">QRIS</button>
                             
-                        </form>
+                            
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                          </form>
+                          
                         
                         <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                             <thead>
@@ -303,6 +315,13 @@
             });
         });
     </script>
+    <script>
+        document.getElementById('nonTunaiButton').addEventListener('click', function() {
+          document.getElementById('vaButton').style.display = 'inline-block';
+          document.getElementById('qrisButton').style.display = 'inline-block';
+        });
+      </script>
+      
 
 <script>
     $(document).ready(function() {

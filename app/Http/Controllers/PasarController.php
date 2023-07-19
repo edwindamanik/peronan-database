@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Market;
+use App\Models\MarketOfficer;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 
@@ -62,7 +63,7 @@ class PasarController extends Controller
             'petugas' => $petugas,
             'kelompok_pasar' => $kelompok_pasar,
         ];
-    
+        
         return view('admin.pasar', compact('data', 'petugas', 'kelompok_pasar'));
     }
 
@@ -107,7 +108,8 @@ class PasarController extends Controller
             'operasionalPasar' => 'required',
             'jumlahPedagang' => 'required',
             'omzetPerbulan' => 'required',
-            'kelompokPasar' => 'required'
+            'kelompokPasar' => 'required',
+            'petugasPasar' => 'required'
         ]);
 
         $market = Market::create([
@@ -125,6 +127,12 @@ class PasarController extends Controller
             'omzet_perbulan' => $request->input('omzetPerbulan'),
             'kelompok_pasar_id' => $request->input('kelompokPasar')
         ]);
+        $marketOfficer = MarketOfficer::create([
+            'users_id' => $request->input('petugasPasar'),
+            'pasar_id' => $market->id
+        ]);
+     
+
 
         return redirect('/pasar')->with('success', 'Pasar berhasil ditambahkan');
     } catch (\Exception $e) {
