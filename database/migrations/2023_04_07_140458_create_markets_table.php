@@ -20,7 +20,7 @@ return new class extends Migration
             $table->year('tahun_pembangunan');
             $table->string('koordinat');
             $table->string('kondisi_pasar');
-            $table->bigInteger('luas_lahan');
+            $table->string('luas_lahan');
             $table->string('pengelola', 20);
             $table->string('operasional_pasar');
             $table->bigInteger('jumlah_pedagang');
