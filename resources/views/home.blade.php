@@ -274,6 +274,21 @@
                                 </a>
                             </li>
                         @endif
+
+                        @if (Auth::user()->role == 'adminutama')
+                            <li class="nav-item">
+                                <a href="/faq" class="nav-link">
+                                    &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <p>FAQ</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a href="/keuntungan" class="nav-link">
+                                    &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <p>Keuntungan</p>
+                                </a>
+                            </li>
+                        @endif
                     </ul>
                 </nav>
             </div>

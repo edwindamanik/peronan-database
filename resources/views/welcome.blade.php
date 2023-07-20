@@ -68,6 +68,15 @@
             color: red;
         }
     </style>
+    <style>
+        /* Custom CSS Styles for the Card */
+        .custom-card {
+            width: 400px;
+            border: 1px solid #ddd; /* Border */
+            border-radius: 10px; /* Border Radius */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Shadow */
+            padding: 10px; /* Optional: Add padding for content */
+        }
     </style>
 </head>
 
@@ -265,6 +274,26 @@
 
         </div>
     </section><br><br><br>
+    <div class="row">
+        <div class="col-md-12">
+            <div class="section-heading">
+                <h2>FAQ</h2>
+
+                <hr>
+            </div>
+        </div>
+    </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card custom-card">
+                    <div class="card-body">
+                        <p class="card-text">This card has a width of 100 pixels with custom styles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
 
 

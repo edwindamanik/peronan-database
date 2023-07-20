@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AdminUtama;
 use App\Http\Controllers\pengaturancontroller;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
@@ -116,6 +117,18 @@ Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
 
 Route::post('/batal/{batalId}', [BendaharaController::class, 'batalkan'])->name('batalkan-tagihan');
 Route::post('/batalkan/{batalId}', [BendaharaController::class, 'batalkank'])->name('batalkan-kali');
+
+
+Route::get('/faq', [AdminUtama::class, 'indexfaq']);
+Route::post('/faq/update/{id}', [AdminUtama::class, 'updatefaq']);
+Route::post('/faq/store', [AdminUtama::class, 'storefaq']);
+Route::match(['post', 'get'], '/faq/delete/{id}', [AdminUtama::class, 'destroyfaq']);
+
+Route::get('/keuntungan', [AdminUtama::class, 'indexadv']);
+Route::post('/keuntungan/update/{id}', [AdminUtama::class, 'updateadv']);
+Route::post('/keuntungan/store', [AdminUtama::class, 'storeadv']);
+
+
 
 
 
