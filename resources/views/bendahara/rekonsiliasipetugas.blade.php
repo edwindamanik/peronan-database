@@ -27,15 +27,11 @@
     <div class="container-fluid">
         <h2 class="mt-4">REKONSILIASI</h2>
         <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Rekonsiliasi</li>
-            </ol>
         </nav>
-
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Rekonsiliasi
+                Rekonsiliasi Petugas
             </div>
             <div class="card-body">
                 @if (session()->has('deleteMessage'))
@@ -54,55 +50,58 @@
                 </div>
                 @endif
                 <div class="table-responsive">
-                    <form action="" method="get">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <div class="d-flex align-items-center pb-4">
-                                    <label class="m-0 p-4" for="">Rentang Tanggal :</label>
-                                    <div class="d-flex align-items-center pr-4">
-                                        <input type="date" class="form-control p-4" name="tanggalAwal" required>
-                                        <label class="m-0 p-4" for="">-</label>
-                                        <input type="date" class="form-control p-4" name="tanggalAkhir" required>
-                                    </div>
-                                    <button class="btn btn-info px-4" type="submit">Terapkan</button>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center pb-4">
+                                <label class="m-0 p-4" for="">Rentang Tanggal :</label>
+                                <div class="d-flex align-items-center pr-4">
+                                    <input type="date" class="form-control p-4">
+                                    <label class="m-0 p-4" for="">-</label>
+                                    <input type="date" class="form-control p-4">
                                 </div>
+                                <button class="btn btn-info px-4">Terapkan</button>
                             </div>
                         </div>
-                    </form>
+                    </div>
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                         <thead>
                             <tr>
-                                <th align="center"></th>
+                                <th align="center">TANGGAL</th>
+                                <th align="center">PETUGAS</th>
+                                <th align="center">UNIT</th>
                                 <th align="center">SYSTEM</th>
                                 <th align="center">REAL</th>
                                 <th align="center">SELISIH</th>
-                                <th align="center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
                             @if($depo->isEmpty())
                             <tr>
                                 <td>-</td>
-                                <td>Rp 0</td>
-                                <td>Rp 0</td>
-                                <td>Rp 0</td>
                                 <td>-</td>
+                                <td>-</td>
+                                <td>Rp 0</td>
+                                <td>Rp 0</td>
+                                <td>Rp 0</td>
                             </tr>
                             @else
-                            @foreach ($jenis->unique('metode_pembayaran') as $jn)
+                            @foreach ($petugas->unique('petugas_id') as $ptg)
                             <?php $totalRetri = 0; ?>
-                            @foreach ($manda->where('metode_pembayaran',$jn->metode_pembayaran) as $item)
+                            @foreach ($manda->where('petugas_id',$ptg->petugas_id) as $item)
                             <?php $total = 0; ?>
                             <tr>
-                                <td align="center"><b>{{ $item ->metode_pembayaran }}</b></td>
+                                @foreach ($depo as $dt)
+                                <td>{{$dt->tanggal_penyetoran}}</td>
+                                <td>{{$dt->officer_name}}</td>
+                                @endforeach
+                                <td>{{$ptg->no_unit}}</td>
                                 @foreach ($depo as $dt)
                                 <?php $total += $dt->jumlah_setoran;  ?>
                                 @endforeach
-                                <?php $totalRetri += $item->total_retribusi;  ?>
                                 <td>Rp. {{ number_format($total, 0, ',', '.') }}</td>
+                                <?php $totalRetri += $item->total_retribusi;  ?>
                                 <td>Rp. {{ number_format($totalRetri, 0, ',', '.') }}</td>
                                 <td>Rp. {{ number_format($total - $totalRetri, 0, ',', '.') }}</td>
-                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
                             </tr>
                             @endforeach
                             @endforeach

@@ -27,4 +27,9 @@ class Market extends Model
         return $this->hasMany(Unit::class);
     }
 
+    public function deposit() 
+    {
+        return $this->hasMany(Deposit::class);
+    }
+
 }

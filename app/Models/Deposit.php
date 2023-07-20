@@ -12,4 +12,8 @@ class Deposit extends Model
 
     protected $guarded = [];
     protected $dates = ['deleted_at'];
+
+    public function pasar() {
+        return $this->belongsTo(Market::class,'pasar_id');
+    }
 }
