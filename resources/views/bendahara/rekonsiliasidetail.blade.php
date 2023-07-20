@@ -51,9 +51,15 @@
                 @endif
                 <div class="table-responsive">
                     <div class="row">
-                        <div class="col-md-6 offset-md-6">
-                            <div class="input-group mb-3">
-                                <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+                        <div class="col-md-12">
+                            <div class="d-flex align-items-center pb-4">
+                                <label class="m-0 p-4" for="">Rentang Tanggal :</label>
+                                <div class="d-flex align-items-center pr-4">
+                                    <input type="date" class="form-control p-4">
+                                    <label class="m-0 p-4" for="">-</label>
+                                    <input type="date" class="form-control p-4">
+                                </div>
+                                <button class="btn btn-info px-4">Terapkan</button>
                             </div>
                         </div>
                     </div>
@@ -61,19 +67,47 @@
                         <thead>
                             <tr>
                                 <th align="center"></th>
-                                <th align="center" >SYSTEM</th>
+                                <th align="center">SYSTEM</th>
                                 <th align="center">REAL</th>
                                 <th align="center">SELISIH</th>
+                                <th align="center">STATUS</th>
+                                <th align="center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
+                            @if($depo->isEmpty())
                             <tr>
-                                <td align="center"><b>PASAR BALIGE</b></td>
-                                <td>Rp. 50.000</td>
-                                <td>Rp. 22.000</td>
-                                <td>Rp. 28.000</td>
-                                
+                                <td>-</td>
+                                <td>Rp 0</td>
+                                <td>Rp 0</td>
+                                <td>Rp 0</td>
+                                <td>-</td>
+                                <td>-</td>
                             </tr>
+                            @else
+                            @foreach ($pasar->unique('pasar_id') as $psr)
+                            <?php $totalRetri = 0; ?>
+                            @foreach ($manda->where('pasar_id',$psr->pasar_id) as $item)
+                            <?php $total = 0; ?>
+                            <tr>
+                                <td align="center"><b>{{$psr->nama_pasar}}</b></td>
+                                @foreach ($depo as $dt)
+                                <?php $total += $dt->jumlah_setoran;  ?>
+                                @endforeach
+                                <td>Rp. {{ number_format($total, 0, ',', '.') }}</td>
+                                <?php $totalRetri += $item->total_retribusi;  ?>
+                                <td>Rp. {{ number_format($totalRetri, 0, ',', '.') }}</td>
+                                <td>Rp. {{ number_format($total - $totalRetri, 0, ',', '.') }}</td>
+                                @if($total - $totalRetri != 0)
+                                <td>Unreconciled </td>
+                                @else
+                                <td>Reconciled </td>
+                                @endif
+                                <td><a href="/rekonpetugas" class="badge bg-secondary">Lihat Detail Rekonsiliasi Petugas </a> | <a href="/rekonwajibretri" class="badge bg-warning">Lihat Detail Rekonsiliasi Wajib Retribusi</a></td>
+                            </tr>
+                            @endforeach
+                            @endforeach
+                            @endif
                         </tbody>
                     </table>
                     {{-- <div class="d-flex justify-content-end">
@@ -85,8 +119,7 @@
     </div>
 
     {{-- MODAL HAPUS --}}
-    <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -114,11 +147,11 @@
 </main>
 
 <script>
-    $(document).ready(function () {
-        $('#searchInput').keyup(function () {
+    $(document).ready(function() {
+        $('#searchInput').keyup(function() {
             var searchText = $(this).val().toLowerCase();
 
-            $('#dataTable tbody tr').each(function () {
+            $('#dataTable tbody tr').each(function() {
                 var rowText = $(this).text().toLowerCase();
                 if (rowText.includes(searchText)) {
                     $(this).show();
@@ -128,7 +161,6 @@
             });
         });
     });
-
 </script>
 
 @endsection

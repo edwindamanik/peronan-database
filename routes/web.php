@@ -111,7 +111,9 @@ Route::get('/laporanpembatalan', [BendaharaController::class, 'laporbatal'])->na
 
 
 Route::get('/rekon', [RekonController::class, 'rekon']);
-Route::get('/rekondetail', [BendaharaController::class, 'rekondetail']);
+Route::get('/rekondetail', [RekonController::class, 'rekondetail']);
+Route::get('/rekonpetugas', [RekonController::class, 'rekonpetugas']);
+Route::get('/rekonwajibretri', [RekonController::class, 'rekonwajibretri']);
 
 
 
