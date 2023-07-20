@@ -288,6 +288,12 @@
                                     <p>Keuntungan</p>
                                 </a>
                             </li>
+                            <li class="nav-item">
+                                <a href="/dataperonan" class="nav-link">
+                                    &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <p>Data PErOnan</p>
+                                </a>
+                            </li>
                         @endif
                     </ul>
                 </nav>

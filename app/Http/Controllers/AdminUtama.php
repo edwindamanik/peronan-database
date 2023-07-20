@@ -137,4 +137,49 @@ class AdminUtama extends Controller
     
         return back()->with('storeMessage', 'Keuntungan berhasil ditambahkan');
     }
+
+    public function indexdat(Request $request)
+    {
+
+
+        $data = DB::table('decs_peronans')
+            ->orderBy('created_at', 'desc')
+            ->orderBy('updated_at', 'desc')
+            ->paginate(5);
+
+
+        if ($request->wantsJson()) {
+            if ($data->isEmpty()) {
+                $responseData = [
+                    'message' => 'No data found.',
+                    'data' => [],
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            } else {
+                $responseData = [
+                    'message' => 'Data retrieved successfully.',
+                    'data' => $data,
+                ];
+                return response()->json($responseData, Response::HTTP_OK);
+            }
+        }
+
+        return view('adminutama.dataperonan  ', compact('data'));
+    }
+
+    public function updatedat(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        DB::table('decs_peronans')
+            ->where('id', $id)
+            ->update([
+                'email' => $request->input('emailD'),
+                'alamat' => $request->input('alamatD'),
+                'notelepon' => $request->input('noteleponD')
+                
+            ]);
+
+        return back()->with('updateMessage', 'Data PErOnan berhasil diperbarui');
+    }
 }
