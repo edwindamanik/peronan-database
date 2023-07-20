@@ -304,7 +304,7 @@ class BendaharaController extends Controller
         if ($penyetoranMelalui === 'tunai') {
             $query->where('deposits.penyetoran_melalui', 'langsung');
         } elseif ($penyetoranMelalui === 'nontunai') {
-            $query->where('deposits.penyetoran_melalui', 'transfer_bank');
+            $query->whereIn('deposits.penyetoran_melalui', ['VA', 'Qris']);
         }
 
 
