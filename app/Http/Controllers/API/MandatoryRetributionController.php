@@ -208,55 +208,47 @@ class MandatoryRetributionController extends Controller
         return response()->json(['data' => $data]);
     }
 
-    public function updateStatusPembayaran(Request $request, $id) {
+    public function updateStatusPembayaran(Request $request) {
         try {
-            $validateMandatoryRetribution = $request->validate([
-                'no_tagihan' => 'required',
-                'no_tagihan_ref' => '',
-                'biaya_retribusi' => 'required',
-                'total_retribusi' => 'required',
-                'tanggal_pembayaran' => 'required',
-                'jatuh_tempo' => 'required',
-                'metode_pembayaran' => 'required',
-                'status_pembayaran' => 'required',
-                'url_pembayaran_va' => '',
-                'url_pembayaran_qris' => '',
-                'petugas_id' => 'required',
-                'contract_id' => 'required',
-            ]);
             
-            $mandatory_retribution = MandatoryRetribution::findOrFail($id);
+            $dataToUpdate = $request->input('data');
+            foreach($dataToUpdate as $data) {
+                $id = $data['id'];
+                unset($data['id']);
 
-            $bulan_sebelumnya = MandatoryRetribution::where('jatuh_tempo', '<=', $validateMandatoryRetribution['jatuh_tempo'])
-                        ->where('contract_id', $validateMandatoryRetribution['contract_id'])
-                        ->get();
+                $mandatory_retribution = MandatoryRetribution::findOrFail($id);
 
-            foreach($bulan_sebelumnya as $pembayaran_nonHarian) {
-                $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
-                $pembayaran_nonHarian->metode_pembayaran = 'CASH';
-                $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
-                $pembayaran_nonHarian->total_retribusi = $validateMandatoryRetribution['total_retribusi'];
-                $pembayaran_nonHarian->petugas_id = $validateMandatoryRetribution['petugas_id'];
-                $pembayaran_nonHarian->save();
-            }
-
-            // $mandatory_retribution->update($validateMandatoryRetribution);
-
-            $count = $request->count;
-            if($count > 0) {
-                $bulan_setelahnya = MandatoryRetribution::where('jatuh_tempo', '>', $validateMandatoryRetribution['jatuh_tempo'])
-                            ->where('contract_id', $validateMandatoryRetribution['contract_id'])
-                            ->orderBy('jatuh_tempo', 'asc') 
-                            ->take($count) 
+                $bulan_sebelumnya = MandatoryRetribution::where('jatuh_tempo', '<=', $data['jatuh_tempo'])
+                            ->where('contract_id', $data['contract_id'])
                             ->get();
 
-                foreach($bulan_setelahnya as $pembayaran_nonHarian) {
+                foreach($bulan_sebelumnya as $pembayaran_nonHarian) {
                     $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
                     $pembayaran_nonHarian->metode_pembayaran = 'CASH';
                     $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
-                    $pembayaran_nonHarian->total_retribusi = $validateMandatoryRetribution['total_retribusi'];
-                    $pembayaran_nonHarian->petugas_id = $validateMandatoryRetribution['petugas_id'];
+                    $pembayaran_nonHarian->total_retribusi = $data['total_retribusi'];
+                    $pembayaran_nonHarian->petugas_id = $data['petugas_id'];
                     $pembayaran_nonHarian->save();
+                }
+
+                // $mandatory_retribution->update($data);
+
+                $count = $data['count'];
+                if($count > 0) {
+                    $bulan_setelahnya = MandatoryRetribution::where('jatuh_tempo', '>', $data['jatuh_tempo'])
+                                ->where('contract_id', $data['contract_id'])
+                                ->orderBy('jatuh_tempo', 'asc') 
+                                ->take($count) 
+                                ->get();
+
+                    foreach($bulan_setelahnya as $pembayaran_nonHarian) {
+                        $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
+                        $pembayaran_nonHarian->metode_pembayaran = 'CASH';
+                        $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
+                        $pembayaran_nonHarian->total_retribusi = $data['total_retribusi'];
+                        $pembayaran_nonHarian->petugas_id = $data['petugas_id'];
+                        $pembayaran_nonHarian->save();
+                    }
                 }
             }
         

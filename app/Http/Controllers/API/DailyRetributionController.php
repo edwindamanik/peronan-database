@@ -21,26 +21,11 @@ class DailyRetributionController extends Controller
     
     public function uploadSetoranRetribusi(Request $request, $user_id, $pasar_id)
     {
-        $data = $request->json()->all();
-
-        $total_harian_nonharian = 0;
-
-        foreach($data as $item) {
-            $total_harian_nonharian += $item['biaya_retribusi'];
-        }
-
-        $tanggal = date('Y-m-d');
-        $retributions_bulanan = DB::table('mandatory_retributions')
-            ->where('status_pembayaran', 'sudah_dibayar')
-            ->where('tanggal_pembayaran', $tanggal)
-            ->where('petugas_id', $user_id)
-            ->select(DB::raw('SUM(biaya_retribusi) as total_biaya'))
-            ->first();
-
-        $total_harian_nonharian += $retributions_bulanan->total_biaya;
+        $dataHarian = $request->input('data');
+        $totalSetoran = $request->input('setoran');
 
         $depositId = DB::table('deposits')->insertGetId([
-            'jumlah_setoran' => $total_harian_nonharian,
+            'jumlah_setoran' => $totalSetoran,
             'penyetoran_melalui' => null,
             'tanggal_penyetoran' => now(),
             'tanggal_disetor' => null,
@@ -52,14 +37,14 @@ class DailyRetributionController extends Controller
             'pasar_id' => $pasar_id
         ]);
 
-        foreach ($data as $item) {
+        foreach ($dataHarian as $item) {
             DB::table('daily_retributions')->insert([
                 'no_bukti_pembayaran' => $item['no_bukti_pembayaran'],
                 'biaya_retribusi' => $item['biaya_retribusi'],
                 'tanggal' => $item['tanggal'],
                 'bukti_pembatalan' => $item['bukti_pembatalan'],
                 'bukti_pembayaran' => $item['bukti_pembayaran'],
-                'status' => 'sudah_bayar',
+                'status' => $item['status'],
                 'deposit_id' => $depositId,
                 'unit_id' => $item['unit_id'],
                 'pasar_id' => $item['pasar_id'],
@@ -67,7 +52,7 @@ class DailyRetributionController extends Controller
             ]);
         }
 
-        return response()->json(['data' => 'Berhasil melakukan penyetoran']);
+        return response()->json(['data' => 'Berhasil menambahkan retribusi harian dan total setoran']);
     }
 
     public function show($id)

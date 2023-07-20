@@ -112,7 +112,7 @@ Route::get('deposits/{user_id}/{pasar_id}', [App\Http\Controllers\API\DepositCon
 Route::resource('deposits', App\Http\Controllers\API\DepositController::class);
 
 // API UNTUK MENGUPDATE STATUS PEMBAYARAN NON HARIAN
-Route::put('update-mandatory-retributions/{id}', [App\Http\Controllers\API\MandatoryRetributionController::class, 'updateStatusPembayaran']);
+Route::post('update-mandatory-retributions', [App\Http\Controllers\API\MandatoryRetributionController::class, 'updateStatusPembayaran']);
 
 // API UNTUK USER DETAIL
 Route::get('user/{id}', [App\Http\Controllers\API\AuthController::class, 'userDetail']);
