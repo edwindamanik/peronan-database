@@ -5,6 +5,23 @@
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<style>
+    .form-group.ukuran-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+  
+    .form-group.ukuran-item label {
+      flex-basis: 45%;
+    }
+  
+    .form-group.ukuran-item input {
+      flex-basis: 45%;
+    }
+  </style>
+  
 
 @if (session()->has('success'))
 <div class="alert text-white bg-success" role="alert">
@@ -141,24 +158,22 @@
                         </div>
                         <div class="form-group">
                             <label for="inputText">Ukuran</label>
-                            <div class="row">
-                                <div class="col">
-                                    <div class="form-group">
+                            <div id="ukuran-container" style="display: flex;">
+                                <div class="form-group ukuran-item" style="display: flex; flex-direction: row;">
+                                    <div style="flex: 1;">
                                         <label for="inputLeft">Masukkan Panjang</label>
-                                        <input type="number" class="form-control" id="inputLeft" name="panjang"
-                                            placeholder="Panjang" required>
+                                        <input type="number" class="form-control" name="panjang[]" placeholder="Panjang" required>
                                     </div>
-                                </div>
-                                <div class="col">
-                                    <div class="form-group">
+                                    <div style="flex: 1;">
                                         <label for="inputRight">Masukkan Lebar</label>
-                                        <input type="number" class="form-control" id="inputRight" name="lebar"
-                                            placeholder="Lebar" required>
+                                        <input type="number" class="form-control" name="lebar[]" placeholder="Lebar" required>
                                     </div>
                                 </div>
                             </div>
-
+                        
+                            <a href="javascript:void(0)" onclick="tambahUkuran()" id="tambah-ukuran-link">Tambah Ukuran</a>
                         </div>
+                        
                         <button type="submit" class="btn btn-primary">Submit</button>
                     </form>
                 </div>
@@ -251,7 +266,55 @@
     </div>
 
 </main>
-
+<script>
+    function tambahUkuran() {
+        var ukuranContainer = document.getElementById('ukuran-container');
+    
+        var ukuranItem = document.createElement('div');
+        ukuranItem.classList.add('form-group', 'ukuran-item');
+        ukuranItem.innerHTML = `
+            <label for="inputLeft">Masukkan Panjang</label>
+            <input type="number" class="form-control" name="panjang[]" placeholder="Panjang" required>
+            <label for="inputRight">Masukkan Lebar</label>
+            <input type="number" class="form-control" name="lebar[]" placeholder="Lebar" required>
+        `;
+    
+        ukuranContainer.appendChild(ukuranItem);
+    }
+    </script>
+    
+    
+<script>
+    function tambahUkuran() {
+        var ukuranContainer = document.createElement('div');
+        ukuranContainer.classList.add('row');
+    
+        var panjangInput = document.createElement('div');
+        panjangInput.classList.add('col');
+        panjangInput.innerHTML = `
+            <div class="form-group ukuran-container">
+                <label for="inputLeft">Masukkan Panjang</label>
+                <input type="number" class="form-control" name="panjang[]" placeholder="Panjang" required>
+            </div>
+        `;
+    
+        var lebarInput = document.createElement('div');
+        lebarInput.classList.add('col');
+        lebarInput.innerHTML = `
+            <div class="form-group ukuran-container">
+                <label for="inputRight">Masukkan Lebar</label>
+                <input type="number" class="form-control" name="lebar[]" placeholder="Lebar" required>
+            </div>
+        `;
+    
+        ukuranContainer.appendChild(panjangInput);
+        ukuranContainer.appendChild(lebarInput);
+    
+        var tambahUkuranLink = document.querySelector('#tambah-ukuran-link');
+        tambahUkuranLink.parentNode.insertBefore(ukuranContainer, tambahUkuranLink);
+    }
+    </script>
+    
 <script>
     $(document).ready(function () {
         $('#searchInput').keyup(function () {

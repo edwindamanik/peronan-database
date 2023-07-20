@@ -34,6 +34,8 @@ class AuthController extends Controller
                 return redirect('/konfirmasi-setoran');
             } elseif ($user->role === 'admin') {
                 return redirect('/pasar');
+            }elseif ($user->role === 'adminutama') {
+                return redirect('/faq');
             } else {
                 // Jika peran tidak diketahui, ganti return redirect sesuai kebutuhan
                 return redirect('/');

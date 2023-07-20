@@ -29,19 +29,19 @@
     <div class="messages"></div>
     <main>
         <div class="container-fluid">
-            <h2 class="mt-4">Daftar FAQ</h2>
+            <h2 class="mt-4">Daftar Keuntungan</h2>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">FAQ</li>
+                    <li class="breadcrumb-item active" aria-current="page">Keuntungan</li>
                 </ol>
             </nav>
             <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModalTambah">
-                Tambah FAQ
+                Tambah Keuntungan
             </button>
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
-                    FAQ
+                    Keuntungan
                 </div>
                 <div class="card-body">
                     @if (session()->has('updateMessage'))
@@ -85,8 +85,8 @@
                                 @foreach ($data as $item)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->pertanyaan }}</td>
-                                        <td>{{ $item->jawaban }}</td>
+                                        <td>{{ $item->judul }}</td>
+                                        <td>{{ $item->deskripsi }}</td>
                                         <td>
                                             <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
                                                 data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
@@ -122,22 +122,22 @@
                 <div class="modal-content">
                     <!-- Modal header -->
                     <div class="modal-header">
-                        <h5 class="modal-title">Tambah Kelompok Pasar</h5>
+                        <h5 class="modal-title">Tambah Keuntungan</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
                     <!-- Modal body -->
                     <div class="modal-body">
-                        <form action="/faq/store" method="POST" id="tambahForm">
+                        <form action="/keuntungan/store" method="POST" id="tambahForm">
                             @csrf
                             <div class="form-group">
-                                <label for="pertanyaanfaq">Pertanyaan:</label>
-                                <input type="text" class="form-control" id="pertanyaanfaq" name="pertanyaanfaq" required>
+                                <label for="judulK">Judul:</label>
+                                <input type="text" class="form-control" id="judulK" name="judulK" required>
                             </div>
 
                             <div class="form-group">
-                                <label for="jawabanfaq">Jawaban:</label>
-                                <input type="text" class="form-control" id="jawabanfaq" name="jawabanfaq" required>
+                                <label for="deskripsiK">Deskripsi:</label>
+                                <input type="text" class="form-control" id="deskripsiK" name="deskripsiK" required>
                             </div>
                             <!-- Add more form fields here if needed -->
                         </form>
@@ -160,7 +160,7 @@
                 <div class="modal-content">
                     <!-- Modal header -->
                     <div class="modal-header">
-                        <h5 class="modal-title">Edit Faq</h5>
+                        <h5 class="modal-title">Edit Keuntungan</h5>
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
 
@@ -169,14 +169,14 @@
                         <form action="" method="POST" id="editForm">
                             @csrf
                             <div class="form-group">
-                                <label for="inputText">Pertanyaan</label>
-                                <input type="text" class="form-control" id="pertanyaanfaq" name="pertanyaanfaq"
-                                    placeholder="Pertanyaan">
+                                <label for="inputText">Judul</label>
+                                <input type="text" class="form-control" id="judulK" name="judulK"
+                                    placeholder="Judul">
                             </div>
                             <div class="form-group">
-                                <label for="inputText">Jawaban</label>
-                                <input type="text" class="form-control" id="jawabanfaq" name="jawabanfaq"
-                                    placeholder="Jawaban">
+                                <label for="inputText">Deskripsi</label>
+                                <input type="text" class="form-control" id="deskripsiK" name="deskripsiK"
+                                    placeholder="Deskripsi">
                             </div>
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </form>
@@ -233,11 +233,11 @@
         $(document).ready(function() {
             $('.edit-button').click(function() {
                 var jsonData = $(this).data('jsondata');
-                $('#pertanyaanfaq').val(jsonData.pertanyaan);
-                $('#jawabanfaq').val(jsonData.jawaban);
+                $('#judulK').val(jsonData.judul);
+                $('#deskripsiK').val(jsonData.deskripsi);
 
                 var updateForm = $('#editForm');
-                var actionUrl = '/faq/update/' + jsonData.id;
+                var actionUrl = '/keuntungan/update/' + jsonData.id;
 
                 updateForm.attr('action', actionUrl);
             });

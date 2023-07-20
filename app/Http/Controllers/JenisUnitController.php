@@ -56,37 +56,78 @@ class JenisUnitController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        try {
-            $user = Auth::user();
-            $kabupatenId = $user->kabupaten_id;
-            $now = now();
+//    public function store(Request $request)
+// {
+//     try {
+//         $user = Auth::user();
+//         $kabupatenId = $user->kabupaten_id;
+//         $now = now();
 
-            $exitingjenisunit = DB::table('unit_types')
-                ->where('kode', $request->input('kode'))
-                ->first();
+//         $panjangArray = $request->input('panjang');
+//         $lebarArray = $request->input('lebar');
 
-            if ($exitingjenisunit) {
-                return back()->with('storeMessagee', 'Jenis Unit Sudah pernah ditambahkan');
-            }
+//         // Lakukan validasi jika perlu
+//         // ...
+
+//         // Loop melalui pasangan panjang dan lebar untuk menyimpan data ke database
+//         foreach ($panjangArray as $key => $panjang) {
+//             $lebar = $lebarArray[$key];
+
+//             DB::table('unit_types')->insert([
+//                 'kode' => $request->input('kode'),
+//                 'jenis_unit' => $request->input('jenisUnit'),
+//                 'panjang' => $panjang,
+//                 'lebar' => $lebar,
+//                 'jenis_pembayaran' => $request->input('jenisPembayaran'),
+//                 'kabupaten_id' => $kabupatenId,
+//                 'created_at' => $now,
+//                 'updated_at' => $now
+//             ]);
+//         }
+
+//         return back()->with('storeMessage', 'Data berhasil ditambahkan ke database');
+//     } catch (\Exception $e) {
+//         return response()->json(['errorMessage' => $e->getMessage()]);
+//     }
+// }
+
+public function store(Request $request)
+{
+    try {
+        $user = Auth::user();
+        $kabupatenId = $user->kabupaten_id;
+        $now = now();
+
+        $kode = $request->input('kode');
+        $jenisUnit = $request->input('jenisUnit');
+        $jenisPembayaran = $request->input('jenisPembayaran');
+        $panjangArray = $request->input('panjang');
+        $lebarArray = $request->input('lebar');
+
+        // Loop melalui pasangan panjang dan lebar untuk menyimpan data ke database
+        foreach ($panjangArray as $key => $panjang) {
+            $lebar = $lebarArray[$key];
 
             DB::table('unit_types')->insert([
-                'kode' => $request->input('kode'),
-                'jenis_unit' => $request->input('jenisUnit'),
-                'panjang' => $request->input('panjang'),
-                'lebar' => $request->input('lebar'),
-                'jenis_pembayaran' => $request->input('jenisPembayaran'),
+                'kode' => $kode,
+                'jenis_unit' => $jenisUnit,
+                'panjang' => $panjang,
+                'lebar' => $lebar,
+                'jenis_pembayaran' => $jenisPembayaran,
                 'kabupaten_id' => $kabupatenId,
                 'created_at' => $now,
                 'updated_at' => $now
             ]);
-
-            return back()->with('storeMessage', 'Jenis Unit berhasil ditambahkan');
-        } catch (\Exception $e) {
-            return response()->json(['errorMessage' => $e->getMessage()]);
         }
+
+        return back()->with('storeMessage', 'Jenis Unit Berhasil Ditambahkan');
+    } catch (\Exception $e) {
+        return response()->json(['errorMessage' => $e->getMessage()]);
     }
+}
+
+
+
 
     /**
      * Display the specified resource.
