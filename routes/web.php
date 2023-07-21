@@ -128,6 +128,8 @@ Route::get('/keuntungan', [AdminUtama::class, 'indexadv']);
 Route::post('/keuntungan/update/{id}', [AdminUtama::class, 'updateadv']);
 Route::post('/keuntungan/store', [AdminUtama::class, 'storeadv']);
 
+Route::get('/view-ppsx', [AdminUtama::class, 'indexppt'])->name('view-ppsx');
+
 Route::get('/dataperonan', [AdminUtama::class, 'indexdat']);
 Route::post('/dataperonan/update/{id}', [AdminUtama::class, 'updatedat']);
 

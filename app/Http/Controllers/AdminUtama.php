@@ -182,4 +182,10 @@ class AdminUtama extends Controller
 
         return back()->with('updateMessage', 'Data PErOnan berhasil diperbarui');
     }
+
+    public function indexppt()
+{
+    return view('view-ppsx');
+}
+
 }
