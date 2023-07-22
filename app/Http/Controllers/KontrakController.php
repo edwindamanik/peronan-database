@@ -27,7 +27,7 @@ class KontrakController extends Controller
         $data = DB::table('contracts')
             ->join('unit_types', 'contracts.unit_id', '=', 'unit_types.id')
             ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
-            ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
+            ->join('users', 'contracts.wajib_retribusi_id', '=', 'users.id')
             ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
             ->where('letter_settings.kabupaten_id', $kabupatenId)
             ->whereIn('unit_types.jenis_pembayaran', ['bulanan', 'tahunan'])
