@@ -84,8 +84,8 @@
                                             style="font-weight: bold ;color: {{ $item->status === 'menunggu' ? '#FF9C07' : ($item->status === 'benar' ? '#32B83F' : '#343A40') }}">
                                             {{ $item->status }}</td>
                                         <td>
-                                            @if ($item  ->status != 'benar')
-                                                <button class="btn btn-success btn-setujui" data-id="{{ $item ->id }}"
+                                            @if ($item->status != 'benar')
+                                                <button class="btn btn-success btn-setujui" data-id="{{ $item->id }}"
                                                     data-status="Setuju">Setujui</button>
                                             @endif
                                             <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
@@ -96,14 +96,11 @@
                                                 data-target="#myModalDelete" data-pasar-id="{{ $item->id }}">
                                                 Hapus
                                             </button>
-                                            @php
-                                                $id = $item->id; // Ganti 'id' dengan nama atribut yang sesuai di dalam data Anda
-                                            @endphp
-                                            <a href="{{ route('kontrak.view', ['id' => $id]) }}">
-                                                <button type="button" class="btn btn-primary">
-                                                    Lihat
-                                                </button>
-                                            </a>
+                                            <button type="button" class="btn btn-primary" onclick="previewKontrak(event)" data-id="{{ $item->id }}" data-jsondata="{{ json_encode($item) }}">
+                                                Lihat
+                                            </button>
+                                            
+
 
                                         </td>
                                     </tr>
@@ -297,11 +294,11 @@
 
     </main>
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const buttonsSetujui = document.querySelectorAll('.btn-setujui');
 
             buttonsSetujui.forEach(button => {
-                button.addEventListener('click', function () {
+                button.addEventListener('click', function() {
                     const id = this.getAttribute('data-id');
                     const status = this.getAttribute('data-status');
                     handleStatusChange(id, status);
@@ -310,32 +307,49 @@
 
             function handleStatusChange(id, status) {
                 fetch(`/contracts/setuju/${id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                    },
-                    body: JSON.stringify({
-                        id: id,
-                        status: status
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify({
+                            id: id,
+                            status: status
+                        })
                     })
-                })
-                .then(response => {
-                    if (response.ok) {
-                        // Jika berhasil, lakukan aksi sesuai kebutuhan, misalnya tampilkan pemberitahuan
-                        alert('Status kontrak berhasil diubah menjadi Setuju.');
-                        // Halaman akan diperbarui secara otomatis setelah berhasil mengubah status
-                        window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
-                    } else {
-                        console.error('Terjadi kesalahan saat mengubah status.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Terjadi kesalahan saat mengirim permintaan:', error);
-                });
+                    .then(response => {
+                        if (response.ok) {
+                            // Jika berhasil, lakukan aksi sesuai kebutuhan, misalnya tampilkan pemberitahuan
+                            alert('Status kontrak berhasil diubah menjadi Setuju.');
+                            // Halaman akan diperbarui secara otomatis setelah berhasil mengubah status
+                            window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
+                        } else {
+                            console.error('Terjadi kesalahan saat mengubah status.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Terjadi kesalahan saat mengirim permintaan:', error);
+                    });
             }
         });
     </script>
+
+    <!-- Include jQuery library (if you haven't already) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+    <script>
+        function previewKontrak(event) {
+            event.preventDefault(); // Prevent the default button behavior (form submission or link navigation)
+
+            const jsonData = $(event.target).data('jsondata');
+            const id = jsonData.id; // Assuming your JSON data has an 'id' property
+
+            // Redirect the user to the specified route with the ID parameter
+            window.location.href = `/${id}/kontrakpreview`;
+        }
+    </script>
+
+
     <script>
         $(document).ready(function() {
             $('#searchInput').keyup(function() {
