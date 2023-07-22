@@ -272,7 +272,10 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-center">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Tidak</button>
-                        <a href="/kontrak/delete/{{ $item->id }}" class="btn btn-danger delete-button">Delete</a>
+                        {{-- <a href="/kontrak/delete/{{ $item->id }}" class="btn btn-danger delete-button">Delete</a>
+                         --}}
+
+                         <a href="#" class="btn btn-danger delete-button" id="delete-link">Delete</a>
                     </div>
                 </div>
             </div>
@@ -293,6 +296,18 @@
         </div>
 
     </main>
+    <script>
+        $(document).ready(function() {
+            $(".delete-button").on("click", function() {
+                // Get the item ID from the data-item-id attribute
+                var itemId = $(this).data("item-id");
+                // Build the delete link with the correct item ID
+                var deleteLink = "/kontrak/delete/" + itemId;
+                // Update the href of the delete link in the modal footer
+                $("#delete-link").attr("href", deleteLink);
+            });
+        });
+    </script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const buttonsSetujui = document.querySelectorAll('.btn-setujui');
