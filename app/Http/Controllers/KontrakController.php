@@ -31,8 +31,10 @@ class KontrakController extends Controller
             ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
             ->where('letter_settings.kabupaten_id', $kabupatenId)
             ->whereIn('unit_types.jenis_pembayaran', ['bulanan', 'tahunan'])
-            ->select('contracts.*', 'users.nama','unit_types.*')
+            ->select('contracts.*', 'users.nama', 'unit_types.kode', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar', 'unit_types.jenis_pembayaran')
             ->paginate();
+
+
 
         $wajib_retribusi = DB::table('obligation_retributions')
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
@@ -51,7 +53,7 @@ class KontrakController extends Controller
             ->where('kabupaten_id', $kabupatenId)
             ->get();
 
-        // dd($data,$unit);
+
 
         return view('admin.kontrak', compact('data', 'wajib_retribusi', 'unit', 'pengaturan'));
     }
@@ -209,11 +211,11 @@ class KontrakController extends Controller
 
     public function preview($id)
     {
+        $batal = Contract::find($id);
         $surat = LetterSetting::first();
 
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-
         $data = DB::table('contracts')
             ->join('units', 'contracts.unit_id', '=', 'units.id')
             ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
@@ -221,10 +223,12 @@ class KontrakController extends Controller
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
             ->join('letter_settings', 'contracts.pengaturan_id', '=', 'letter_settings.id')
             ->join('regencies', 'letter_settings.kabupaten_id', '=', 'regencies.id')
+            ->where('contracts.id', $id) 
             ->where('letter_settings.kabupaten_id', $kabupatenId)
-            ->where('contracts.id', $id)
             ->select('contracts.*', 'users.nama', 'letter_settings.*', 'regencies.*', 'units.*', 'unit_types.*')
             ->get();
+            
+
 
         $wajib_retribusi = DB::table('obligation_retributions')
             ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
@@ -243,9 +247,9 @@ class KontrakController extends Controller
             ->where('kabupaten_id', $kabupatenId)
             ->get();
 
-
-
         // dd($data);
+
+        
 
         return view('admin.kontrakview', compact('data', 'wajib_retribusi', 'unit', 'pengaturan'));
 
