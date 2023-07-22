@@ -82,7 +82,7 @@ Route::resource('units', App\Http\Controllers\API\UnitController::class);
 Route::resource('retribution-fees', App\Http\Controllers\API\RetributionFeeController::class);
 
 // API UNTUK HALAMAN BUKTI BAYAR SETORAN HARIAN
-Route::get('units/retribution/{pasar_id}', [App\Http\Controllers\API\UnitController::class, 'getUnit']);
+Route::get('units/retribution/{kabupaten_id}', [App\Http\Controllers\API\UnitController::class, 'getUnit']);
 
 // API UNTUK MENAMPILKAN LIST CONTRACT BERDASARKAN USER ID
 Route::get('contracts/show/{user_id}', [App\Http\Controllers\API\ContractController::class, 'getContractByUser']);
@@ -91,7 +91,7 @@ Route::get('contracts/show/{user_id}', [App\Http\Controllers\API\ContractControl
 Route::resource('contracts', App\Http\Controllers\API\ContractController::class);
 
 // API UNTUK MENAMPILKAN RETRIBUSI NON HARIAN
-Route::get('mandatory-retributions/invoice/{pasar_id}', [App\Http\Controllers\API\MandatoryRetributionController::class, 'getBulanan']);
+Route::get('mandatory-retributions/invoice', [App\Http\Controllers\API\MandatoryRetributionController::class, 'getBulanan']);
 
 // API RESOURCE RETRIBUSI WAJIB BAYAR
 Route::resource('mandatory-retributions', App\Http\Controllers\API\MandatoryRetributionController::class);

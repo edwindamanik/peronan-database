@@ -15,7 +15,62 @@ class RekonController extends Controller
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
-        $currentMonth = Carbon::now()->format('m');
+        $currentMonth = Carbon::now()->month;
+
+        $realCash = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->where('users.kabupaten_id', $kabupatenId)
+                ->where('mandatory_retributions.status_pembayaran', 'sudah_dibayar')
+                ->where('mandatory_retributions.metode_pembayaran', 'cash')
+                ->whereRaw('MONTH(mandatory_retributions.tanggal_pembayaran) = ?', [$currentMonth])
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->first();
+
+        $harianTotal = DB::table('daily_retributions')
+                    ->join('markets', 'markets.id', '=', 'daily_retributions.pasar_id')
+                    ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+                    ->where('market_groups.kabupaten_id', $kabupatenId)
+                    ->where('daily_retributions.status', 'sudah_bayar')
+                    ->whereRaw('MONTH(daily_retributions.created_at) = ?', [$currentMonth])
+                    ->selectRaw('SUM(daily_retributions.biaya_retribusi) as total_harian')
+                    ->first();
+        
+        $totalCash = $realCash->total_biaya + $harianTotal->total_harian;
+
+        $depositCash = DB::table('deposits')
+                    ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+                    ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+                    ->where('market_groups.kabupaten_id', $kabupatenId)
+                    ->where('deposits.status', 'disetujui')
+                    ->where('deposits.wajib_retribusi_id', null)
+                    ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
+                    ->first();
+
+        // dd($depositCash);
+
+        $realVa = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->where('users.kabupaten_id', $kabupatenId)
+                ->where('mandatory_retributions.status_pembayaran', 'sudah_dibayar')
+                ->where('mandatory_retributions.metode_pembayaran', 'virtual_account')
+                ->whereRaw('MONTH(mandatory_retributions.tanggal_pembayaran) = ?', [$currentMonth])
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->get();
+
+        $realQris = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->where('users.kabupaten_id', $kabupatenId)
+                ->where('mandatory_retributions.status_pembayaran', 'sudah_dibayar')
+                ->where('mandatory_retributions.metode_pembayaran', 'qris')
+                ->whereRaw('MONTH(mandatory_retributions.tanggal_pembayaran) = ?', [$currentMonth])
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->get();
 
         $jenis = DB::table('mandatory_retributions')
             ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -53,8 +108,7 @@ class RekonController extends Controller
             ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
             ->get();
 
-
-        return view('bendahara.rekonsiliasi', compact('depo','manda','jenis'));
+        return view('bendahara.rekonsiliasi', compact('totalCash', 'depositCash'));
     }
 
     public function rekondetail()

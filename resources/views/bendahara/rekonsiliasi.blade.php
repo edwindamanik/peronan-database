@@ -26,16 +26,11 @@
 <main>
     <div class="container-fluid">
         <h2 class="mt-4">REKONSILIASI</h2>
-        <nav aria-label="breadcrumb">
-            <ol class="breadcrumb">
-                <li class="breadcrumb-item active" aria-current="page">Rekonsiliasi</li>
-            </ol>
-        </nav>
 
         <div class="card mb-4">
             <div class="card-header">
                 <i class="fas fa-table mr-1"></i>
-                Rekonsiliasi
+                Rekonsiliasi Keuangan
             </div>
             <div class="card-body">
                 @if (session()->has('deleteMessage'))
@@ -70,7 +65,7 @@
                         </div>
                     </form>
                     <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                        <thead>
+                        <thead style="background-color: #B9B9B9">
                             <tr>
                                 <th align="center"></th>
                                 <th align="center">SYSTEM</th>
@@ -80,33 +75,31 @@
                             </tr>
                         </thead>
                         <tbody>
-                            @if($depo->isEmpty())
                             <tr>
+                                <td style="font-weight: 800">CASH</td>
+                                <td>Rp {{ number_format($totalCash, 0, ',', '.') }} ,-</td>
+                                <td>Rp {{ number_format($depositCash->total_setoran, 0, ',', '.') }} ,-</td>
+                                <td>Rp {{ number_format(abs($totalCash - $depositCash->total_setoran), 0, ',', '.') }} ,-</td>
                                 <td>-</td>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            <tr>
+                                <td style="font-weight: 800">VA</td>
                                 <td>Rp 0</td>
                                 <td>Rp 0</td>
                                 <td>Rp 0</td>
                                 <td>-</td>
                             </tr>
-                            @else
-                            @foreach ($jenis->unique('metode_pembayaran') as $jn)
-                            <?php $totalRetri = 0; ?>
-                            @foreach ($manda->where('metode_pembayaran',$jn->metode_pembayaran) as $item)
-                            <?php $total = 0; ?>
+                        </tbody>
+                        <tbody>
                             <tr>
-                                <td align="center"><b>{{ $item ->metode_pembayaran }}</b></td>
-                                @foreach ($depo as $dt)
-                                <?php $total += $dt->jumlah_setoran;  ?>
-                                @endforeach
-                                <?php $totalRetri += $item->total_retribusi;  ?>
-                                <td>Rp. {{ number_format($total, 0, ',', '.') }}</td>
-                                <td>Rp. {{ number_format($totalRetri, 0, ',', '.') }}</td>
-                                <td>Rp. {{ number_format($total - $totalRetri, 0, ',', '.') }}</td>
-                                <td><a href="/rekondetail">Lihat Detail Selanjutnya</a></td>
+                                <td style="font-weight: 800">QRIS</td>
+                                <td>Rp 0</td>
+                                <td>Rp 0</td>
+                                <td>Rp 0</td>
+                                <td>-</td>
                             </tr>
-                            @endforeach
-                            @endforeach
-                            @endif
                         </tbody>
                     </table>
                     {{-- <div class="d-flex justify-content-end">
