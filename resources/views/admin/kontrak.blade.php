@@ -84,6 +84,10 @@
                                             style="font-weight: bold ;color: {{ $item->status === 'menunggu' ? '#FF9C07' : ($item->status === 'benar' ? '#32B83F' : '#343A40') }}">
                                             {{ $item->status }}</td>
                                         <td>
+                                            @if ($item  ->status != 'benar')
+                                                <button class="btn btn-success btn-setujui" data-id="{{ $item ->id }}"
+                                                    data-status="Setuju">Setujui</button>
+                                            @endif
                                             <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
                                                 data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
                                                 Edit
@@ -292,7 +296,46 @@
         </div>
 
     </main>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const buttonsSetujui = document.querySelectorAll('.btn-setujui');
 
+            buttonsSetujui.forEach(button => {
+                button.addEventListener('click', function () {
+                    const id = this.getAttribute('data-id');
+                    const status = this.getAttribute('data-status');
+                    handleStatusChange(id, status);
+                });
+            });
+
+            function handleStatusChange(id, status) {
+                fetch(`/contracts/setuju/${id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    },
+                    body: JSON.stringify({
+                        id: id,
+                        status: status
+                    })
+                })
+                .then(response => {
+                    if (response.ok) {
+                        // Jika berhasil, lakukan aksi sesuai kebutuhan, misalnya tampilkan pemberitahuan
+                        alert('Status kontrak berhasil diubah menjadi Setuju.');
+                        // Halaman akan diperbarui secara otomatis setelah berhasil mengubah status
+                        window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
+                    } else {
+                        console.error('Terjadi kesalahan saat mengubah status.');
+                    }
+                })
+                .catch(error => {
+                    console.error('Terjadi kesalahan saat mengirim permintaan:', error);
+                });
+            }
+        });
+    </script>
     <script>
         $(document).ready(function() {
             $('#searchInput').keyup(function() {
