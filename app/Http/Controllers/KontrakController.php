@@ -59,9 +59,22 @@ class KontrakController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function setuju($id)
     {
-        //
+        $contract = Contract::find($id); // Ganti sesuai model dan data Anda
+
+        if (!$contract) {
+            return redirect()->route('contracts.index')->with('danger', 'Kontrak tidak ditemukan.');
+        }
+
+        if ($contract->status != 'benar') {
+            $contract->status = 'benar';
+            $contract->save();
+
+            return redirect()->route('contracts.index')->with('success', 'Status kontrak berhasil diubah .');
+        }
+
+        return redirect()->route('contracts.index')->with('danger', 'Kontrak sudah dalam status Setuju.');
     }
 
     /**

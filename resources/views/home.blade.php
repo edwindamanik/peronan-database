@@ -277,6 +277,12 @@
 
                         @if (Auth::user()->role == 'adminutama')
                             <li class="nav-item">
+                                <a href="/dinas" class="nav-link">
+                                    &nbsp; &nbsp; &nbsp; &nbsp;
+                                    <p>Setujui</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="/faq" class="nav-link">
                                     &nbsp; &nbsp; &nbsp; &nbsp;
                                     <p>FAQ</p>

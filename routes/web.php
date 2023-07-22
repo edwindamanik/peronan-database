@@ -61,11 +61,11 @@ Route::post('/wajib-retribusi/store', [WajibRetribusiController::class, 'store']
 Route::post('/wajib-retribusi/update/{id}', [WajibRetribusiController::class, 'update']);
 Route::get('/wajib-retribusi/delete/{id}', [WajibRetribusiController::class, 'destroy']);
 
-Route::get('/kontrak', [KontrakController::class, 'index']);
+Route::get('/kontrak', [KontrakController::class, 'index'])->name('kontrak.index');
 Route::post('/kontrak/store', [KontrakController::class, 'store']);
 
 Route::get('/{id}/kontrakpreview', [KontrakController::class, 'preview'])->name('kontrak.view');
-
+Route::post('/contracts/setuju/{id}', [KontrakController::class, 'setuju'])->name('contracts.setuju');
 Route::post('/kontrak/update/{id}', [KontrakController::class, 'update']);
 Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
@@ -132,6 +132,12 @@ Route::get('/view-ppsx', [AdminUtama::class, 'indexppt'])->name('view-ppsx');
 
 Route::get('/dataperonan', [AdminUtama::class, 'indexdat']);
 Route::post('/dataperonan/update/{id}', [AdminUtama::class, 'updatedat']);
+
+
+Route::get('/dinas', [AdminUtama::class, 'indexapp']);
+Route::post('/api/ubah-status/{id}/{status}',[AdminUtama::class, 'updatestatus']);
+
+
 
 
 
