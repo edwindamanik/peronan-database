@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="{{ URL::asset('template/template-admin/plugins/fontawesome-free/css/all.min.css') }}">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js">
     <!-- Tempusdominus Bootstrap 4 -->
     <link rel="stylesheet"
         href="{{ secure_asset('template/template-admin/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css') }}">
@@ -132,13 +133,13 @@
                         <li class="nav-header" style="color:#AAAAAA;">MENU</li>
                         @if (Auth::user()->role == 'admin')
                             <li class="nav-item">
-                                <a href="#sidebar-menu" class="nav-link" data-toggle="collapse">
+                                <a href="#" class="nav-link" >
                                     <p>
                                         Data Master
                                         <i class="fas fa-angle-left right"></i>
                                     </p>
                                 </a>
-                                <ul class="nav nav-treeview" id="sidebar-menu">
+                                <ul class="nav nav-treeview">
                                     <li class="nav-item">
                                         <a href="/pasar" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
@@ -334,6 +335,7 @@
 
     <!-- jQuery -->
     <script src="{{ secure_asset('template/template-admin/plugins/jquery/jquery.min.js') }}"></script>
+    
     <script src="{{ URL::asset('template/template-admin/plugins/jquery/jquery.min.js') }}"></script>
     <!-- jQuery UI 1.11.4 -->
     <script src="{{ secure_asset('template/template-admin/plugins/jquery-ui/jquery-ui.min.js') }}"></script>
@@ -395,8 +397,6 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10.5.0/dist/sweetalert2.all.min.js"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/jquery.dataTables.min.js" crossorigin="anonymous"></script>
     <script src="https://cdn.datatables.net/1.10.20/js/dataTables.bootstrap4.min.js" crossorigin="anonymous"></script>
-    <script src="{{ secure_asset('template/assets/demo/datatables-demo.js') }}"></script>
-    <script src="{{ URL::asset('template/assets/demo/datatables-demo.js') }}"></script>
     <!-- Select2  -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
         integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
