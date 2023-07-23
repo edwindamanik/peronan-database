@@ -85,11 +85,14 @@
                                             {{ $item->status }}</td>
                                         <td>
                                             <!-- Button to Menyetujui -->
-                                            <button type="button" class="btn btn-success btn-setujui" data-toggle="modal"
-                                                data-target="#myModalSetujui" data-id="{{ $item->id }}"
-                                                data-status="Setuju">
-                                                Menyetujui
-                                            </button>
+
+                                            @if ($item->status != 'benar')
+                                                <button type="button" class="btn btn-success btn-setujui"
+                                                    data-toggle="modal" data-target="#myModalSetujui"
+                                                    data-id="{{ $item->id }}" data-status="Setuju">
+                                                    Menyetujui
+                                                </button>
+                                            @endif
 
                                             <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
                                                 data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
@@ -343,18 +346,28 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // JavaScript lama - handleStatusChange untuk tombol "Menyetujui"
-            const buttonsSetujui = document.querySelectorAll('.btn-setujui');
+            // JavaScript baru - handleSetujui untuk tombol "Setujui" di dalam modal
+            const modalSetujui = document.getElementById('myModalSetujui');
+            const setujuiConfirmButton = document.querySelector('.btn-setujui-confirm');
+            let currentId = null;
+            let currentStatus = null;
 
-            buttonsSetujui.forEach(button => {
-                button.addEventListener('click', function() {
-                    const id = this.getAttribute('data-id');
-                    const status = this.getAttribute('data-status');
-                    handleStatusChange(id, status);
-                });
+            // Function to open the modal and set the data attributes
+            function openSetujuiModal(id, status) {
+                currentId = id;
+                currentStatus = status;
+                modalSetujui.setAttribute('data-id', id);
+                modalSetujui.setAttribute('data-status', status);
+                $('#myModalSetujui').modal('show');
+            }
+
+            setujuiConfirmButton.addEventListener('click', function() {
+                const id = modalSetujui.getAttribute('data-id');
+                const status = modalSetujui.getAttribute('data-status');
+                handleSetujui(id, status);
             });
 
-            function handleStatusChange(id, status) {
+            function handleSetujui(id, status) {
                 fetch(`/kontrak/setuju/${id}`, {
                         method: 'POST',
                         headers: {
@@ -368,8 +381,9 @@
                     })
                     .then(response => {
                         if (response.ok) {
-                            alert('Status kontrak berhasil diubah menjadi Setuju.');
-                            window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
+                            // Remove the alert message
+                            // alert('Status kontrak berhasil diubah menjadi Setuju.');
+                            window.location.reload(); // Reload the current page
                         } else {
                             console.error('Terjadi kesalahan saat mengubah status.');
                         }
@@ -379,40 +393,20 @@
                     });
             }
 
-            // JavaScript baru - handleSetujui untuk tombol "Setujui" di dalam modal
-            const modalSetujui = document.getElementById('myModalSetujui');
-            const setujuiConfirmButton = document.querySelector('.btn-setujui-confirm');
+            // Add click event listener to all buttons with class "btn-setujui"
+            const buttonsSetujui = document.querySelectorAll('.btn-setujui');
 
-            setujuiConfirmButton.addEventListener('click', function() {
-                const id = modalSetujui.getAttribute('data-id');
-                handleSetujui(id);
+            buttonsSetujui.forEach(button => {
+                button.addEventListener('click', function() {
+                    const id = this.getAttribute('data-id');
+                    const status = this.getAttribute('data-status');
+                    openSetujuiModal(id, status);
+                });
             });
-
-            function handleSetujui(id) {
-                fetch(`/kontrak/setuju/${id}`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
-                        },
-                        body: JSON.stringify({
-                            id: id
-                        })
-                    })
-                    .then(response => {
-                        if (response.ok) {
-                            alert('Status kontrak berhasil diubah menjadi Setuju.');
-                            window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
-                        } else {
-                            console.error('Terjadi kesalahan saat mengubah status.');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Terjadi kesalahan saat mengirim permintaan:', error);
-                    });
-            }
         });
     </script>
+
+
 
     <!-- Include jQuery library (if you haven't already) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
