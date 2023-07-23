@@ -65,7 +65,8 @@ Route::get('/kontrak', [KontrakController::class, 'index'])->name('kontrak.index
 Route::post('/kontrak/store', [KontrakController::class, 'store']);
 
 Route::get('/{id}/kontrakpreview', [KontrakController::class, 'preview'])->name('kontrak.view');
-Route::post('/contracts/setuju/{id}', [KontrakController::class, 'setuju'])->name('contracts.setuju');
+Route::post('/kontrak/setuju/{id}', [KontrakController::class, 'setuju'])->name('kontrak.setuju');  
+
 Route::post('/kontrak/update/{id}', [KontrakController::class, 'update']);
 Route::get('/kontrak/delete/{id}', [KontrakController::class, 'destroy']);
 
