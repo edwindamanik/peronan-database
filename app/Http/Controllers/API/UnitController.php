@@ -16,8 +16,16 @@ class UnitController extends Controller
      */
     public function index()
     {
-        $unit = Unit::all();
-        return response()->json(['data' => $unit]);
+        $data = DB::table('units')
+                ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+                ->join('retribution_fees', 'unit_types.id', '=', 'retribution_fees.jenis_unit_id')
+                ->select('units.id', 'units.no_unit', 'retribution_fees.harga', 'unit_types.jenis_unit', 'unit_types.panjang', 'units.pasar_id', 'unit_types.lebar', 'units.jenis_unit_id')
+                // ->where('units.pasar_id', $pasar_id)
+                // ->where('retribution_fees.kelompok_pasar', $kelompok_pasar_id->kelompok_pasar_id)
+                ->where('unit_types.jenis_pembayaran', 'harian')
+                ->get();
+
+        return response()->json(['data' => $data]);
     }
 
 
@@ -97,17 +105,16 @@ class UnitController extends Controller
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
-    public function getUnit($pasar_id) {
-
-        $kelompok_pasar_id = Market::find($pasar_id);
+    public function getUnit($kabupaten_id) {
 
         $data = DB::table('units')
                 ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
                 ->join('retribution_fees', 'unit_types.id', '=', 'retribution_fees.jenis_unit_id')
-                ->select('units.id', 'units.no_unit', 'retribution_fees.harga', 'unit_types.jenis_unit', 'unit_types.panjang', 'unit_types.lebar', 'units.jenis_unit_id')
-                ->where('units.pasar_id', $pasar_id)
-                ->where('retribution_fees.kelompok_pasar', $kelompok_pasar_id->kelompok_pasar_id)
+                ->select('units.id', 'units.no_unit', 'unit_types.kabupaten_id', 'retribution_fees.harga', 'unit_types.jenis_unit', 'unit_types.panjang', 'units.pasar_id', 'unit_types.lebar', 'units.jenis_unit_id')
+                // ->where('units.pasar_id', $pasar_id)
+                // ->where('retribution_fees.kelompok_pasar', $kelompok_pasar_id->kelompok_pasar_id)
                 ->where('unit_types.jenis_pembayaran', 'harian')
+                ->where('unit_types.kabupaten_id', $kabupaten_id)
                 ->get();
         
         return response()->json(['data' => $data]);

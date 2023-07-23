@@ -24,8 +24,10 @@ return new class extends Migration
             $table->enum('status_pembayaran', ['sudah_dibayar', 'belum_dibayar']);
             $table->char('url_pembayaran_va')->nullable();
             $table->char('url_pembayaran_qris')->nullable();
+            $table->unsignedBigInteger('deposit_id')->nullable();
             $table->unsignedBigInteger('petugas_id')->nullable();
             $table->unsignedBigInteger('contract_id');
+            $table->foreign('deposit_id')->references('id')->on('deposits')->onDelete('cascade');
             $table->foreign('petugas_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('contract_id')->references('id')->on('contracts')->onDelete('cascade');
             $table->timestamps();

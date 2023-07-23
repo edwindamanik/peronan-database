@@ -19,13 +19,92 @@ class MandatoryRetributionController extends Controller
      */
     public function index()
     {
-        $data = DB::table('mandatory_retributions')
-                ->join('contracts', 'mandatory_retributions.contract_id', '=', 'contracts.id')
-                ->join('obligation_retributions', 'contracts.wajib_retribusi_id', '=', 'obligation_retributions.id')
-                ->join('users', 'obligation_retributions.users_id', '=', 'users.id')
-                ->where('mandatory_retributions.metode_pembayaran', 'cash')
-                ->where('contracts.status', 'benar')
+        $now = Carbon::now();
+        $tanggalTerakhir = $now->endOfMonth()->format('Y-m-d');
+
+        $bulan_sebelumnya = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->join('units', 'units.id', '=', 'contracts.unit_id')
+                ->select('mandatory_retributions.contract_id')
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
+                ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
+                // ->where('units.pasar_id', $pasar_id)
+                ->where('mandatory_retributions.jatuh_tempo', '<', $tanggalTerakhir)
+                ->groupBy('mandatory_retributions.contract_id')
                 ->get();
+
+        // $hasil_bulan_sebelumnya = $bulan_sebelumnya->first();
+
+        $bulan_sekarang = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->join('units', 'units.id', '=', 'contracts.unit_id')
+                ->select('mandatory_retributions.contract_id')
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
+                ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
+                // ->where('units.pasar_id', $pasar_id)
+                ->where('mandatory_retributions.jatuh_tempo', '=', $tanggalTerakhir)
+                ->groupBy('mandatory_retributions.contract_id')
+                ->get();
+
+        // $hasil_bulan_sekarang = $bulan_sekarang->first();
+
+        $bulan_setelahnya = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->join('units', 'units.id', '=', 'contracts.unit_id')
+                ->select('mandatory_retributions.contract_id')
+                ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
+                ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
+                ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
+                // ->where('units.pasar_id', $pasar_id)
+                ->where('mandatory_retributions.jatuh_tempo', '>', $tanggalTerakhir)
+                ->groupBy('mandatory_retributions.contract_id')
+                ->get();
+
+        $data = DB::table('mandatory_retributions')
+                ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
+                ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
+                ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
+                ->join('units', 'units.id', '=', 'contracts.unit_id')
+                ->select('mandatory_retributions.id', 'mandatory_retributions.no_tagihan' ,'users.nama', 'mandatory_retributions.no_tagihan', 'mandatory_retributions.biaya_retribusi', 'mandatory_retributions.status_pembayaran', 'mandatory_retributions.jatuh_tempo', 'mandatory_retributions.contract_id', 'units.no_unit', 'users.nama', 'obligation_retributions.nik', 'units.pasar_id')
+                ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
+                // ->where('mandatory_retributions.petugas_id', $petugas_id)
+                // ->where('units.pasar_id', $pasar_id)
+                ->whereYear('mandatory_retributions.jatuh_tempo', '=', date('Y'))
+                ->whereMonth('mandatory_retributions.jatuh_tempo', '=', date('m'))
+                ->get();
+
+        if (!empty($bulan_sebelumnya)) {
+            foreach ($data as $index => $item) {
+                if (isset($bulan_sebelumnya[$index])) {
+                    $item->total_retribusi = intval($bulan_sebelumnya[$index]->total_biaya) + intval($bulan_sekarang[$index]->total_biaya);
+                    $item->tunggakan = intval($bulan_sebelumnya[$index]->total_biaya);
+                    $item->total_bulan_setelahnya = $bulan_setelahnya[$index]->jumlah_periode;
+                    $item->jumlah_periode = $bulan_sebelumnya[$index]->jumlah_periode + $bulan_sekarang[$index]->jumlah_periode;
+                } else {
+                    // Handle ketika data $bulan_sebelumnya tidak ada
+                    $item->total_retribusi = intval($bulan_sekarang[$index]->total_biaya);
+                    $item->tunggakan = 0;
+                    $item->total_bulan_setelahnya = $bulan_setelahnya[$index]->jumlah_periode;
+                    $item->jumlah_periode = $bulan_sekarang[$index]->jumlah_periode;
+                }
+            }
+        } else {
+            // Handle ketika data $bulan_sebelumnya tidak ada untuk semua elemen $data
+            foreach ($data as $item) {
+                $item->total_retribusi = intval($bulan_sekarang[0]->total_biaya);
+                $item->tunggakan = 0;
+                $item->total_bulan_setelahnya = $bulan_setelahnya;
+                $item->jumlah_periode = $bulan_sekarang[0]->jumlah_periode;
+            }
+        }
 
         return response()->json(['data' => $data]);
     }
@@ -116,7 +195,7 @@ class MandatoryRetributionController extends Controller
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
 
-    public function getBulanan($pasar_id) 
+    public function getBulanan() 
     {
         $now = Carbon::now();
         $tanggalTerakhir = $now->endOfMonth()->format('Y-m-d');
@@ -130,7 +209,7 @@ class MandatoryRetributionController extends Controller
                 ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
                 ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
-                ->where('units.pasar_id', $pasar_id)
+                // ->where('units.pasar_id', $pasar_id)
                 ->where('mandatory_retributions.jatuh_tempo', '<', $tanggalTerakhir)
                 ->groupBy('mandatory_retributions.contract_id')
                 ->get();
@@ -146,7 +225,7 @@ class MandatoryRetributionController extends Controller
                 ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
                 ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
-                ->where('units.pasar_id', $pasar_id)
+                // ->where('units.pasar_id', $pasar_id)
                 ->where('mandatory_retributions.jatuh_tempo', '=', $tanggalTerakhir)
                 ->groupBy('mandatory_retributions.contract_id')
                 ->get();
@@ -162,7 +241,7 @@ class MandatoryRetributionController extends Controller
                 ->selectRaw('SUM(mandatory_retributions.biaya_retribusi) as total_biaya')
                 ->selectRaw('COUNT(mandatory_retributions.biaya_retribusi) as jumlah_periode')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
-                ->where('units.pasar_id', $pasar_id)
+                // ->where('units.pasar_id', $pasar_id)
                 ->where('mandatory_retributions.jatuh_tempo', '>', $tanggalTerakhir)
                 ->groupBy('mandatory_retributions.contract_id')
                 ->get();
@@ -172,10 +251,11 @@ class MandatoryRetributionController extends Controller
                 ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
                 ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
                 ->join('units', 'units.id', '=', 'contracts.unit_id')
-                ->select('mandatory_retributions.id', 'mandatory_retributions.no_tagihan' ,'users.nama', 'mandatory_retributions.no_tagihan', 'mandatory_retributions.biaya_retribusi', 'mandatory_retributions.status_pembayaran', 'mandatory_retributions.jatuh_tempo', 'mandatory_retributions.contract_id', 'units.no_unit', 'users.nama', 'obligation_retributions.nik')
+                ->join('unit_types', 'unit_types.id', '=', 'units.jenis_unit_id')
+                ->select('mandatory_retributions.id', 'unit_types.jenis_unit', 'mandatory_retributions.no_tagihan' ,'users.nama', 'mandatory_retributions.no_tagihan', 'mandatory_retributions.biaya_retribusi', 'mandatory_retributions.status_pembayaran', 'mandatory_retributions.jatuh_tempo', 'mandatory_retributions.contract_id', 'units.no_unit', 'users.nama', 'obligation_retributions.nik', 'units.pasar_id')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
                 // ->where('mandatory_retributions.petugas_id', $petugas_id)
-                ->where('units.pasar_id', $pasar_id)
+                // ->where('units.pasar_id', $pasar_id)
                 ->whereYear('mandatory_retributions.jatuh_tempo', '=', date('Y'))
                 ->whereMonth('mandatory_retributions.jatuh_tempo', '=', date('m'))
                 ->get();
