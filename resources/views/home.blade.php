@@ -132,13 +132,13 @@
                         <li class="nav-header" style="color:#AAAAAA;">MENU</li>
                         @if (Auth::user()->role == 'admin')
                             <li class="nav-item">
-                                <a href="#" class="nav-link">
+                                <a href="#sidebar-menu" class="nav-link" data-toggle="collapse">
                                     <p>
                                         Data Master
                                         <i class="fas fa-angle-left right"></i>
                                     </p>
                                 </a>
-                                <ul class="nav nav-treeview">
+                                <ul class="nav nav-treeview" id="sidebar-menu">
                                     <li class="nav-item">
                                         <a href="/pasar" class="nav-link">
                                             &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
