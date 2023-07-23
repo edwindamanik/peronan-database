@@ -326,6 +326,8 @@
     </div>
     <!-- ./wrapper -->
 
+
+
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous">
     </script>
@@ -426,6 +428,19 @@
         </script>
         {{ Session::forget('user_created') }}
     @endif
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Toggle Sidebar Function
+            $('#sidebar-toggle').click(function(e) {
+                e.preventDefault();
+                $('#sidebar-menu').toggleClass('d-none'); // Mengubah kelas d-none (display: none)
+                $('#sidebar-icon').toggleClass('fa-angle-left fa-angle-right'); // Mengubah ikon panah
+            });
+        });
+    </script>
+
 
     @if (Session::has('user_deleted'))
         <script>
