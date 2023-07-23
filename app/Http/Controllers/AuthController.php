@@ -99,7 +99,7 @@ class AuthController extends Controller
             $regency->kabupaten = $request->input('kabupaten');
             $regency->email_dinas = $request->input('email_dinas');
             $regency->no_telp_dinas = $request->input('no_telp_dinas');
-            $regency->statys = 'nonaktif';
+            $regency->status = 'nonaktif';
 
             $regency->save();
             $regencyId = $regency->id;

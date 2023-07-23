@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('regencies', function (Blueprint $table) {
             $table->id();
-            $table->string('nama_dinas', 50);
+            $table->string('nama_dinas');
             $table->string('logo');
             $table->string('perda', 50);
             $table->string('kepala_dinas', 25);
@@ -22,6 +22,8 @@ return new class extends Migration
             $table->string('email_dinas');
             $table->string('no_telp_dinas', 20);
             $table->string('upload_perda');
+            $table->text('base_image')->nullable();
+            $table->enum('status', ['aktif', 'nonaktif', 'ditolak'])->nullable();
             $table->timestamps();
             $table->softDeletes();
         });
