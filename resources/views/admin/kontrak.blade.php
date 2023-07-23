@@ -84,10 +84,13 @@
                                             style="font-weight: bold ;color: {{ $item->status === 'menunggu' ? '#FF9C07' : ($item->status === 'benar' ? '#32B83F' : '#343A40') }}">
                                             {{ $item->status }}</td>
                                         <td>
-                                            @if ($item->status != 'benar')
-                                                <button class="btn btn-success btn-setujui" data-id="{{ $item->id }}"
-                                                    data-status="Setuju">Setujui</button>
-                                            @endif
+                                            <!-- Button to Menyetujui -->
+                                            <button type="button" class="btn btn-success btn-setujui" data-toggle="modal"
+                                                data-target="#myModalSetujui" data-id="{{ $item->id }}"
+                                                data-status="Setuju">
+                                                Menyetujui
+                                            </button>
+
                                             <button type="button" class="btn btn-warning edit-button" data-toggle="modal"
                                                 data-target="#myModalEdit" data-jsondata="{{ json_encode($item) }}">
                                                 Edit
@@ -96,10 +99,11 @@
                                                 data-target="#myModalDelete" data-pasar-id="{{ $item->id }}">
                                                 Hapus
                                             </button>
-                                            <button type="button" class="btn btn-primary" onclick="previewKontrak(event)" data-id="{{ $item->id }}" data-jsondata="{{ json_encode($item) }}">
+                                            <button type="button" class="btn btn-primary" onclick="previewKontrak(event)"
+                                                data-id="{{ $item->id }}" data-jsondata="{{ json_encode($item) }}">
                                                 Lihat
                                             </button>
-                                            
+
 
 
                                         </td>
@@ -275,12 +279,40 @@
                         {{-- <a href="/kontrak/delete/{{ $item->id }}" class="btn btn-danger delete-button">Delete</a>
                          --}}
 
-                         <a href="#" class="btn btn-danger delete-button" id="delete-link">Delete</a>
+                        <a href="#" class="btn btn-danger delete-button" id="delete-link">Delete</a>
                     </div>
                 </div>
             </div>
         </div>
 
+
+        <!-- The Modal -->
+        <div class="modal fade" id="myModalSetujui" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Confirmation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <!-- Add your confirmation message for Menyetujui here -->
+                        @if ($item->status != 'benar')
+                            <p>Are you sure you want to Menyetujui?</p>
+                        @endif
+                    </div>
+                    <div class="modal-footer">
+                        <!-- Add your JavaScript content here -->
+                        @if ($item->status != 'benar')
+                            <button type="button" class="btn btn-success btn-setujui-confirm">Setujui</button>
+                        @endif
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         {{-- MODAL KTP --}}
         <div class="modal" id="myModalKtp">
             <div class="modal-dialog">
@@ -308,8 +340,10 @@
             });
         });
     </script>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // JavaScript lama - handleStatusChange untuk tombol "Menyetujui"
             const buttonsSetujui = document.querySelectorAll('.btn-setujui');
 
             buttonsSetujui.forEach(button => {
@@ -321,7 +355,7 @@
             });
 
             function handleStatusChange(id, status) {
-                fetch(`/contracts/setuju/${id}`, {
+                fetch(`/kontrak/setuju/${id}`, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -334,9 +368,40 @@
                     })
                     .then(response => {
                         if (response.ok) {
-                            // Jika berhasil, lakukan aksi sesuai kebutuhan, misalnya tampilkan pemberitahuan
                             alert('Status kontrak berhasil diubah menjadi Setuju.');
-                            // Halaman akan diperbarui secara otomatis setelah berhasil mengubah status
+                            window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
+                        } else {
+                            console.error('Terjadi kesalahan saat mengubah status.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Terjadi kesalahan saat mengirim permintaan:', error);
+                    });
+            }
+
+            // JavaScript baru - handleSetujui untuk tombol "Setujui" di dalam modal
+            const modalSetujui = document.getElementById('myModalSetujui');
+            const setujuiConfirmButton = document.querySelector('.btn-setujui-confirm');
+
+            setujuiConfirmButton.addEventListener('click', function() {
+                const id = modalSetujui.getAttribute('data-id');
+                handleSetujui(id);
+            });
+
+            function handleSetujui(id) {
+                fetch(`/kontrak/setuju/${id}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        },
+                        body: JSON.stringify({
+                            id: id
+                        })
+                    })
+                    .then(response => {
+                        if (response.ok) {
+                            alert('Status kontrak berhasil diubah menjadi Setuju.');
                             window.location.href = '{{ route('kontrak.index') }}'; // Redirect to the same page
                         } else {
                             console.error('Terjadi kesalahan saat mengubah status.');
