@@ -80,16 +80,16 @@
                                 <td>Rp {{ number_format($totalCash, 0, ',', '.') }} ,-</td>
                                 <td>Rp {{ number_format($depositCash->total_setoran, 0, ',', '.') }} ,-</td>
                                 <td>Rp {{ number_format(abs($totalCash - $depositCash->total_setoran), 0, ',', '.') }} ,-</td>
-                                <td>-</td>
+                                <td><a href="/rekondetail/cash">Lihat detail selengkapnya</a></td>
                             </tr>
                         </tbody>
                         <tbody>
                             <tr>
                                 <td style="font-weight: 800">VA</td>
-                                <td>Rp 0</td>
-                                <td>Rp 0</td>
-                                <td>Rp 0</td>
-                                <td>-</td>
+                                <td>Rp {{ number_format($totalVa->total_setoran, 0, ',', '.') }} ,-</td>
+                                <td>Rp {{ number_format($depositVa->total_setoran, 0, ',', '.') }} ,-</td>
+                                <td>Rp {{ number_format(abs($totalVa->total_setoran - $depositVa->total_setoran), 0, ',', '.') }} ,-</td>
+                                <td><a href="/rekondetail/va">Lihat detail selengkapnya</a></td>
                             </tr>
                         </tbody>
                         <tbody>
@@ -98,7 +98,7 @@
                                 <td>Rp 0</td>
                                 <td>Rp 0</td>
                                 <td>Rp 0</td>
-                                <td>-</td>
+                                <td><a href="#">Lihat detail selengkapnya</a></td>
                             </tr>
                         </tbody>
                     </table>

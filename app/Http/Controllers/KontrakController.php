@@ -75,13 +75,54 @@ class KontrakController extends Controller
     {
         $contract = Contract::find($id); // Ganti sesuai model dan data Anda
 
+        $user = Auth::user();
+        $userId = $user->id;
+
         if (!$contract) {
             return redirect()->route('contracts.index')->with('danger', 'Kontrak tidak ditemukan.');
         }
 
+        $harga = DB::table('units')
+                ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
+                ->join('retribution_fees', 'unit_types.id', '=', 'retribution_fees.jenis_unit_id')
+                ->select('retribution_fees.harga')
+                ->where('units.id', $contract->unit_id)
+                ->first();
+
         if ($contract->status != 'benar') {
             $contract->status = 'benar';
             $contract->save();
+
+            if($contract->status == 'benar') {
+                $jatuhTempo = Carbon::parse($contract->tanggal_mulai)->lastOfMonth();
+                $tanggalSelesai = Carbon::parse($contract->tanggal_selesai);
+                $randomNumber = mt_rand(0, 10);
+
+                while ($jatuhTempo <= $tanggalSelesai) {
+
+                    $mandatory_retribution = new MandatoryRetribution();
+
+                    // $mandatory_retribution->no_tagihan = $randomNumber;
+                    $mandatory_retribution->no_tagihan = (time()+mt_rand(0, 10)).$contract->id;
+
+                    $mandatory_retribution->no_tagihan_ref = null;
+                    $mandatory_retribution->biaya_retribusi = $harga->harga;
+                    $mandatory_retribution->tanggal_pembayaran = null;
+                    $mandatory_retribution->jatuh_tempo = $jatuhTempo;
+                    $mandatory_retribution->metode_pembayaran = null;
+                    $mandatory_retribution->status_pembayaran = 'belum_dibayar';
+                    $mandatory_retribution->url_pembayaran_va = null;
+                    $mandatory_retribution->url_pembayaran_qris = null;
+                    $mandatory_retribution->petugas_id = $userId;
+                    $mandatory_retribution->contract_id = $contract->id;
+                    $mandatory_retribution->save();
+
+                    $jatuhTempo->addMonthNoOverflow();
+                    $jatuhTempo->lastOfMonth();
+
+                }
+
+            }
 
             return redirect()->route('contracts.index')->with('success', 'Status kontrak berhasil diubah .');
         }

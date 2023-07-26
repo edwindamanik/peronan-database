@@ -82,6 +82,7 @@
                                     class="btn"
                                     style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px; left:100px; border:1px solid #000000; display: none;">QRIS</button>
 
+<<<<<<< Updated upstream
 
                                 <label for="limit">Jumlah Baris:</label>
                                 <input type="number" name="limit" id="limit" min="1" max="100"
@@ -92,6 +93,33 @@
 
                             <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
                                 <thead>
+=======
+                            <button id="vaButton" type="submit" name="penyetoran_melalui" value="nontunai-va" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px;  border:1px solid #000000; display: none;">VA</button>
+                            <button id="qrisButton" type="submit" name="penyetoran_melalui" value="nontunai-qris" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px; left:100px; border:1px solid #000000; display: none;">QRIS</button>
+                            
+                            
+                            <label for="limit">Jumlah Baris:</label>
+                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
+                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
+                          </form>
+                          
+                        
+                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>No</th>
+                                    <th>Pasar</th>
+                                    <th>Petugas / Wajib Retribusi (VA / QRIS)</th>
+                                    <th>Jumlah Setoran</th>
+                                    <th>Penyetoran Melalui</th>
+                                    <th>Tanggal Disetor</th>
+                                    <th>Status</th>
+                                    <th>Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($data as $item)
+>>>>>>> Stashed changes
                                     <tr>
                                         <th>No</th>
                                         <th>Pasar</th>

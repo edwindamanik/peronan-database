@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use App\Models\DailyRetribution;
 use App\Models\Deposit;
+use App\Models\MandatoryRetribution;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Carbon;
@@ -23,6 +24,7 @@ class DailyRetributionController extends Controller
     {
         $dataHarian = $request->input('data');
         $totalSetoran = $request->input('setoran');
+        $dataToUpdate = $request->input('dataBulanan');
 
         $depositId = DB::table('deposits')->insertGetId([
             'jumlah_setoran' => $totalSetoran,
@@ -52,7 +54,51 @@ class DailyRetributionController extends Controller
             ]);
         }
 
-        return response()->json(['data' => 'Berhasil menambahkan retribusi harian dan total setoran']);
+        if($dataToUpdate !== null) {
+            foreach($dataToUpdate as $data) {
+                $id = $data['id'];
+                unset($data['id']);
+
+                $mandatory_retribution = MandatoryRetribution::findOrFail($id);
+
+                $bulan_sebelumnya = MandatoryRetribution::where('jatuh_tempo', '<=', $data['jatuh_tempo'])
+                            ->where('contract_id', $data['contract_id'])
+                            ->get();
+
+                foreach($bulan_sebelumnya as $pembayaran_nonHarian) {
+                    $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
+                    $pembayaran_nonHarian->metode_pembayaran = 'CASH';
+                    $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
+                    $pembayaran_nonHarian->total_retribusi = $data['total_retribusi'];
+                    $pembayaran_nonHarian->petugas_id = $data['petugas_id'];
+                    $pembayaran_nonHarian->deposit_id = $depositId;
+                    $pembayaran_nonHarian->save();
+                }
+
+                // $mandatory_retribution->update($data);
+
+                $count = $data['count'];
+                if($count > 0) {
+                    $bulan_setelahnya = MandatoryRetribution::where('jatuh_tempo', '>', $data['jatuh_tempo'])
+                                ->where('contract_id', $data['contract_id'])
+                                ->orderBy('jatuh_tempo', 'asc') 
+                                ->take($count) 
+                                ->get();
+
+                    foreach($bulan_setelahnya as $pembayaran_nonHarian) {
+                        $pembayaran_nonHarian->status_pembayaran = 'sudah_dibayar';
+                        $pembayaran_nonHarian->metode_pembayaran = 'CASH';
+                        $pembayaran_nonHarian->tanggal_pembayaran = Carbon::now();
+                        $pembayaran_nonHarian->total_retribusi = $data['total_retribusi'];
+                        $pembayaran_nonHarian->petugas_id = $data['petugas_id'];
+                        $pembayaran_nonHarian->deposit_id = $depositId;
+                        $pembayaran_nonHarian->save();
+                    }
+                }
+            }
+        }
+
+        return response()->json(['data' => 'Berhasil menambahkan retribusi harian dan bulanan dan total setoran']);
     }
 
     public function show($id)

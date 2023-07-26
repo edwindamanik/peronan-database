@@ -20,6 +20,7 @@ return new class extends Migration
             $table->string('channel_id');
             $table->string('invoice_number');
             $table->integer('amount');
+            $table->integer('pasar_id');
             $table->string('virtual_account_number');
             $table->enum('status', ['menunggu', 'sudah_setor', 'belum_setor', 'ditolak']);
             $table->timestamps();

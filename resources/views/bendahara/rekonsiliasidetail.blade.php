@@ -71,43 +71,32 @@
                                 <th align="center">REAL</th>
                                 <th align="center">SELISIH</th>
                                 <th align="center">STATUS</th>
-                                <th align="center">AKSI</th>
                             </tr>
                         </thead>
                         <tbody>
-                            @if($depo->isEmpty())
-                            <tr>
-                                <td>-</td>
-                                <td>Rp 0</td>
-                                <td>Rp 0</td>
-                                <td>Rp 0</td>
-                                <td>-</td>
-                                <td>-</td>
-                            </tr>
-                            @else
-                            @foreach ($pasar->unique('pasar_id') as $psr)
-                            <?php $totalRetri = 0; ?>
-                            @foreach ($manda->where('pasar_id',$psr->pasar_id) as $item)
-                            <?php $total = 0; ?>
-                            <tr>
-                                <td align="center"><b>{{$psr->nama_pasar}}</b></td>
-                                @foreach ($depo as $dt)
-                                <?php $total += $dt->jumlah_setoran;  ?>
-                                @endforeach
-                                <td>Rp. {{ number_format($total, 0, ',', '.') }}</td>
-                                <?php $totalRetri += $item->total_retribusi;  ?>
-                                <td>Rp. {{ number_format($totalRetri, 0, ',', '.') }}</td>
-                                <td>Rp. {{ number_format($total - $totalRetri, 0, ',', '.') }}</td>
-                                @if($total - $totalRetri != 0)
-                                <td>Unreconciled </td>
-                                @else
-                                <td>Reconciled </td>
-                                @endif
-                                <td><a href="/rekonpetugas" class="badge bg-secondary">Lihat Detail Rekonsiliasi Petugas </a> | <a href="/rekonwajibretri" class="badge bg-warning">Lihat Detail Rekonsiliasi Wajib Retribusi</a></td>
-                            </tr>
+                            @foreach ($deposits as $item)
+                            @php
+                                // Find the matching item from $depositsApp based on the nama_pasar value
+                                $matchedItem = $depositsApp->firstWhere('nama_pasar', $item->nama_pasar);
+
+                                // Get the total_setoran values from $deposits and $depositsApp, or set to 0 if the item is not found in $depositsApp
+                                $totalSetoran = $item->total_setoran ?? 0;
+                                $totalSetoranApp = $matchedItem->total_setoran ?? 0;
+                            @endphp
+                                <tr>
+                                    <td>{{ $item->nama_pasar }}</td>
+                                    <td>Rp {{ number_format($totalSetoran, 0, ',', '.') }} ,-</td>
+                                    <td>Rp {{ number_format($totalSetoranApp, 0, ',', '.') }} ,-</td>
+                                    <td>Rp {{ number_format($totalSetoran - $totalSetoranApp, 0, ',', '.') }} ,-</td>
+                                    <td>
+                                        @if (($totalSetoran - $totalSetoranApp) === 0)
+                                            reconciled
+                                        @else
+                                            unreconciled
+                                        @endif
+                                    </td>
+                                </tr>
                             @endforeach
-                            @endforeach
-                            @endif
                         </tbody>
                     </table>
                     {{-- <div class="d-flex justify-content-end">

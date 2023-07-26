@@ -27,7 +27,7 @@ class AuthController extends Controller
     
             $accessToken = $user->createToken('Token Name')->plainTextToken;
     
-            return back()->with('storeMessage', 'Berhasil menambahkan user baru');
+            return response('Berhasil menambahkan user baru');
         } catch (\Exception $e) {
             return $e->getMessage();
         }

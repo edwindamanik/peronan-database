@@ -131,7 +131,7 @@ class BendaharaController extends Controller
             $deposit->status = 'disetujui';
             $deposit->save();
 
-            return redirect()->back()->with('success', 'Status berhasil diubah.');
+            return redirect('/laporansetor')->with('success', 'Status berhasil diubah.');
         } else {
             return redirect()->back()->with('error', 'Deposit tidak ditemukan.');
         }

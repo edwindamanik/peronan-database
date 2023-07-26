@@ -44,11 +44,31 @@ class RekonController extends Controller
                     ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
                     ->where('market_groups.kabupaten_id', $kabupatenId)
                     ->where('deposits.status', 'disetujui')
-                    ->where('deposits.wajib_retribusi_id', null)
+                    ->where('deposits.penyetoran_melalui', 'CASH')
+                    ->whereRaw('MONTH(deposits.tanggal_penyetoran) = ?', [$currentMonth])
                     ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
                     ->first();
 
-        // dd($depositCash);
+        $depositVa = DB::table('deposits')
+                    ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+                    ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+                    ->where('market_groups.kabupaten_id', $kabupatenId)
+                    ->where('deposits.status', 'disetujui')
+                    ->where('deposits.penyetoran_melalui', 'VA')
+                    ->whereRaw('MONTH(deposits.tanggal_penyetoran) = ?', [$currentMonth])
+                    ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
+                    ->first();
+
+        $totalVa = DB::table('va_payments')
+                    ->join('markets', 'markets.id', '=', 'va_payments.pasar_id')
+                    ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+                    ->selectRaw('SUM(amount) as total_setoran')
+                    ->whereRaw('MONTH(date) = ?', [$currentMonth])
+                    ->where('market_groups.kabupaten_id', $kabupatenId)
+                    ->first();
+                    // ->whereRaw("SUBSTRING_INDEX(SUBSTRING_INDEX(invoice_number, '-', 2), '-', -1) = $numberToSearch")
+
+        // dd($totalVa);
 
         $realVa = DB::table('mandatory_retributions')
                 ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
@@ -108,54 +128,66 @@ class RekonController extends Controller
             ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
             ->get();
 
-        return view('bendahara.rekonsiliasi', compact('totalCash', 'depositCash'));
+        return view('bendahara.rekonsiliasi', compact('totalCash', 'depositCash', 'depositVa', 'totalVa'));
     }
 
-    public function rekondetail()
+    public function rekondetail($type)
     {
         $user = Auth::user();
         $kabupatenId = $user->kabupaten_id;
         
         $currentMonth = Carbon::now()->format('m');
 
-        $pasar = DB::table('mandatory_retributions')
-        ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
-        ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
-        ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
-        ->join('units', 'units.id', '=', 'contracts.unit_id')
-        ->join('markets', 'markets.id', '=', 'units.pasar_id')
-        ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-        ->where('market_groups.kabupaten_id', $kabupatenId)
-        ->where('mandatory_retributions.status_pembayaran', '=', 'sudah_dibayar')
-        ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
-        ->get();
+        $jenisBayar = '';
+        if($type == 'cash') {
+            $jenisBayar = null;
+        } else if($type == 'va') {
+            $jenisBayar = 'VA';
+        }
 
-        $manda = DB::table('mandatory_retributions')
-            ->join('contracts', 'contracts.id', '=', 'mandatory_retributions.contract_id')
-            ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
-            ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
-            ->join('units', 'units.id', '=', 'contracts.unit_id')
-            ->join('markets', 'markets.id', '=', 'units.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->where('mandatory_retributions.status_pembayaran', '=', 'sudah_dibayar')
-            ->select('mandatory_retributions.*', 'contracts.*', 'obligation_retributions.*', 'units.*', 'markets.*', 'users.*')
-            ->get();
-
-        $depo = DB::table('deposits')
+        $deposits = DB::table('deposits')
             ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
-            ->join('market_groups', 'markets.kelompok_pasar_id', '=', 'market_groups.id')
-            ->join('users', 'deposits.users_id', '=', 'users.id')
-            ->join('market_officers', 'market_officers.pasar_id', '=', 'markets.id')
-            ->join('users AS officer_users', 'market_officers.users_id', '=', 'officer_users.id')
-            ->where('deposits.status', 'disetujui')
+            ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
             ->where('market_groups.kabupaten_id', $kabupatenId)
-            ->select('deposits.*', 'markets.nama_pasar', 'users.nama', 'officer_users.nama AS officer_name')
-            ->where(DB::raw('MONTH(deposits.tanggal_penyetoran)'), '=', $currentMonth)
+            ->where('deposits.penyetoran_melalui', $jenisBayar)
+            ->select('markets.nama_pasar')
+            ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
+            ->groupBy('markets.nama_pasar', 'deposits.pasar_id')->get();
+
+        $depositsApp = DB::table('deposits')
+            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+            ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->where('deposits.penyetoran_melalui', $jenisBayar)
+            ->where('deposits.status', 'disetujui')
+            ->select('markets.nama_pasar')
+            ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
+            ->groupBy('markets.nama_pasar', 'deposits.pasar_id')
             ->get();
 
+        $depositsVa = DB::table('deposits')
+            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+            ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->where('deposits.penyetoran_melalui', $jenisBayar)
+            ->select('markets.nama_pasar')
+            ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
+            ->groupBy('markets.nama_pasar', 'deposits.pasar_id')->get();
 
-        return view('bendahara.rekonsiliasidetail', compact('manda','depo','pasar'));
+        $depositsAppVa = DB::table('deposits')
+            ->join('markets', 'markets.id', '=', 'deposits.pasar_id')
+            ->join('market_groups', 'market_groups.id', '=', 'markets.kelompok_pasar_id')
+            ->where('market_groups.kabupaten_id', $kabupatenId)
+            ->where('deposits.penyetoran_melalui', $jenisBayar)
+            ->where('deposits.status', 'disetujui')
+            ->select('markets.nama_pasar')
+            ->selectRaw('SUM(deposits.jumlah_setoran) as total_setoran')
+            ->groupBy('markets.nama_pasar', 'deposits.pasar_id')
+            ->get();
+
+            // dd($jenisBayar);
+
+        return view('bendahara.rekonsiliasidetail', compact('deposits', 'depositsApp', 'depositsVa', 'depositsAppVa'));
     }
 
     public function rekonpetugas()

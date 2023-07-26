@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('deposits', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('jumlah_setoran');
-            $table->enum('penyetoran_melalui', ['transfer_bank', 'langsung'])->nullable();
+            $table->enum('penyetoran_melalui', ['transfer_bank', 'langsung', 'VA', 'QRIS'])->nullable();
             $table->date('tanggal_penyetoran');
             $table->date('tanggal_disetor')->nullable();
             $table->string('bukti_setoran')->nullable();

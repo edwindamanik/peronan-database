@@ -436,7 +436,7 @@ class MandatoryRetributionController extends Controller
                 'Request-Id' => $requestId,
                 'Request-Timestamp' => $requestDate,
                 'Signature' => 'HMACSHA256=' . $signature,
-            ])->post("https://api.doku.com/checkout/v1/payment", $requestBody);
+            ])->post("https://api-sandbox.doku.com/checkout/v1/payment", $requestBody);
             // ])->post("https://api-sandbox.doku.com/mandiri-virtual-account/v2/payment-code", $requestBody);
 
             $responseJson = json_decode($response->body(), true);
@@ -472,7 +472,7 @@ class MandatoryRetributionController extends Controller
                 ->join('obligation_retributions', 'obligation_retributions.id', '=', 'contracts.wajib_retribusi_id')
                 ->join('users', 'users.id', '=', 'obligation_retributions.users_id')
                 ->join('units', 'units.id', '=', 'contracts.unit_id')
-                ->select('mandatory_retributions.*', 'units.no_unit', 'users.nama', 'obligation_retributions.nik')
+                ->select('mandatory_retributions.*', 'units.no_unit', 'users.nama', 'obligation_retributions.nik', 'users.id AS wr_id', 'units.pasar_id')
                 ->where('mandatory_retributions.status_pembayaran', 'belum_dibayar')
                 ->where('users.id', $user_id)
                 ->whereYear('mandatory_retributions.jatuh_tempo', '=', date('Y'))
@@ -529,13 +529,32 @@ class MandatoryRetributionController extends Controller
                         $currentDate = Carbon::now()->format('Y-m-d');
 
                         $invoiceNumber = $request->input('order.invoice_number');
-                        $nextInvoiceNumber = explode('-', $invoiceNumber);
-                        $finalNumber = end($nextInvoiceNumber);
-                        $finalNumber = (int)$finalNumber;
+                        $parts = explode('-', $invoiceNumber);
+
+                        // Get the numbers from the exploded array
+                        $pasar_id = intval($parts[count($parts) - 3]);
+                        $wr_id = intval($parts[count($parts) - 2]);
+                        $contract_id = intval($parts[count($parts) - 1]);
+
+                        // $nextInvoiceNumber = explode('-', $invoiceNumber);
+                        // $finalNumber = end($nextInvoiceNumber);
+                        // $finalNumber = (int)$finalNumber;
+
+                        $depositId = DB::table('deposits')->insertGetId([
+                            'jumlah_setoran' => $request->input('order.amount'),
+                            'penyetoran_melalui' => 'VA',
+                            'tanggal_penyetoran' => now(),
+                            'tanggal_disetor' => null,
+                            'bukti_setoran' => null,
+                            'status' => 'menunggu_konfirmasi',
+                            'alasan_tidak_setor' => null,
+                            'users_id' => $wr_id,
+                            'pasar_id' => $pasar_id
+                        ]);
 
                         DB::table('mandatory_retributions')
                             ->where('status_pembayaran', 'belum_dibayar')
-                            ->where('contract_id', $finalNumber)
+                            ->where('contract_id', $contract_id)
                             ->where(function ($query) use ($currentMonth, $currentDate) {
                                 $query->where(function ($query) use ($currentMonth, $currentDate) {
                                     $query->whereMonth('jatuh_tempo', '<', $currentMonth)
@@ -546,7 +565,7 @@ class MandatoryRetributionController extends Controller
                                 })
                                 ->orWhereMonth('jatuh_tempo', $currentMonth); // Menambahkan kondisi ini
                             })
-                            ->update(['status_pembayaran' => 'sudah_dibayar', 'total_retribusi' => $request->input('order.amount'), 'metode_pembayaran' => $request->input('service.id'), 'tanggal_pembayaran' => $currentDate]);
+                            ->update(['status_pembayaran' => 'sudah_dibayar', 'total_retribusi' => $request->input('order.amount'), 'metode_pembayaran' => $request->input('service.id'), 'tanggal_pembayaran' => $currentDate, 'deposit_id' => $depositId]);
 
                         if($request->input('service.id') == 'VIRTUAL_ACCOUNT') {
                             DB::table('va_payments')->insert([
@@ -557,17 +576,19 @@ class MandatoryRetributionController extends Controller
                                 'channel_id' => $request->input('virtual_account_payment.identifier.1.value'),
                                 'invoice_number' => $request->input('order.invoice_number'),
                                 'amount' => $request->input('order.amount'),
+                                'pasar_id' => $pasar_id,
                                 'virtual_account_number' => $request->input('virtual_account_info.virtual_account_number'),
                                 'status' => 'menunggu'
                             ]);
                         }
-                    }                
+
+                    }
                 }
 
-                // return response('OK', 200)->header('Content-Type', 'text/plain');
-                return response()->json([
-                    'data' => $finalNumber,
-                ]);
+                return response('OK', 200)->header('Content-Type', 'text/plain');
+                // return response()->json([
+                //     'data' => $finalNumber,
+                // ]);
         
                 // TODO: Do update the transaction status based on the `transaction.status`
             } else {
