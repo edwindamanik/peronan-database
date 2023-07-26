@@ -56,15 +56,16 @@ class KontrakController extends Controller
 
         $unit = DB::table('units')
             ->join('unit_types', 'units.jenis_unit_id', '=', 'unit_types.id')
-            ->where('kabupaten_id', $kabupatenId)
-            ->select('units.*')
+            ->where('unit_types.kabupaten_id', $kabupatenId)
+            ->where('unit_types.jenis_pembayaran', 'bulanan')
+            // ->select('units.*')
             ->get();
 
         $pengaturan = DB::table('letter_settings')
             ->where('kabupaten_id', $kabupatenId)
             ->get();
    
-        // dd($data);
+        // dd($unit);
         return view('admin.kontrak', compact('data', 'wajib_retribusi', 'unit', 'pengaturan'));
     }
 
