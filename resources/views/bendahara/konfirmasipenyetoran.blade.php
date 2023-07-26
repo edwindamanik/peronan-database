@@ -106,14 +106,14 @@
                                 <tbody>
 
                                     <tr>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
+                                       <i> <td>No data available</td></i>
 
                                     </tr>
 
