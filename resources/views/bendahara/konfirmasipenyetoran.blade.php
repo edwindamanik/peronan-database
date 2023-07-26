@@ -33,7 +33,7 @@
             <div class="card mb-4">
                 <div class="card-header">
                     <i class="fas fa-table mr-1"></i>
-                    
+
                 </div>
                 <div class="card-body">
                     @if (session()->has('deleteMessage'))
@@ -67,72 +67,141 @@
                             <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
                             <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
                         </form> --}}
+                        @if ($data->isEmpty())
+                            <form method="GET" action="{{ route('data.limit') }}">
+                                <button type="submit" name="penyetoran_melalui" value="tunai" class="btn"
+                                    style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
+                                <button id="nonTunaiButton" type="button" class="btn"
+                                    style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non
+                                    Tunai</button>
 
-                        <form method="GET" action="{{ route('data.limit') }}">
-                            <button type="submit" name="penyetoran_melalui" value="tunai" class="btn" style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
-                            <button id="nonTunaiButton" type="button" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non Tunai</button>
+                                <button id="vaButton" type="submit" name="penyetoran_melalui" value="nontunai-va"
+                                    class="btn"
+                                    style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px;  border:1px solid #000000; display: none;">VA</button>
+                                <button id="qrisButton" type="submit" name="penyetoran_melalui" value="nontunai-qris"
+                                    class="btn"
+                                    style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px; left:100px; border:1px solid #000000; display: none;">QRIS</button>
 
-                            <button id="vaButton" type="submit" name="penyetoran_melalui" value="nontunai-va" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px;  border:1px solid #000000; display: none;">VA</button>
-                            <button id="qrisButton" type="submit" name="penyetoran_melalui" value="nontunai-qris" class="btn" style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px; left:100px; border:1px solid #000000; display: none;">QRIS</button>
-                            
-                            
-                            <label for="limit">Jumlah Baris:</label>
-                            <input type="number" name="limit" id="limit" min="1" max="100" value="{{ $limit }}">
-                            <button type="submit" class="btn" style="background-color:#192C58; color:white;">Terapkan</button>
-                          </form>
-                          
-                        
-                        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-                            <thead>
-                                <tr>
-                                    <th>No</th>
-                                    <th>Pasar</th>
-                                    <th>Petugas</th>
-                                    <th>Jumlah Setoran</th>
-                                    <th>Penyetoran Melalui</th>
-                                    <th>Tanggal Disetor</th>
-                                    <th>Status</th>
-                                    <th>Aksi</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($data as $item)
+
+                                <label for="limit">Jumlah Baris:</label>
+                                <input type="number" name="limit" id="limit" min="1" max="100"
+                                    value="{{ $limit }}">
+                                <button type="submit" class="btn"
+                                    style="background-color:#192C58; color:white;">Terapkan</button>
+                            </form>
+
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $item->nama_pasar }}</td>
-                                        <td>{{ $item->nama }}</td>
-                                        <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }}</td>
-                                        <td>{{ $item->penyetoran_melalui }}</td>
-                                        <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}</td>
-                                        <td>
-                                            @if ($item->status == 'belum_setor')
-                                            {{-- <a href="#" data-toggle="modal" data-target="#myModalAlasan" class="alasan-button" data-jsondata="{{ json_encode($item) }}" style="text-decoration: underline; color:#243763;">Belum Disetor</a>
-                                             --}}
-                                             <a href type="submit" class=" alasan-button" style="background-color:#ffffff; color:rgb(45, 67, 211);" data-toggle="modal" data-target="#myModalAlasan" data-jsondata="{{ json_encode($item) }}">Belum Disetor</a>
-
-
-
-                                            @elseif ($item->status == 'menunggu_konfirmasi')
-                                                <p style=" color:#000000;">Menunggu</p>
-                                            @else
-                                                {{ $item->status }}
-                                            @endif
-                                        </td>
-                                        <td>
-                                            @if ($item->status == 'disetujui')
-                                                <button type="button" disabled class="btn btn-block" style="background-color:#192C58; color:white;" disabled>Konfirmasi</button>
-                                            @elseif($item->status == 'belum_setor')
-                                                <button type="button" disabled class="btn btn-block" style="background-color:#192C58; color:white;" disabled>Konfirmasi</button>
-                                            @else
-                                                <button type="submit" class="btn btn-block detail-button" style="background-color:#192C58; color:white;" data-toggle="modal" data-target="#myModalDetail" data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
-                                            @endif
-                                        </td>
+                                        <th>No</th>
+                                        <th>Pasar</th>
+                                        <th>Petugas</th>
+                                        <th>Jumlah Setoran</th>
+                                        <th>Penyetoran Melalui</th>
+                                        <th>Tanggal Disetor</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
                                     </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                        
-                        {{-- <div class="d-flex justify-content-end">
+                                </thead>
+                                <tbody>
+
+                                    <tr>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+
+                                    </tr>
+
+                                </tbody>
+                            </table>
+                        @else
+                            <form method="GET" action="{{ route('data.limit') }}">
+                                <button type="submit" name="penyetoran_melalui" value="tunai" class="btn"
+                                    style="background-color:#fcfcfc; color:rgb(0, 0, 0); position:absolute; top:10px; border:1px solid #000000;">Tunai</button>
+                                <button id="nonTunaiButton" type="button" class="btn"
+                                    style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:10px; left:100px; border:1px solid #000000;">Non
+                                    Tunai</button>
+
+                                <button id="vaButton" type="submit" name="penyetoran_melalui" value="nontunai-va"
+                                    class="btn"
+                                    style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px;  border:1px solid #000000; display: none;">VA</button>
+                                <button id="qrisButton" type="submit" name="penyetoran_melalui" value="nontunai-qris"
+                                    class="btn"
+                                    style="background-color:#ffffff; color:rgb(0, 0, 0); position:absolute; top:55px; left:100px; border:1px solid #000000; display: none;">QRIS</button>
+
+
+                                <label for="limit">Jumlah Baris:</label>
+                                <input type="number" name="limit" id="limit" min="1" max="100"
+                                    value="{{ $limit }}">
+                                <button type="submit" class="btn"
+                                    style="background-color:#192C58; color:white;">Terapkan</button>
+                            </form>
+
+
+                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th>No</th>
+                                        <th>Pasar</th>
+                                        <th>Petugas</th>
+                                        <th>Jumlah Setoran</th>
+                                        <th>Penyetoran Melalui</th>
+                                        <th>Tanggal Disetor</th>
+                                        <th>Status</th>
+                                        <th>Aksi</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($data as $item)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ $item->nama_pasar }}</td>
+                                            <td>{{ $item->nama }}</td>
+                                            <td>Rp {{ number_format($item->jumlah_setoran, 0, ',', '.') }}</td>
+                                            <td>{{ $item->penyetoran_melalui }}</td>
+                                            <td>{{ \Carbon\Carbon::parse($item->tanggal_disetor)->format('d M Y') }}</td>
+                                            <td>
+                                                @if ($item->status == 'belum_setor')
+                                                    {{-- <a href="#" data-toggle="modal" data-target="#myModalAlasan" class="alasan-button" data-jsondata="{{ json_encode($item) }}" style="text-decoration: underline; color:#243763;">Belum Disetor</a>
+                                             --}}
+                                                    <a href type="submit" class=" alasan-button"
+                                                        style="background-color:#ffffff; color:rgb(45, 67, 211);"
+                                                        data-toggle="modal" data-target="#myModalAlasan"
+                                                        data-jsondata="{{ json_encode($item) }}">Belum Disetor</a>
+                                                @elseif ($item->status == 'menunggu_konfirmasi')
+                                                    <p style=" color:#000000;">Menunggu</p>
+                                                @else
+                                                    {{ $item->status }}
+                                                @endif
+                                            </td>
+                                            <td>
+                                                @if ($item->status == 'disetujui')
+                                                    <button type="button" disabled class="btn btn-block"
+                                                        style="background-color:#192C58; color:white;"
+                                                        disabled>Konfirmasi</button>
+                                                @elseif($item->status == 'belum_setor')
+                                                    <button type="button" disabled class="btn btn-block"
+                                                        style="background-color:#192C58; color:white;"
+                                                        disabled>Konfirmasi</button>
+                                                @else
+                                                    <button type="submit" class="btn btn-block detail-button"
+                                                        style="background-color:#192C58; color:white;" data-toggle="modal"
+                                                        data-target="#myModalDetail"
+                                                        data-jsondata="{{ json_encode($item) }}">Konfirmasi</button>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+
+
+                            {{-- <div class="d-flex justify-content-end">
                         {{ $data->appends(['search' => request()->input('search')])->links('pagination::bootstrap-4') }}
                 </div> --}}
                     </div>
@@ -194,7 +263,8 @@
                         <form action="{{ route('setor-deposit', ['depositId' => $item->id]) }}" method="POST">
                             @csrf
                             <button type="submit" class="btn btn-block" style="background-color:#192C58; color:white;"
-                                data-toggle="modal" data-target="#confirmationModal{{ $item->id }}">Konfirmasi</button>
+                                data-toggle="modal"
+                                data-target="#confirmationModal{{ $item->id }}">Konfirmasi</button>
                         </form>
                         <form action="{{ route('tolak-deposit', ['depositId' => $item->id]) }}" method="POST">
                             @csrf
@@ -207,8 +277,8 @@
         </div>
 
 
-         {{-- MODAL Alasan --}}
-         <div class="modal fade" id="myModalAlasan">
+        {{-- MODAL Alasan --}}
+        <div class="modal fade" id="myModalAlasan">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <!-- Modal header -->
@@ -222,20 +292,20 @@
                         <table class="table table-bordered table-striped">
                             <tbody id="modal-table-body">
                                 <tr>
-                                    
+
                                     <td id="tiann"><input type="text" id="tiann"></td>
                                 </tr>
-                               
+
                             </tbody>
                         </table>
                     </div>
 
-                  
+
                 </div>
             </div>
         </div>
 
-        
+
         {{-- MODAL HAPUS --}}
         <div class="modal fade" id="myModalDelete" tabindex="-1" role="dialog" aria-labelledby="myModalDeleteLabel"
             aria-hidden="true">
@@ -262,6 +332,8 @@
                 </div>
             </div>
         </div>
+
+
         <div class="modal" id="myModalKtp">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -282,6 +354,7 @@
         </div>
 
 
+
     </main>
     <script>
         $(document).ready(function() {
@@ -300,10 +373,10 @@
             });
         });
 
-       
 
 
-        
+
+
 
         $(document).ready(function() {
             $('.image-link').click(function(e) {
@@ -317,21 +390,21 @@
     </script>
     <script>
         document.getElementById('nonTunaiButton').addEventListener('click', function() {
-          document.getElementById('vaButton').style.display = 'inline-block';
-          document.getElementById('qrisButton').style.display = 'inline-block';
+            document.getElementById('vaButton').style.display = 'inline-block';
+            document.getElementById('qrisButton').style.display = 'inline-block';
         });
-      </script>
-      
-
-<script>
-    $(document).ready(function() {
-       $('.alasan-button').click(function() {
-          var jsonData = $(this).data('jsondata');
-          $('#tiann').text(jsonData.alasan_tidak_setor);
-       });
-    });
     </script>
-    
+
+
+    <script>
+        $(document).ready(function() {
+            $('.alasan-button').click(function() {
+                var jsonData = $(this).data('jsondata');
+                $('#tiann').text(jsonData.alasan_tidak_setor);
+            });
+        });
+    </script>
+
 
 
 
@@ -371,4 +444,5 @@
                 });
         });
     </script>
+    @endif
 @endsection
